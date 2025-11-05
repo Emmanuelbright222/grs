@@ -1440,18 +1440,18 @@ const ArtistDashboard = () => {
                 </div>
               )}
               <div className="text-center md:text-left">
-                <h1 className="text-1xl md:text-3xl lg:text-4xl font-bold mb-2">
-                  {isAdmin && !viewingAsArtist
-                    ? "Admin Dashboard" 
-                    : `Welcome, ${profile?.artist_name || profile?.full_name || profile?.email?.split("@")[0] || "Artist"}!`}
-                </h1>
-                {isAdmin && !viewingAsArtist && (
-                  <div className="mt-2 flex justify-center md:justify-start items-center">
-                    <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium inline-flex items-center">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center md:justify-start gap-2 mb-2">
+                  <h1 className="text-1xl md:text-3xl lg:text-4xl font-bold">
+                    {isAdmin && !viewingAsArtist
+                      ? "Admin Dashboard" 
+                      : `Welcome, ${profile?.artist_name || profile?.full_name || profile?.email?.split("@")[0] || "Artist"}!`}
+                  </h1>
+                  {isAdmin && !viewingAsArtist && (
+                    <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium inline-flex items-center self-center sm:self-start">
                       Admin
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
                 <p className="text-muted-foreground">
                   {isAdmin && !viewingAsArtist ? "Manage artists and demo submissions" : "Track your music performance across platforms"}
                 </p>
