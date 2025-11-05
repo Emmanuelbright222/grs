@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Music2, Eye, EyeOff, Lock } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ const ResetPassword = () => {
     confirmPassword: "",
   });
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
+  const hcaptchaRef = useRef<HCaptcha>(null);
 
   useEffect(() => {
     // Check if we have the required hash/access token in URL
@@ -58,6 +61,16 @@ const ResetPassword = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check for hCaptcha token
+    if (!hcaptchaToken) {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the captcha verification.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       toast({
@@ -86,9 +99,18 @@ const ResetPassword = () => {
     try {
       const { error } = await supabase.auth.updateUser({
         password: formData.password,
+      }, {
+        captchaToken: hcaptchaToken || undefined,
       });
 
-      if (error) throw error;
+      if (error) {
+        // Reset captcha on error
+        if (error.message?.includes("captcha") || error.message?.includes("verification")) {
+          hcaptchaRef.current?.resetCaptcha();
+          setHcaptchaToken(null);
+        }
+        throw error;
+      }
 
       toast({
         title: "Password Reset Successful!",
@@ -206,11 +228,33 @@ const ResetPassword = () => {
                 </div>
               )}
 
+              <div className="flex justify-center">
+                <HCaptcha
+                  sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
+                  onVerify={(token) => {
+                    setHcaptchaToken(token);
+                  }}
+                  onExpire={() => {
+                    setHcaptchaToken(null);
+                  }}
+                  onError={(err) => {
+                    console.error("hCaptcha error:", err);
+                    toast({
+                      title: "Captcha Error",
+                      description: "Please refresh the page and try again",
+                      variant: "destructive",
+                    });
+                  }}
+                  ref={hcaptchaRef}
+                  theme="light"
+                />
+              </div>
+
               <Button
                 type="submit"
                 variant="hero"
                 className="w-full"
-                disabled={loading || passwordErrors.length > 0}
+                disabled={loading || passwordErrors.length > 0 || !hcaptchaToken}
               >
                 {loading ? "Updating Password..." : "Reset Password"}
               </Button>
