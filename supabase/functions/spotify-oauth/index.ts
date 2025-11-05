@@ -21,36 +21,40 @@ serve(async (req: Request) => {
     return new Response(null, { status: 200, headers: corsHeaders });
   }
 
-  // This function is called by Spotify OAuth callback (no auth headers from Spotify)
-  // Supabase Edge Functions require apikey header, but OAuth callbacks don't include it
-  // We'll use service role key internally to bypass RLS
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     
     // Use service role key for database operations (bypasses RLS)
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     
     if (!supabaseServiceKey) {
       console.error("SUPABASE_SERVICE_ROLE_KEY not set");
-      const frontendUrl = Deno.env.get("FRONTEND_URL") || "http://localhost:8083";
-      return Response.redirect(
-        `${frontendUrl}/dashboard?error=server_config_error`,
-        302
+      return new Response(
+        JSON.stringify({ error: "Server configuration error" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const url = new URL(req.url);
-    const code = url.searchParams.get("code");
-    const state = url.searchParams.get("state"); // Contains user_id
-    const error = url.searchParams.get("error");
-    
-    // Check for apikey in headers (Supabase gateway requirement)
-    // For OAuth callbacks, Spotify doesn't send headers, but Supabase gateway
-    // may have already validated if called correctly
-    const authHeader = req.headers.get("Authorization") || req.headers.get("apikey");
+    // Handle both GET (from Spotify redirect) and POST (from frontend callback)
+    let code: string | null = null;
+    let state: string | null = null;
+    let error: string | null = null;
+
+    if (req.method === "POST") {
+      // Frontend callback sends code and state in body
+      const body = await req.json().catch(() => ({}));
+      code = body.code || null;
+      state = body.state || null;
+      error = body.error || null;
+    } else {
+      // Direct Spotify redirect (GET with query params)
+      const url = new URL(req.url);
+      code = url.searchParams.get("code");
+      state = url.searchParams.get("state");
+      error = url.searchParams.get("error");
+    }
 
     if (error) {
       console.error("Spotify OAuth error:", error);
@@ -73,11 +77,11 @@ serve(async (req: Request) => {
     const clientId = Deno.env.get("SPOTIFY_CLIENT_ID");
     const clientSecret = Deno.env.get("SPOTIFY_CLIENT_SECRET");
     
-    // Get redirect URI from environment or construct from Supabase URL
-    // Must match exactly what's registered in Spotify Dashboard
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
+    // Get redirect URI - must match what's registered in Spotify Dashboard
+    // For production, use frontend callback URL
+    const frontendUrl = Deno.env.get("FRONTEND_URL") || "";
     const redirectUri = Deno.env.get("SPOTIFY_REDIRECT_URI") || 
-      `${supabaseUrl}/functions/v1/spotify-oauth`;
+      `${frontendUrl}/auth/spotify/callback`;
 
     if (!clientId || !clientSecret) {
       console.error("Spotify credentials not configured");
