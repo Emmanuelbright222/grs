@@ -88,9 +88,9 @@ serve(async (req: Request) => {
       }
     }
 
-    // Fetch YouTube Analytics data
-    const analyticsResponse = await fetch(
-      "https://youtubeanalytics.googleapis.com/v2/reports?metrics=views,estimatedRevenue,estimatedAdRevenue&dimensions=video&startDate=2024-01-01&endDate=2024-12-31",
+    // Get user's channel information
+    const channelResponse = await fetch(
+      "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&mine=true",
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -98,9 +98,72 @@ serve(async (req: Request) => {
       }
     );
 
-    let analyticsData = null;
-    if (analyticsResponse.ok) {
-      analyticsData = await analyticsResponse.json();
+    let channelData = null;
+    let channelId = null;
+    if (channelResponse.ok) {
+      const channelResult = await channelResponse.json();
+      if (channelResult.items && channelResult.items.length > 0) {
+        channelData = channelResult.items[0];
+        channelId = channelData.id;
+      }
+    }
+
+    // Fetch user's playlists
+    const playlistsResponse = await fetch(
+      `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&mine=true&maxResults=50`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    let playlists = [];
+    let playlistsCount = 0;
+    if (playlistsResponse.ok) {
+      const playlistsResult = await playlistsResponse.json();
+      playlists = playlistsResult.items || [];
+      playlistsCount = playlistsResult.pageInfo?.totalResults || playlists.length;
+    }
+
+    // Fetch user's channel videos (uploaded videos)
+    let channelVideos = [];
+    let totalViews = 0;
+    if (channelId) {
+      const videosResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&maxResults=10&order=viewCount`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      if (videosResponse.ok) {
+        const videosResult = await videosResponse.json();
+        channelVideos = videosResult.items || [];
+        
+        // Get detailed stats for videos
+        if (channelVideos.length > 0) {
+          const videoIds = channelVideos.map((v: any) => v.id.videoId).join(",");
+          const videoStatsResponse = await fetch(
+            `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${videoIds}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          if (videoStatsResponse.ok) {
+            const videoStatsResult = await videoStatsResponse.json();
+            channelVideos = videoStatsResult.items || [];
+            totalViews = channelVideos.reduce((sum: number, video: any) => {
+              return sum + parseInt(video.statistics?.viewCount || 0);
+            }, 0);
+          }
+        }
+      }
     }
 
     // Update last_synced_at
@@ -115,7 +178,27 @@ serve(async (req: Request) => {
       JSON.stringify({
         success: true,
         data: {
-          analytics: analyticsData,
+          channel: channelData ? {
+            title: channelData.snippet?.title,
+            description: channelData.snippet?.description,
+            subscriberCount: channelData.statistics?.subscriberCount || 0,
+            videoCount: channelData.statistics?.videoCount || 0,
+            viewCount: channelData.statistics?.viewCount || 0,
+          } : null,
+          playlistsCount,
+          playlists: playlists.slice(0, 5).map((p: any) => ({
+            id: p.id,
+            title: p.snippet?.title,
+            itemCount: p.contentDetails?.itemCount || 0,
+            thumbnail: p.snippet?.thumbnails?.default?.url,
+          })),
+          topVideos: channelVideos.slice(0, 5).map((v: any) => ({
+            id: v.id,
+            title: v.snippet?.title,
+            viewCount: parseInt(v.statistics?.viewCount || 0),
+            thumbnail: v.snippet?.thumbnails?.default?.url,
+          })),
+          totalViews,
           syncedAt: new Date().toISOString(),
         },
       }),

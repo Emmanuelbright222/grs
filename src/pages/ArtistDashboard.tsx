@@ -2010,9 +2010,75 @@ const ArtistDashboard = () => {
                             : "Never"}
                         </span>
                       </div>
+                      {youtubeConnection.platform_user_id && (
+                        <div className="text-xs text-muted-foreground">
+                          Channel ID: {youtubeConnection.platform_user_id}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
+
+                {/* YouTube Data Display */}
+                {youtubeData && (
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <h4 className="font-semibold mb-3">Your YouTube Data</h4>
+                    {youtubeData.channel && (
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        <div className="text-center">
+                          <p className="text-2xl font-bold">{youtubeData.channel.subscriberCount || 0}</p>
+                          <p className="text-xs text-muted-foreground">Subscribers</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-2xl font-bold">{youtubeData.channel.videoCount || 0}</p>
+                          <p className="text-xs text-muted-foreground">Videos</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-2xl font-bold">{Number(youtubeData.channel.viewCount || 0).toLocaleString()}</p>
+                          <p className="text-xs text-muted-foreground">Total Views</p>
+                        </div>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="text-center">
+                        <p className="text-2xl font-bold">{youtubeData.playlistsCount || 0}</p>
+                        <p className="text-xs text-muted-foreground">Playlists</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-2xl font-bold">{youtubeData.topVideos?.length || 0}</p>
+                        <p className="text-xs text-muted-foreground">Top Videos</p>
+                      </div>
+                    </div>
+                    {youtubeData.topVideos && youtubeData.topVideos.length > 0 && (
+                      <div className="mt-4">
+                        <p className="text-sm font-semibold mb-2">Top Videos (by views):</p>
+                        <ul className="space-y-2">
+                          {youtubeData.topVideos.map((video: any, idx: number) => (
+                            <li key={video.id} className="text-sm flex items-center gap-2">
+                              <span className="text-muted-foreground">{idx + 1}.</span>
+                              <span className="flex-1">{video.title}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {video.viewCount.toLocaleString()} views
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {youtubeData.playlists && youtubeData.playlists.length > 0 && (
+                      <div className="mt-4">
+                        <p className="text-sm font-semibold mb-2">Your Playlists:</p>
+                        <ul className="space-y-1">
+                          {youtubeData.playlists.map((playlist: any) => (
+                            <li key={playlist.id} className="text-sm text-muted-foreground">
+                              • {playlist.title} ({playlist.itemCount} items)
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </Card>
           )}
