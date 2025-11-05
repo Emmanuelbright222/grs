@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import MusicBackground from "@/components/MusicBackground";
@@ -9,10 +9,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, MapPin, Phone } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const Contact = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
+  const hcaptchaRef = useRef<HCaptcha>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,6 +24,16 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!hcaptchaToken) {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the hCaptcha verification",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -278,18 +291,27 @@ const Contact = () => {
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
-                      required
-                      rows={6}
-                      placeholder="How can we help you?"
-                    />
-                  </div>
+                    required
+                    rows={6}
+                    placeholder="How can we help you?"
+                  />
+                </div>
+
+                <div className="flex justify-center">
+                  <HCaptcha
+                    sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
+                    onVerify={(token) => setHcaptchaToken(token)}
+                    onExpire={() => setHcaptchaToken(null)}
+                    ref={hcaptchaRef}
+                  />
+                </div>
 
                   <Button
                     type="submit"
                     variant="hero"
                     size="lg"
                     className="w-full"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !hcaptchaToken}
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
                   </Button>

@@ -158,7 +158,11 @@ serve(async (req: Request) => {
                   id: video.id,
                   title: video.snippet?.title,
                   viewCount: parseInt(video.statistics?.viewCount || 0),
+                  likeCount: parseInt(video.statistics?.likeCount || 0),
                   thumbnail: video.snippet?.thumbnails?.default?.url,
+                  categoryId: video.snippet?.categoryId || "0",
+                  isMusic: video.snippet?.categoryId === "10" || // Music category
+                          /music|song|track|album|artist|feat|ft\.|lyrics|audio|single/i.test(video.snippet?.title || ""),
                 })) || [];
               }
             }
@@ -169,45 +173,105 @@ serve(async (req: Request) => {
       }
     }
 
-    // Fetch user's channel videos (uploaded videos)
-    let channelVideos = [];
-    let totalViews = 0;
-    if (channelId) {
-      const videosResponse = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&maxResults=10&order=viewCount`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+    // Get user's uploads playlist (all videos uploaded by user)
+    let uploadsPlaylistId = null;
+    if (channelData?.contentDetails?.relatedPlaylists?.uploads) {
+      uploadsPlaylistId = channelData.contentDetails.relatedPlaylists.uploads;
+    }
 
-      if (videosResponse.ok) {
-        const videosResult = await videosResponse.json();
-        channelVideos = videosResult.items || [];
-        
-        // Get detailed stats for videos
-        if (channelVideos.length > 0) {
-          const videoIds = channelVideos.map((v: any) => v.id.videoId).join(",");
-          const videoStatsResponse = await fetch(
-            `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${videoIds}`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
+    // Fetch user's uploaded videos (from uploads playlist)
+    let uploadedMusic = [];
+    let uploadedVideos = [];
+    let musicViews = 0;
+    let videoViews = 0;
+    let totalLikes = 0;
+    
+    if (uploadsPlaylistId) {
+      try {
+        const uploadsResponse = await fetch(
+          `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${uploadsPlaylistId}&maxResults=50`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
+        if (uploadsResponse.ok) {
+          const uploadsResult = await uploadsResponse.json();
+          const uploadedVideoIds = uploadsResult.items?.map((item: any) => item.contentDetails?.videoId).filter(Boolean);
+          
+          if (uploadedVideoIds && uploadedVideoIds.length > 0) {
+            // Fetch video details in batches
+            for (let i = 0; i < uploadedVideoIds.length; i += 50) {
+              const batch = uploadedVideoIds.slice(i, i + 50);
+              const videoIds = batch.join(",");
+              
+              const videoStatsResponse = await fetch(
+                `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${videoIds}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                }
+              );
+
+              if (videoStatsResponse.ok) {
+                const videoStatsResult = await videoStatsResponse.json();
+                
+                videoStatsResult.items?.forEach((video: any) => {
+                  const isMusic = video.snippet?.categoryId === "10" || // Music category
+                                /music|song|track|album|artist|feat|ft\.|lyrics|audio|single|mv|music video/i.test(video.snippet?.title || "");
+                  
+                  const videoData = {
+                    id: video.id,
+                    title: video.snippet?.title,
+                    viewCount: parseInt(video.statistics?.viewCount || 0),
+                    likeCount: parseInt(video.statistics?.likeCount || 0),
+                    thumbnail: video.snippet?.thumbnails?.default?.url,
+                    categoryId: video.snippet?.categoryId || "0",
+                    isMusic,
+                  };
+                  
+                  totalLikes += videoData.likeCount;
+                  
+                  if (isMusic) {
+                    uploadedMusic.push(videoData);
+                    musicViews += videoData.viewCount;
+                  } else {
+                    uploadedVideos.push(videoData);
+                    videoViews += videoData.viewCount;
+                  }
+                });
+              }
             }
-          );
-
-          if (videoStatsResponse.ok) {
-            const videoStatsResult = await videoStatsResponse.json();
-            channelVideos = videoStatsResult.items || [];
-            totalViews = channelVideos.reduce((sum: number, video: any) => {
-              return sum + parseInt(video.statistics?.viewCount || 0);
-            }, 0);
           }
         }
+      } catch (error) {
+        console.error("Error fetching uploads:", error);
       }
     }
+
+    // Separate music playlists from regular playlists
+    const musicPlaylists = playlists.filter((p: any) => {
+      const title = p.snippet?.title?.toLowerCase() || "";
+      return /music|song|track|album|artist|playlist|mix/i.test(title);
+    });
+
+    const regularPlaylists = playlists.filter((p: any) => {
+      const title = p.snippet?.title?.toLowerCase() || "";
+      return !/music|song|track|album|artist|playlist|mix/i.test(title);
+    });
+
+    // Get music from playlists (songs in music playlists)
+    const musicFromPlaylists = musicPlaylists.flatMap((p: any) => 
+      (p.songs || []).filter((song: any) => song.isMusic !== false)
+    );
+
+    // Sort music and videos separately
+    uploadedMusic.sort((a: any, b: any) => b.viewCount - a.viewCount);
+    uploadedVideos.sort((a: any, b: any) => b.viewCount - a.viewCount);
+    musicFromPlaylists.sort((a: any, b: any) => b.viewCount - a.viewCount);
 
     // Update last_synced_at
     await supabase
@@ -224,33 +288,42 @@ serve(async (req: Request) => {
           channel: channelData ? {
             title: channelData.snippet?.title,
             description: channelData.snippet?.description,
-            subscriberCount: channelData.statistics?.subscriberCount || 0,
-            videoCount: channelData.statistics?.videoCount || 0,
-            viewCount: channelData.statistics?.viewCount || 0,
+            subscriberCount: parseInt(channelData.statistics?.subscriberCount || 0),
+            totalLikes,
           } : null,
-          playlistsCount,
-          playlists: playlists.slice(0, 5).map((p: any) => ({
-            id: p.id,
-            title: p.snippet?.title,
-            itemCount: p.contentDetails?.itemCount || 0,
-            thumbnail: p.snippet?.thumbnails?.default?.url,
-            songs: p.songs || [], // Include songs in each playlist
-          })),
-          topVideos: channelVideos
-            .sort((a: any, b: any) => parseInt(b.statistics?.viewCount || 0) - parseInt(a.statistics?.viewCount || 0))
-            .slice(0, 5)
-            .map((v: any) => ({
-              id: v.id,
-              title: v.snippet?.title,
-              viewCount: parseInt(v.statistics?.viewCount || 0),
-              thumbnail: v.snippet?.thumbnails?.default?.url,
+          
+          // MUSIC STATS (shown first)
+          music: {
+            uploadedMusic: uploadedMusic.slice(0, 10), // Top 10 uploaded music
+            musicFromPlaylists: musicFromPlaylists.slice(0, 10), // Top 10 music from playlists
+            musicPlaylists: musicPlaylists.slice(0, 5).map((p: any) => ({
+              id: p.id,
+              title: p.snippet?.title,
+              itemCount: p.contentDetails?.itemCount || 0,
+              thumbnail: p.snippet?.thumbnails?.default?.url,
+              songs: (p.songs || []).filter((s: any) => s.isMusic !== false),
             })),
-          // Get top songs across all playlists (sorted by views)
-          topSongs: playlists
-            .flatMap((p: any) => p.songs || [])
-            .sort((a: any, b: any) => b.viewCount - a.viewCount)
-            .slice(0, 10),
-          totalViews,
+            totalMusicViews: musicViews,
+            totalMusicCount: uploadedMusic.length + musicFromPlaylists.length,
+          },
+          
+          // VIDEO STATS (shown second)
+          videos: {
+            uploadedVideos: uploadedVideos.slice(0, 10), // Top 10 uploaded videos
+            regularPlaylists: regularPlaylists.slice(0, 5).map((p: any) => ({
+              id: p.id,
+              title: p.snippet?.title,
+              itemCount: p.contentDetails?.itemCount || 0,
+              thumbnail: p.snippet?.thumbnails?.default?.url,
+              videos: p.songs || [],
+            })),
+            totalVideoViews: videoViews,
+            totalVideoCount: uploadedVideos.length,
+          },
+          
+          // GENERAL STATS
+          playlistsCount,
+          totalViews: musicViews + videoViews,
           syncedAt: new Date().toISOString(),
         },
       }),

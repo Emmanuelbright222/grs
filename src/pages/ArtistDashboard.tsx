@@ -1770,14 +1770,14 @@ const ArtistDashboard = () => {
                     {spotifyData && (
                       <CollapsibleTrigger asChild>
                         <Button
-                          variant="ghost"
-                          className="w-full mt-3 flex items-center justify-between"
+                          variant="outline"
+                          className="w-full mt-3 flex items-center justify-between bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border-slate-200 transition-colors"
                         >
-                          <span className="font-semibold">View Analytics</span>
+                          <span className="font-semibold text-slate-700">View Analytics</span>
                           {expandedSections.spotify ? (
-                            <ChevronUp className="h-4 w-4" />
+                            <ChevronUp className="h-4 w-4 text-slate-600" />
                           ) : (
-                            <ChevronDown className="h-4 w-4" />
+                            <ChevronDown className="h-4 w-4 text-slate-600" />
                           )}
                         </Button>
                       </CollapsibleTrigger>
@@ -2140,14 +2140,14 @@ const ArtistDashboard = () => {
                     {youtubeData && (
                       <CollapsibleTrigger asChild>
                         <Button
-                          variant="ghost"
-                          className="w-full mt-3 flex items-center justify-between"
+                          variant="outline"
+                          className="w-full mt-3 flex items-center justify-between bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border-slate-200 transition-colors"
                         >
-                          <span className="font-semibold">View Analytics</span>
+                          <span className="font-semibold text-slate-700">View Analytics</span>
                           {expandedSections.youtube ? (
-                            <ChevronUp className="h-4 w-4" />
+                            <ChevronUp className="h-4 w-4 text-slate-600" />
                           ) : (
-                            <ChevronDown className="h-4 w-4" />
+                            <ChevronDown className="h-4 w-4 text-slate-600" />
                           )}
                         </Button>
                       </CollapsibleTrigger>
@@ -2155,94 +2155,184 @@ const ArtistDashboard = () => {
 
                     <CollapsibleContent>
                       {youtubeData && (
-                        <div className="mt-4 pt-4 border-t border-border space-y-4">
-                          {/* Channel Stats - Better Aligned */}
+                        <div className="mt-4 pt-4 border-t border-border space-y-6">
+                          {/* Channel Stats */}
                           {youtubeData.channel && (
-                            <div className="grid grid-cols-5 gap-3">
+                            <div className="grid grid-cols-3 gap-3">
                               <div className="text-center p-3 bg-slate-50 rounded-lg">
                                 <p className="text-xl font-bold">{Number(youtubeData.channel.subscriberCount || 0).toLocaleString()}</p>
                                 <p className="text-xs text-muted-foreground mt-1">Subscribers</p>
                               </div>
                               <div className="text-center p-3 bg-slate-50 rounded-lg">
-                                <p className="text-xl font-bold">{Number(youtubeData.channel.videoCount || 0).toLocaleString()}</p>
-                                <p className="text-xs text-muted-foreground mt-1">Videos</p>
+                                <p className="text-xl font-bold">{Number(youtubeData.channel.totalLikes || 0).toLocaleString()}</p>
+                                <p className="text-xs text-muted-foreground mt-1">Total Likes</p>
                               </div>
                               <div className="text-center p-3 bg-slate-50 rounded-lg">
-                                <p className="text-xl font-bold">{Number(youtubeData.channel.viewCount || 0).toLocaleString()}</p>
+                                <p className="text-xl font-bold">{Number(youtubeData.totalViews || 0).toLocaleString()}</p>
                                 <p className="text-xs text-muted-foreground mt-1">Total Views</p>
                               </div>
-                              <div className="text-center p-3 bg-slate-50 rounded-lg">
-                                <p className="text-xl font-bold">{youtubeData.playlistsCount || 0}</p>
-                                <p className="text-xs text-muted-foreground mt-1">Playlists</p>
-                              </div>
-                              <div className="text-center p-3 bg-slate-50 rounded-lg">
-                                <p className="text-xl font-bold">{youtubeData.topSongs?.length || 0}</p>
-                                <p className="text-xs text-muted-foreground mt-1">Top Songs</p>
-                              </div>
                             </div>
                           )}
 
-                          {/* Top Songs (Most Streamed) */}
-                          {youtubeData.topSongs && youtubeData.topSongs.length > 0 && (
-                            <div className="mt-4">
-                              <p className="text-sm font-semibold mb-3">Top Songs (Most Streamed):</p>
-                              <ul className="space-y-2">
-                                {youtubeData.topSongs.slice(0, 10).map((song: any, idx: number) => (
-                                  <li key={song.id} className="text-sm flex items-center gap-3 p-2 bg-slate-50 rounded hover:bg-slate-100 transition-colors">
-                                    <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
-                                    <span className="flex-1 truncate">{song.title}</span>
-                                    <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
-                                      {song.viewCount.toLocaleString()} streams
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
+                          {/* MUSIC SECTION (Shown First) */}
+                          {youtubeData.music && (
+                            <div className="space-y-4">
+                              <div className="border-l-4 border-red-500 pl-3">
+                                <h4 className="text-lg font-bold text-red-600">🎵 Music</h4>
+                              </div>
 
-                          {/* Playlists with Songs */}
-                          {youtubeData.playlists && youtubeData.playlists.length > 0 && (
-                            <div className="mt-4">
-                              <p className="text-sm font-semibold mb-3">Your Playlists:</p>
-                              <div className="space-y-3">
-                                {youtubeData.playlists.map((playlist: any) => (
-                                  <div key={playlist.id} className="p-3 bg-slate-50 rounded-lg">
-                                    <p className="font-semibold text-sm mb-2">
-                                      {playlist.title} ({playlist.itemCount} {playlist.itemCount === 1 ? 'song' : 'songs'})
-                                    </p>
-                                    {playlist.songs && playlist.songs.length > 0 && (
-                                      <ul className="space-y-1 ml-4">
-                                        {playlist.songs.map((song: any) => (
-                                          <li key={song.id} className="text-xs text-muted-foreground flex items-center justify-between">
-                                            <span className="flex-1 truncate">• {song.title}</span>
-                                            <span className="ml-2 text-xs font-medium">
-                                              {song.viewCount.toLocaleString()} streams
-                                            </span>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    )}
+                              {/* Music Stats */}
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="text-center p-3 bg-red-50 rounded-lg">
+                                  <p className="text-xl font-bold text-red-600">{Number(youtubeData.music.totalMusicViews || 0).toLocaleString()}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">Music Streams</p>
+                                </div>
+                                <div className="text-center p-3 bg-red-50 rounded-lg">
+                                  <p className="text-xl font-bold text-red-600">{youtubeData.music.totalMusicCount || 0}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">Music Tracks</p>
+                                </div>
+                              </div>
+
+                              {/* Uploaded Music */}
+                              {youtubeData.music.uploadedMusic && youtubeData.music.uploadedMusic.length > 0 && (
+                                <div className="mt-4">
+                                  <p className="text-sm font-semibold mb-3">🎤 Music You Uploaded (Top Streams):</p>
+                                  <ul className="space-y-2">
+                                    {youtubeData.music.uploadedMusic.map((song: any, idx: number) => (
+                                      <li key={song.id} className="text-sm flex items-center gap-3 p-2 bg-slate-50 rounded hover:bg-slate-100 transition-colors">
+                                        <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
+                                        <span className="flex-1 truncate">{song.title}</span>
+                                        <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
+                                          {song.viewCount.toLocaleString()} streams
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {/* Music from Playlists */}
+                              {youtubeData.music.musicFromPlaylists && youtubeData.music.musicFromPlaylists.length > 0 && (
+                                <div className="mt-4">
+                                  <p className="text-sm font-semibold mb-3">🎵 Music from Playlists (Top Streams):</p>
+                                  <ul className="space-y-2">
+                                    {youtubeData.music.musicFromPlaylists.slice(0, 10).map((song: any, idx: number) => (
+                                      <li key={song.id} className="text-sm flex items-center gap-3 p-2 bg-slate-50 rounded hover:bg-slate-100 transition-colors">
+                                        <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
+                                        <span className="flex-1 truncate">{song.title}</span>
+                                        <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
+                                          {song.viewCount.toLocaleString()} streams
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {/* Music Playlists */}
+                              {youtubeData.music.musicPlaylists && youtubeData.music.musicPlaylists.length > 0 && (
+                                <div className="mt-4">
+                                  <p className="text-sm font-semibold mb-3">🎼 Your Music Playlists:</p>
+                                  <div className="space-y-3">
+                                    {youtubeData.music.musicPlaylists.map((playlist: any) => (
+                                      <div key={playlist.id} className="p-3 bg-red-50 rounded-lg border border-red-100">
+                                        <p className="font-semibold text-sm mb-2 text-red-700">
+                                          {playlist.title} ({playlist.itemCount} {playlist.itemCount === 1 ? 'track' : 'tracks'})
+                                        </p>
+                                        {playlist.songs && playlist.songs.length > 0 && (
+                                          <ul className="space-y-1 ml-4">
+                                            {playlist.songs.slice(0, 5).map((song: any) => (
+                                              <li key={song.id} className="text-xs text-muted-foreground flex items-center justify-between">
+                                                <span className="flex-1 truncate">• {song.title}</span>
+                                                <span className="ml-2 text-xs font-medium">
+                                                  {song.viewCount.toLocaleString()} streams
+                                                </span>
+                                              </li>
+                                            ))}
+                                            {playlist.songs.length > 5 && (
+                                              <li className="text-xs text-muted-foreground italic">
+                                                ...and {playlist.songs.length - 5} more
+                                              </li>
+                                            )}
+                                          </ul>
+                                        )}
+                                      </div>
+                                    ))}
                                   </div>
-                                ))}
-                              </div>
+                                </div>
+                              )}
                             </div>
                           )}
 
-                          {/* Top Videos (if no songs in playlists) */}
-                          {youtubeData.topVideos && youtubeData.topVideos.length > 0 && (!youtubeData.topSongs || youtubeData.topSongs.length === 0) && (
-                            <div className="mt-4">
-                              <p className="text-sm font-semibold mb-2">Top Videos (by views):</p>
-                              <ul className="space-y-2">
-                                {youtubeData.topVideos.map((video: any, idx: number) => (
-                                  <li key={video.id} className="text-sm flex items-center gap-2 p-2 bg-slate-50 rounded">
-                                    <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
-                                    <span className="flex-1 truncate">{video.title}</span>
-                                    <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
-                                      {video.viewCount.toLocaleString()} views
-                                    </span>
-                                  </li>
-                                ))}
-                              </ul>
+                          {/* VIDEOS SECTION (Shown Second) */}
+                          {youtubeData.videos && (
+                            <div className="space-y-4 border-t-2 pt-6">
+                              <div className="border-l-4 border-blue-500 pl-3">
+                                <h4 className="text-lg font-bold text-blue-600">📹 Videos</h4>
+                              </div>
+
+                              {/* Video Stats */}
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                                  <p className="text-xl font-bold text-blue-600">{Number(youtubeData.videos.totalVideoViews || 0).toLocaleString()}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">Video Views</p>
+                                </div>
+                                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                                  <p className="text-xl font-bold text-blue-600">{youtubeData.videos.totalVideoCount || 0}</p>
+                                  <p className="text-xs text-muted-foreground mt-1">Videos Uploaded</p>
+                                </div>
+                              </div>
+
+                              {/* Uploaded Videos */}
+                              {youtubeData.videos.uploadedVideos && youtubeData.videos.uploadedVideos.length > 0 && (
+                                <div className="mt-4">
+                                  <p className="text-sm font-semibold mb-3">📹 Videos You Uploaded (Top Views):</p>
+                                  <ul className="space-y-2">
+                                    {youtubeData.videos.uploadedVideos.map((video: any, idx: number) => (
+                                      <li key={video.id} className="text-sm flex items-center gap-3 p-2 bg-slate-50 rounded hover:bg-slate-100 transition-colors">
+                                        <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
+                                        <span className="flex-1 truncate">{video.title}</span>
+                                        <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
+                                          {video.viewCount.toLocaleString()} views
+                                        </span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+
+                              {/* Regular Playlists (Non-Music) */}
+                              {youtubeData.videos.regularPlaylists && youtubeData.videos.regularPlaylists.length > 0 && (
+                                <div className="mt-4">
+                                  <p className="text-sm font-semibold mb-3">📋 Your Video Playlists:</p>
+                                  <div className="space-y-3">
+                                    {youtubeData.videos.regularPlaylists.map((playlist: any) => (
+                                      <div key={playlist.id} className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                        <p className="font-semibold text-sm mb-2 text-blue-700">
+                                          {playlist.title} ({playlist.itemCount} {playlist.itemCount === 1 ? 'video' : 'videos'})
+                                        </p>
+                                        {playlist.videos && playlist.videos.length > 0 && (
+                                          <ul className="space-y-1 ml-4">
+                                            {playlist.videos.slice(0, 5).map((video: any) => (
+                                              <li key={video.id} className="text-xs text-muted-foreground flex items-center justify-between">
+                                                <span className="flex-1 truncate">• {video.title}</span>
+                                                <span className="ml-2 text-xs font-medium">
+                                                  {video.viewCount.toLocaleString()} views
+                                                </span>
+                                              </li>
+                                            ))}
+                                            {playlist.videos.length > 5 && (
+                                              <li className="text-xs text-muted-foreground italic">
+                                                ...and {playlist.videos.length - 5} more
+                                              </li>
+                                            )}
+                                          </ul>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -2280,7 +2370,15 @@ const ArtistDashboard = () => {
                         onChange={(e) => setDemoForm({ ...demoForm, file: e.target.files?.[0] || null })}
                       />
                     </div>
-                    <Button type="submit" disabled={uploadingDemo}>
+                    <div className="flex justify-center">
+                      <HCaptcha
+                        sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
+                        onVerify={(token) => setDemoHcaptchaToken(token)}
+                        onExpire={() => setDemoHcaptchaToken(null)}
+                        ref={demoHcaptchaRef}
+                      />
+                    </div>
+                    <Button type="submit" disabled={uploadingDemo || !demoHcaptchaToken}>
                       {uploadingDemo ? "Uploading..." : "Submit Demo"}
                     </Button>
                   </div>
