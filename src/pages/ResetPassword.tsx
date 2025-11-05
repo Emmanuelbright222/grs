@@ -234,32 +234,35 @@ const ResetPassword = () => {
                 </div>
               )}
 
-              {isValidLink && (
-                <div className="flex justify-center py-4">
-                  <div className="w-full flex justify-center" style={{ minHeight: '78px' }}>
-                    <HCaptcha
-                      sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
-                      onVerify={(token) => {
-                        setHcaptchaToken(token);
-                      }}
-                      onExpire={() => {
-                        setHcaptchaToken(null);
-                      }}
-                      onError={(err) => {
-                        console.error("hCaptcha error:", err);
-                        toast({
-                          title: "Captcha Error",
-                          description: "Please refresh the page and try again",
-                          variant: "destructive",
-                        });
-                      }}
-                      ref={hcaptchaRef}
-                      theme="light"
-                      size="normal"
-                    />
-                  </div>
+              <div className="flex justify-center py-4">
+                <div className="w-full flex justify-center" style={{ minHeight: '78px' }}>
+                  <HCaptcha
+                    sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
+                    onVerify={(token) => {
+                      console.log("hCaptcha verified:", token);
+                      setHcaptchaToken(token);
+                    }}
+                    onExpire={() => {
+                      console.log("hCaptcha expired");
+                      setHcaptchaToken(null);
+                    }}
+                    onError={(err) => {
+                      console.error("hCaptcha error:", err);
+                      toast({
+                        title: "Captcha Error",
+                        description: "Please refresh the page and try again",
+                        variant: "destructive",
+                      });
+                    }}
+                    onLoad={() => {
+                      console.log("hCaptcha loaded");
+                    }}
+                    ref={hcaptchaRef}
+                    theme="light"
+                    size="normal"
+                  />
                 </div>
-              )}
+              </div>
 
               <Button
                 type="submit"
