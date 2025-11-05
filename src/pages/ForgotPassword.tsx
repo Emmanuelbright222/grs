@@ -48,7 +48,7 @@ const ForgotPassword = () => {
       <Navbar />
       <main className="pt-24 pb-20">
         <div className="container mx-auto px-4 max-w-md">
-          <Card className="p-8 border-0 shadow-strong">
+          <Card className="p-8 border-0 shadow-strong bg-white/95 backdrop-blur-sm border border-slate-200/50">
             <div className="text-center mb-8">
               <Music2 className="w-12 h-12 mx-auto mb-4 text-accent" />
               <h1 className="text-3xl font-bold mb-2">Reset Password</h1>

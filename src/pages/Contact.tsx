@@ -256,7 +256,7 @@ const Contact = () => {
               </div>
 
               {/* Contact Form */}
-              <Card className="p-8 border-0 shadow-strong animate-scale-in">
+              <Card className="p-8 border-0 shadow-strong animate-scale-in bg-white/95 backdrop-blur-sm border border-slate-200/50">
                 <h2 className="text-2xl font-bold mb-6">Send Us a Message</h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">

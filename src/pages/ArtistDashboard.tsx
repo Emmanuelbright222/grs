@@ -90,10 +90,13 @@ const ArtistDashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (profile?.user_id) {
+    if (profile?.user_id && !viewingAsArtist) {
       loadPlatformConnections();
+    } else if (profile?.user_id && viewingAsArtist && viewingArtistId) {
+      // When admin is viewing artist, load connections for that artist
+      loadPlatformConnectionsForArtist(profile.user_id);
     }
-  }, [profile]);
+  }, [profile, viewingAsArtist, viewingArtistId]);
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -117,7 +120,9 @@ const ArtistDashboard = () => {
         setViewingAsArtist(true);
         setViewingArtistId(artistId);
         setIsAdmin(true); // Set admin flag early
+        // Load artist profile - this will set profile state
         await loadArtistProfile(artistId);
+        // Also check admin role
         await checkAdminRole(user.id);
         setLoading(false);
         return;
@@ -162,6 +167,7 @@ const ArtistDashboard = () => {
         
         // Use user_id from profile to load streaming data
         if (profileData.user_id) {
+          await loadPlatformConnectionsForArtist(profileData.user_id);
           await loadStreamingData(profileData.user_id);
           await loadDemoUploads(profileData.user_id);
         }
