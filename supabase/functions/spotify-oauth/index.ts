@@ -77,11 +77,23 @@ serve(async (req: Request) => {
     const clientId = Deno.env.get("SPOTIFY_CLIENT_ID");
     const clientSecret = Deno.env.get("SPOTIFY_CLIENT_SECRET");
     
-    // Get redirect URI - must match what's registered in Spotify Dashboard
-    // For production, use frontend callback URL
-    const frontendUrl = Deno.env.get("FRONTEND_URL") || "";
-    const redirectUri = Deno.env.get("SPOTIFY_REDIRECT_URI") || 
-      `${frontendUrl}/auth/spotify/callback`;
+    // Get redirect URI - must EXACTLY match what's in Spotify Dashboard and what was used in authorization
+    // Priority: SPOTIFY_REDIRECT_URI secret > FRONTEND_URL + /auth/spotify/callback
+    let redirectUri = Deno.env.get("SPOTIFY_REDIRECT_URI");
+    if (!redirectUri) {
+      const frontendUrl = Deno.env.get("FRONTEND_URL");
+      if (!frontendUrl) {
+        console.error("SPOTIFY_REDIRECT_URI or FRONTEND_URL must be set");
+        return new Response(
+          JSON.stringify({ error: "Redirect URI not configured" }),
+          { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      // Use frontend callback URL
+      redirectUri = `${frontendUrl}/auth/spotify/callback`;
+    }
+    
+    console.log("Using redirect URI for token exchange:", redirectUri);
 
     if (!clientId || !clientSecret) {
       console.error("Spotify credentials not configured");
