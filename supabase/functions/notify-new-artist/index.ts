@@ -61,14 +61,18 @@ serve(async (req) => {
       }
     }
 
+    // Get email from environment variable, fallback to default
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <noreply@gracerhythmsounds.com>";
+    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
+    
     // If no admin emails found, send to default email
     const recipientEmails = adminEmails.length > 0 
       ? adminEmails 
-      : ["nwekeemmanuel850@gmail.com"];
+      : [toEmail];
 
     // Send email to admins
     await resend.emails.send({
-      from: "Grace Rhythm Sounds <nwekeemmanuel850@gmail.com>",
+      from: fromEmail,
       to: recipientEmails,
       subject: `New Artist Registration: ${registrationData.artist_name || registrationData.full_name || "Unknown"}`,
       html: `

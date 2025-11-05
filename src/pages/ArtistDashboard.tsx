@@ -183,6 +183,7 @@ const ArtistDashboard = () => {
       if (profileByUserId) {
         console.log("Profile loaded by user_id:", profileByUserId);
         setProfile(profileByUserId);
+        await loadPlatformConnectionsForArtist(artistId);
         await loadStreamingData(artistId);
         await loadDemoUploads(artistId);
       } else {
