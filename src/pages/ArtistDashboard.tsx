@@ -1702,7 +1702,7 @@ const ArtistDashboard = () => {
                   onOpenChange={(open) => setExpandedSections(prev => ({ ...prev, spotify: open }))}
                 >
                   <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
                           S
@@ -1717,12 +1717,13 @@ const ArtistDashboard = () => {
                         </div>
                       </div>
                       {spotifyConnection ? (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 w-full sm:w-auto">
                           <Button
                             variant="hero"
                             size="sm"
                             onClick={handleSyncSpotify}
                             disabled={syncingSpotify}
+                            className="flex-1 sm:flex-initial"
                           >
                             {syncingSpotify ? "Syncing..." : "Sync Data"}
                           </Button>
@@ -1730,6 +1731,7 @@ const ArtistDashboard = () => {
                             variant="destructive"
                             size="sm"
                             onClick={handleDisconnectSpotify}
+                            className="flex-1 sm:flex-initial"
                           >
                             Disconnect
                           </Button>
@@ -1739,6 +1741,7 @@ const ArtistDashboard = () => {
                           variant="hero"
                           size="sm"
                           onClick={handleConnectSpotify}
+                          className="w-full sm:w-auto"
                         >
                           Connect Spotify
                         </Button>
@@ -1883,49 +1886,52 @@ const ArtistDashboard = () => {
                 </Collapsible>
 
                 {/* Audiomack Connection */}
-                <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                        A
+                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
+                          A
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Audiomack</h3>
+                          {audiomackConnection ? (
+                            <p className="text-sm text-green-600">Connected</p>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Not connected</p>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold">Audiomack</h3>
-                        {audiomackConnection ? (
-                          <p className="text-sm text-green-600">Connected</p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">Not connected</p>
-                        )}
-                      </div>
-                    </div>
-                    {audiomackConnection ? (
-                      <div className="flex gap-2">
+                      {audiomackConnection ? (
+                        <div className="flex gap-2 w-full sm:w-auto">
+                          <Button
+                            variant="hero"
+                            size="sm"
+                            onClick={handleSyncAudiomack}
+                            disabled={syncingAudiomack}
+                            className="flex-1 sm:flex-initial"
+                          >
+                            {syncingAudiomack ? "Syncing..." : "Sync Data"}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleDisconnectAudiomack}
+                            className="flex-1 sm:flex-initial"
+                          >
+                            Disconnect
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
                           variant="hero"
                           size="sm"
-                          onClick={handleSyncAudiomack}
-                          disabled={syncingAudiomack}
+                          onClick={handleConnectAudiomack}
+                          className="w-full sm:w-auto"
                         >
-                          {syncingAudiomack ? "Syncing..." : "Sync Data"}
+                          Connect Audiomack
                         </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={handleDisconnectAudiomack}
-                        >
-                          Disconnect
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="hero"
-                        size="sm"
-                        onClick={handleConnectAudiomack}
-                      >
-                        Connect Audiomack
-                      </Button>
-                    )}
-                  </div>
+                      )}
+                    </div>
                   {audiomackConnection && (
                     <div className="mt-3 pt-3 border-t border-border">
                       <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
@@ -1941,49 +1947,52 @@ const ArtistDashboard = () => {
                 </div>
 
                 {/* Boomplay Connection */}
-                <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                        B
+                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                          B
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Boomplay</h3>
+                          {boomplayConnection ? (
+                            <p className="text-sm text-green-600">Connected</p>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Not connected</p>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold">Boomplay</h3>
-                        {boomplayConnection ? (
-                          <p className="text-sm text-green-600">Connected</p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">Not connected</p>
-                        )}
-                      </div>
-                    </div>
-                    {boomplayConnection ? (
-                      <div className="flex gap-2">
+                      {boomplayConnection ? (
+                        <div className="flex gap-2 w-full sm:w-auto">
+                          <Button
+                            variant="hero"
+                            size="sm"
+                            onClick={handleSyncBoomplay}
+                            disabled={syncingBoomplay}
+                            className="flex-1 sm:flex-initial"
+                          >
+                            {syncingBoomplay ? "Syncing..." : "Sync Data"}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleDisconnectBoomplay}
+                            className="flex-1 sm:flex-initial"
+                          >
+                            Disconnect
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
                           variant="hero"
                           size="sm"
-                          onClick={handleSyncBoomplay}
-                          disabled={syncingBoomplay}
+                          onClick={handleConnectBoomplay}
+                          className="w-full sm:w-auto"
                         >
-                          {syncingBoomplay ? "Syncing..." : "Sync Data"}
+                          Connect Boomplay
                         </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={handleDisconnectBoomplay}
-                        >
-                          Disconnect
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="hero"
-                        size="sm"
-                        onClick={handleConnectBoomplay}
-                      >
-                        Connect Boomplay
-                      </Button>
-                    )}
-                  </div>
+                      )}
+                    </div>
                   {boomplayConnection && (
                     <div className="mt-3 pt-3 border-t border-border">
                       <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
@@ -1998,49 +2007,52 @@ const ArtistDashboard = () => {
                   )}
                 </div>
                 {/* Apple Music Connection */}
-                <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">
-                        A
+                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                          A
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Apple Music</h3>
+                          {appleMusicConnection ? (
+                            <p className="text-sm text-green-600">Connected</p>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Not connected</p>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold">Apple Music</h3>
-                        {appleMusicConnection ? (
-                          <p className="text-sm text-green-600">Connected</p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">Not connected</p>
-                        )}
-                      </div>
-                    </div>
-                    {appleMusicConnection ? (
-                      <div className="flex gap-2">
+                      {appleMusicConnection ? (
+                        <div className="flex gap-2 w-full sm:w-auto">
+                          <Button
+                            variant="hero"
+                            size="sm"
+                            onClick={handleSyncAppleMusic}
+                            disabled={syncingAppleMusic}
+                            className="flex-1 sm:flex-initial"
+                          >
+                            {syncingAppleMusic ? "Syncing..." : "Sync Data"}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleDisconnectAppleMusic}
+                            className="flex-1 sm:flex-initial"
+                          >
+                            Disconnect
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
                           variant="hero"
                           size="sm"
-                          onClick={handleSyncAppleMusic}
-                          disabled={syncingAppleMusic}
+                          onClick={handleConnectAppleMusic}
+                          className="w-full sm:w-auto"
                         >
-                          {syncingAppleMusic ? "Syncing..." : "Sync Data"}
+                          Connect Apple Music
                         </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={handleDisconnectAppleMusic}
-                        >
-                          Disconnect
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="hero"
-                        size="sm"
-                        onClick={handleConnectAppleMusic}
-                      >
-                        Connect Apple Music
-                      </Button>
-                    )}
-                  </div>
+                      )}
+                    </div>
                   {appleMusicConnection && (
                     <div className="mt-3 pt-3 border-t border-border">
                       <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
@@ -2061,7 +2073,7 @@ const ArtistDashboard = () => {
                   onOpenChange={(open) => setExpandedSections(prev => ({ ...prev, youtube: open }))}
                 >
                   <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">
                           Y
@@ -2076,12 +2088,13 @@ const ArtistDashboard = () => {
                         </div>
                       </div>
                       {youtubeConnection ? (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 w-full sm:w-auto">
                           <Button
                             variant="hero"
                             size="sm"
                             onClick={handleSyncYouTube}
                             disabled={syncingYoutube}
+                            className="flex-1 sm:flex-initial"
                           >
                             {syncingYoutube ? "Syncing..." : "Sync Data"}
                           </Button>
@@ -2089,6 +2102,7 @@ const ArtistDashboard = () => {
                             variant="destructive"
                             size="sm"
                             onClick={handleDisconnectYouTube}
+                            className="flex-1 sm:flex-initial"
                           >
                             Disconnect
                           </Button>
@@ -2098,6 +2112,7 @@ const ArtistDashboard = () => {
                           variant="hero"
                           size="sm"
                           onClick={handleConnectYouTube}
+                          className="w-full sm:w-auto"
                         >
                           Connect YouTube Music
                         </Button>

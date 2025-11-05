@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/logo.png";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,6 +12,7 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const isHomePage = location.pathname === "/";
   
   useEffect(() => {
@@ -23,11 +25,29 @@ const Navbar = () => {
 
   useEffect(() => {
     checkUser();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Check for email verification
+      if (event === 'TOKEN_REFRESHED' || event === 'SIGNED_IN') {
+        if (session?.user?.email_confirmed_at) {
+          // Check if we've already shown the toast for this verification
+          const lastVerificationToast = localStorage.getItem('email_verification_toast_shown');
+          const verificationTime = session.user.email_confirmed_at;
+          
+          if (lastVerificationToast !== verificationTime) {
+            // Show toast and store the verification time
+            localStorage.setItem('email_verification_toast_shown', verificationTime);
+            toast({
+              title: "Email Verified!",
+              description: "Thank you for verifying your email",
+            });
+          }
+        }
+      }
       checkUser();
     });
     return () => subscription.unsubscribe();
-  }, []);
+  }, [toast]);
 
   const checkUser = async () => {
     const { data: { user: authUser } } = await supabase.auth.getUser();
