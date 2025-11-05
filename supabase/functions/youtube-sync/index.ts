@@ -253,14 +253,21 @@ serve(async (req: Request) => {
     }
 
     // Separate music playlists from regular playlists
+    // More strict filtering - only include playlists that are clearly music-related
     const musicPlaylists = playlists.filter((p: any) => {
       const title = p.snippet?.title?.toLowerCase() || "";
-      return /music|song|track|album|artist|playlist|mix/i.test(title);
+      // Check if playlist contains music-related keywords (excluding generic "playlist" and "mix")
+      const hasMusicKeywords = /music|song|track|album|artist|feat|ft\.|lyrics|audio|single|mv|music video|soundtrack|ep|lp|mixtape/i.test(title);
+      // Also check if playlist items are categorized as music
+      const hasMusicItems = p.songs && p.songs.some((song: any) => song.isMusic === true);
+      return hasMusicKeywords || hasMusicItems;
     });
 
     const regularPlaylists = playlists.filter((p: any) => {
       const title = p.snippet?.title?.toLowerCase() || "";
-      return !/music|song|track|album|artist|playlist|mix/i.test(title);
+      const hasMusicKeywords = /music|song|track|album|artist|feat|ft\.|lyrics|audio|single|mv|music video|soundtrack|ep|lp|mixtape/i.test(title);
+      const hasMusicItems = p.songs && p.songs.some((song: any) => song.isMusic === true);
+      return !hasMusicKeywords && !hasMusicItems;
     });
 
     // Get music from playlists (songs in music playlists)

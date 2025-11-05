@@ -1446,8 +1446,8 @@ const ArtistDashboard = () => {
                     : `Welcome, ${profile?.artist_name || profile?.full_name || profile?.email?.split("@")[0] || "Artist"}!`}
                 </h1>
                 {isAdmin && !viewingAsArtist && (
-                  <div className="mt-2 flex justify-center md:justify-start">
-                    <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium">
+                  <div className="mt-2 flex justify-center md:justify-start items-center">
+                    <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium inline-flex items-center">
                       Admin
                     </span>
                   </div>
@@ -1707,17 +1707,19 @@ const ArtistDashboard = () => {
               </h2>
               
               {/* All Platforms in 2-Column Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {/* Spotify Connection */}
                 <Collapsible 
                   open={expandedSections.spotify} 
                   onOpenChange={(open) => setExpandedSections(prev => ({ ...prev, spotify: open }))}
                 >
-                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                  <div className="p-3 md:p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
-                          S
+                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
+                          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+                          </svg>
                         </div>
                         <div>
                           <h3 className="font-semibold">Spotify</h3>
@@ -1898,11 +1900,11 @@ const ArtistDashboard = () => {
                 </Collapsible>
 
                 {/* Audiomack Connection */}
-                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                  <div className="p-3 md:p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                          A
+                        <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
+                          <span className="text-lg font-bold">A</span>
                         </div>
                         <div>
                           <h3 className="font-semibold">Audiomack</h3>
@@ -1959,11 +1961,11 @@ const ArtistDashboard = () => {
                 </div>
 
                 {/* Boomplay Connection */}
-                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                  <div className="p-3 md:p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
-                          B
+                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
+                          <span className="text-lg font-bold">B</span>
                         </div>
                         <div>
                           <h3 className="font-semibold">Boomplay</h3>
@@ -2019,11 +2021,13 @@ const ArtistDashboard = () => {
                   )}
                 </div>
                 {/* Apple Music Connection */}
-                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                  <div className="p-3 md:p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold">
-                          A
+                        <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
+                          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 19c-.72 0-1.418-.11-2.08-.314l1.417-4.24c.017-.048.027-.098.027-.15 0-.22-.18-.4-.4-.4s-.4.18-.4.4c0 .052.01.102.027.15l-1.417 4.24C6.418 18.89 5.72 19 5 19c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7c0 .72-.11 1.418-.314 2.08l-4.24-1.417c-.048-.017-.098-.027-.15-.027-.22 0-.4.18-.4.4s.18.4.4.4c.052 0 .102-.01.15-.027l4.24 1.417C13.89 6.418 14.72 6 15.5 6c3.86 0 7 3.14 7 7s-3.14 7-7 7z"/>
+                          </svg>
                         </div>
                         <div>
                           <h3 className="font-semibold">Apple Music</h3>
@@ -2084,11 +2088,13 @@ const ArtistDashboard = () => {
                   open={expandedSections.youtube} 
                   onOpenChange={(open) => setExpandedSections(prev => ({ ...prev, youtube: open }))}
                 >
-                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                  <div className="p-3 md:p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">
-                          Y
+                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold overflow-hidden">
+                          <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                          </svg>
                         </div>
                         <div>
                           <h3 className="font-semibold">YouTube Music</h3>

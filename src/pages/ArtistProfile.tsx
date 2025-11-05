@@ -486,7 +486,7 @@ const ArtistProfile = () => {
                           }}
                         />
                         <label htmlFor="artist-image-upload" className="cursor-pointer inline-block">
-                          <Button type="button" variant="hero" size="sm" disabled={uploadingArtistImage} className="bg-muted text-muted-foreground hover:bg-muted/80" onClick={(e) => {
+                          <Button type="button" variant="hero" size="sm" disabled={uploadingArtistImage} className="text-white" onClick={(e) => {
                             e.preventDefault();
                             document.getElementById("artist-image-upload")?.click();
                           }}>

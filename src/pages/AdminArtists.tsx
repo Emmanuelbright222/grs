@@ -135,29 +135,82 @@ const AdminArtists = () => {
   };
 
   const handleDeleteArtist = async (artist: any) => {
-    if (!confirm(`Are you sure you want to delete "${artist.artist_name || artist.full_name}"? This action cannot be undone.`)) {
+    if (!confirm(`Are you sure you want to delete "${artist.artist_name || artist.full_name}"? This will delete the user account and ALL related data. This action cannot be undone.`)) {
       return;
     }
 
     try {
       console.log("Attempting to delete artist:", artist.id);
+      const userId = artist.user_id;
       
-      const { data, error } = await supabase
+      // Step 1: Delete all related data first (before deleting profile/auth user)
+      
+      // Delete streaming platform connections
+      if (userId) {
+        await supabase
+          .from("streaming_platform_connections")
+          .delete()
+          .eq("user_id", userId);
+        
+        // Delete streaming analytics
+        await supabase
+          .from("streaming_analytics")
+          .delete()
+          .eq("user_id", userId);
+      }
+      
+      // Delete demo submissions (by user_id or profile id)
+      if (userId) {
+        await supabase
+          .from("demo_submissions")
+          .delete()
+          .eq("user_id", userId);
+      }
+      
+      // Delete profile (this might cascade some related data)
+      const { error: profileError } = await supabase
         .from("profiles")
         .delete()
-        .eq("id", artist.id)
-        .select(); // Select to verify deletion
+        .eq("id", artist.id);
 
-      if (error) {
-        console.error("Delete error:", error);
-        throw error;
+      if (profileError) {
+        console.error("Delete profile error:", profileError);
+        throw profileError;
       }
 
-      console.log("Delete successful:", data);
+      // Step 2: Delete auth user if exists (this must be done via admin API or edge function)
+      if (userId) {
+        try {
+          // Call an edge function to delete the auth user (requires admin privileges)
+          const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-user`;
+          const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+          
+          const { data: { session } } = await supabase.auth.getSession();
+          
+          const deleteResponse = await fetch(functionUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${session?.access_token || anonKey}`,
+              "apikey": anonKey || "",
+            },
+            body: JSON.stringify({ userId }),
+          });
+
+          if (!deleteResponse.ok) {
+            console.warn("Failed to delete auth user, but profile was deleted");
+          }
+        } catch (authError) {
+          console.warn("Error deleting auth user:", authError);
+          // Continue even if auth user deletion fails - profile is already deleted
+        }
+      }
+
+      console.log("Delete successful");
 
       toast({
         title: "Success",
-        description: "Artist deleted successfully",
+        description: "Artist and all related data deleted successfully",
       });
 
       // Reload artists list
