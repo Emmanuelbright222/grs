@@ -46,12 +46,15 @@ const YouTubeCallback = () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) throw new Error("Not authenticated");
 
-        const response = await fetch(`${functionUrl}?code=${code}&state=${state}`, {
-          method: "GET",
+        // Use POST with body to avoid CORS issues
+        const response = await fetch(functionUrl, {
+          method: "POST",
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || "",
           },
+          body: JSON.stringify({ code, state }),
         });
 
         if (!response.ok) {
