@@ -88,9 +88,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Processing email request:", { name, email, type });
 
+    // Get email from environment variable, fallback to default
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <noreply@gracerhythmsounds.com>";
+    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
+    
     // Send confirmation email to user
     const confirmationEmail = await resend.emails.send({
-      from: "Grace Rhythm Sounds <nwekeemmanuel850@gmail.com>",
+      from: fromEmail,
       to: [email],
       subject: type === "contact" ? "Thanks for contacting us!" : "Thanks for your collaboration request!",
       html: `
@@ -121,8 +125,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send notification email to Grace Rhythm Sounds
     const notificationEmail = await resend.emails.send({
-      from: "Grace Rhythm Sounds Forms <nwekeemmanuel850@gmail.com>",
-      to: ["nwekeemmanuel850@gmail.com"],
+      from: fromEmail,
+      to: [toEmail],
       subject: type === "contact" 
         ? `New Contact Form Submission from ${name}` 
         : `New Collaboration Request from ${name}`,

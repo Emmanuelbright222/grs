@@ -1394,11 +1394,15 @@ const ArtistDashboard = () => {
                 <div className="flex justify-center md:justify-end">
                   <Button
                     onClick={() => {
+                      // Reset viewing state
+                      setViewingAsArtist(false);
+                      setViewingArtistId(null);
                       // Clear query params
                       const url = new URL(window.location.href);
                       url.searchParams.delete('artist_id');
                       window.history.replaceState({}, '', url.pathname);
-                      navigate("/dashboard", { replace: true });
+                      // Reload admin dashboard
+                      window.location.href = "/dashboard";
                     }}
                     variant="hero"
                     size="sm"
@@ -1480,6 +1484,21 @@ const ArtistDashboard = () => {
               {!isAdmin && !viewingAsArtist && (
                 <Button onClick={() => navigate("/dashboard/profile")} variant="hero">
                   My Profile
+                </Button>
+              )}
+              {viewingAsArtist && isAdmin && (
+                <Button 
+                  onClick={() => {
+                    setViewingAsArtist(false);
+                    setViewingArtistId(null);
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('artist_id');
+                    window.history.replaceState({}, '', url.pathname);
+                    window.location.href = "/dashboard";
+                  }} 
+                  variant="hero"
+                >
+                  Back to Admin
                 </Button>
               )}
               {!viewingAsArtist && (
