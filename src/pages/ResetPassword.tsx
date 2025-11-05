@@ -99,8 +99,6 @@ const ResetPassword = () => {
     try {
       const { error } = await supabase.auth.updateUser({
         password: formData.password,
-      }, {
-        captchaToken: hcaptchaToken || undefined,
       });
 
       if (error) {
