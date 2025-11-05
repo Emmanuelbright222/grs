@@ -160,7 +160,7 @@ const ResetPassword = () => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="password">New Password</Label>
                 <div className="relative">
@@ -228,7 +228,7 @@ const ResetPassword = () => {
                 </div>
               )}
 
-              <div className="flex justify-center">
+              <div className="flex justify-center py-2">
                 <HCaptcha
                   sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
                   onVerify={(token) => {
@@ -253,7 +253,7 @@ const ResetPassword = () => {
               <Button
                 type="submit"
                 variant="hero"
-                className="w-full"
+                className="w-full mt-4"
                 disabled={loading || passwordErrors.length > 0 || !hcaptchaToken}
               >
                 {loading ? "Updating Password..." : "Reset Password"}
