@@ -124,6 +124,49 @@ serve(async (req: Request) => {
       const playlistsResult = await playlistsResponse.json();
       playlists = playlistsResult.items || [];
       playlistsCount = playlistsResult.pageInfo?.totalResults || playlists.length;
+
+      // Fetch playlist items (songs) for each playlist
+      for (const playlist of playlists.slice(0, 10)) { // Limit to first 10 playlists
+        try {
+          const playlistItemsResponse = await fetch(
+            `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${playlist.id}&maxResults=50`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          if (playlistItemsResponse.ok) {
+            const itemsResult = await playlistItemsResponse.json();
+            const videoIds = itemsResult.items?.map((item: any) => item.contentDetails?.videoId).filter(Boolean).join(",");
+            
+            if (videoIds) {
+              // Get video stats
+              const videoStatsResponse = await fetch(
+                `https://www.googleapis.com/youtube/v3/videos?part=statistics,snippet&id=${videoIds}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                }
+              );
+
+              if (videoStatsResponse.ok) {
+                const videoStatsResult = await videoStatsResponse.json();
+                playlist.songs = videoStatsResult.items?.map((video: any) => ({
+                  id: video.id,
+                  title: video.snippet?.title,
+                  viewCount: parseInt(video.statistics?.viewCount || 0),
+                  thumbnail: video.snippet?.thumbnails?.default?.url,
+                })) || [];
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Error fetching playlist items for ${playlist.id}:`, error);
+        }
+      }
     }
 
     // Fetch user's channel videos (uploaded videos)
@@ -191,13 +234,22 @@ serve(async (req: Request) => {
             title: p.snippet?.title,
             itemCount: p.contentDetails?.itemCount || 0,
             thumbnail: p.snippet?.thumbnails?.default?.url,
+            songs: p.songs || [], // Include songs in each playlist
           })),
-          topVideos: channelVideos.slice(0, 5).map((v: any) => ({
-            id: v.id,
-            title: v.snippet?.title,
-            viewCount: parseInt(v.statistics?.viewCount || 0),
-            thumbnail: v.snippet?.thumbnails?.default?.url,
-          })),
+          topVideos: channelVideos
+            .sort((a: any, b: any) => parseInt(b.statistics?.viewCount || 0) - parseInt(a.statistics?.viewCount || 0))
+            .slice(0, 5)
+            .map((v: any) => ({
+              id: v.id,
+              title: v.snippet?.title,
+              viewCount: parseInt(v.statistics?.viewCount || 0),
+              thumbnail: v.snippet?.thumbnails?.default?.url,
+            })),
+          // Get top songs across all playlists (sorted by views)
+          topSongs: playlists
+            .flatMap((p: any) => p.songs || [])
+            .sort((a: any, b: any) => b.viewCount - a.viewCount)
+            .slice(0, 10),
           totalViews,
           syncedAt: new Date().toISOString(),
         },

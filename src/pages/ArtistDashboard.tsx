@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { BarChart3, Music, TrendingUp, DollarSign, ExternalLink, Upload, User, Edit2, Save, X, Camera, AlertCircle, Calendar, MoreVertical, Trash2, CheckCircle2, XCircle, ArrowLeft, AlertTriangle, Download } from "lucide-react";
+import { BarChart3, Music, TrendingUp, DollarSign, ExternalLink, Upload, User, Edit2, Save, X, Camera, AlertCircle, Calendar, MoreVertical, Trash2, CheckCircle2, XCircle, ArrowLeft, AlertTriangle, Download, ChevronDown, ChevronUp } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
 import {
   DropdownMenu,
@@ -72,6 +73,13 @@ const ArtistDashboard = () => {
   const [youtubeConnection, setYoutubeConnection] = useState<any>(null);
   const [youtubeData, setYoutubeData] = useState<any>(null);
   const [syncingYoutube, setSyncingYoutube] = useState(false);
+  const [expandedSections, setExpandedSections] = useState({
+    spotify: false,
+    youtube: false,
+    appleMusic: false,
+    audiomack: false,
+    boomplay: false,
+  });
 
   useEffect(() => {
     checkAuth();
@@ -454,6 +462,7 @@ const ArtistDashboard = () => {
 
       const result = await response.json();
       setSpotifyData(result.data);
+      setExpandedSections(prev => ({ ...prev, spotify: true })); // Auto-expand after sync
       
       toast({
         title: "Success!",
@@ -936,6 +945,7 @@ const ArtistDashboard = () => {
 
       const result = await response.json();
       setYoutubeData(result.data);
+      setExpandedSections(prev => ({ ...prev, youtube: true })); // Auto-expand after sync
       
       toast({
         title: "Success!",
@@ -1687,101 +1697,190 @@ const ArtistDashboard = () => {
               {/* All Platforms in 2-Column Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Spotify Connection */}
-                <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
-                      S
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Spotify</h3>
+                <Collapsible 
+                  open={expandedSections.spotify} 
+                  onOpenChange={(open) => setExpandedSections(prev => ({ ...prev, spotify: open }))}
+                >
+                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                          S
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Spotify</h3>
+                          {spotifyConnection ? (
+                            <p className="text-sm text-green-600">Connected</p>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Not connected</p>
+                          )}
+                        </div>
+                      </div>
                       {spotifyConnection ? (
-                        <p className="text-sm text-green-600">Connected</p>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="hero"
+                            size="sm"
+                            onClick={handleSyncSpotify}
+                            disabled={syncingSpotify}
+                          >
+                            {syncingSpotify ? "Syncing..." : "Sync Data"}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleDisconnectSpotify}
+                          >
+                            Disconnect
+                          </Button>
+                        </div>
                       ) : (
-                        <p className="text-sm text-muted-foreground">Not connected</p>
+                        <Button
+                          variant="hero"
+                          size="sm"
+                          onClick={handleConnectSpotify}
+                        >
+                          Connect Spotify
+                        </Button>
                       )}
                     </div>
-                  </div>
-                  {spotifyConnection ? (
-                    <div className="flex gap-2">
-                      <Button
-                        variant="hero"
-                        size="sm"
-                        onClick={handleSyncSpotify}
-                        disabled={syncingSpotify}
-                      >
-                        {syncingSpotify ? "Syncing..." : "Sync Data"}
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={handleDisconnectSpotify}
-                      >
-                        Disconnect
-                      </Button>
-                    </div>
-                  ) : (
-                    <Button
-                      variant="hero"
-                      size="sm"
-                      onClick={handleConnectSpotify}
-                    >
-                      Connect Spotify
-                    </Button>
-                  )}
-                </div>
-                
-                {spotifyConnection && (
-                  <div className="mt-3 pt-3 border-t border-border">
-                    <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                      <span>Last synced:</span>
-                      <span>
-                        {spotifyConnection.last_synced_at
-                          ? new Date(spotifyConnection.last_synced_at).toLocaleString()
-                          : "Never"}
-                      </span>
-                    </div>
-                    {spotifyConnection.platform_user_id && (
-                      <div className="text-xs text-muted-foreground">
-                        Spotify ID: {spotifyConnection.platform_user_id}
+                    
+                    {spotifyConnection && (
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                          <span>Last synced:</span>
+                          <span>
+                            {spotifyConnection.last_synced_at
+                              ? new Date(spotifyConnection.last_synced_at).toLocaleString()
+                              : "Never"}
+                          </span>
+                        </div>
+                        {spotifyConnection.platform_user_id && (
+                          <div className="text-xs text-muted-foreground">
+                            Spotify ID: {spotifyConnection.platform_user_id}
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
 
-                {/* Spotify Data Display */}
-                {spotifyData && (
-                  <div className="mt-4 pt-4 border-t border-border">
-                    <h4 className="font-semibold mb-3">Your Spotify Data</h4>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="text-center">
-                        <p className="text-2xl font-bold">{spotifyData.topTracks?.length || 0}</p>
-                        <p className="text-xs text-muted-foreground">Top Tracks</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-2xl font-bold">{spotifyData.savedAlbumsCount || 0}</p>
-                        <p className="text-xs text-muted-foreground">Saved Albums</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-2xl font-bold">{spotifyData.playlistsCount || 0}</p>
-                        <p className="text-xs text-muted-foreground">Playlists</p>
-                      </div>
-                    </div>
-                    {spotifyData.topTracks && spotifyData.topTracks.length > 0 && (
-                      <div className="mt-4">
-                        <p className="text-sm font-semibold mb-2">Top Tracks:</p>
-                        <ul className="space-y-1">
-                          {spotifyData.topTracks.slice(0, 5).map((track: any, idx: number) => (
-                            <li key={track.id} className="text-sm text-muted-foreground">
-                              {idx + 1}. {track.name} - {track.artists?.[0]?.name || "Unknown"}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                    {/* Collapsible Data Section */}
+                    {spotifyData && (
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full mt-3 flex items-center justify-between"
+                        >
+                          <span className="font-semibold">View Analytics</span>
+                          {expandedSections.spotify ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </CollapsibleTrigger>
                     )}
+
+                    <CollapsibleContent>
+                      {spotifyData && (
+                        <div className="mt-4 pt-4 border-t border-border space-y-4">
+                          {/* Stats - Better Aligned */}
+                          <div className="grid grid-cols-5 gap-3">
+                            <div className="text-center p-3 bg-slate-50 rounded-lg">
+                              <p className="text-xl font-bold">{spotifyData.topTracks?.length || 0}</p>
+                              <p className="text-xs text-muted-foreground mt-1">Top Tracks</p>
+                            </div>
+                            <div className="text-center p-3 bg-slate-50 rounded-lg">
+                              <p className="text-xl font-bold">{spotifyData.savedAlbumsCount || 0}</p>
+                              <p className="text-xs text-muted-foreground mt-1">Saved Albums</p>
+                            </div>
+                            <div className="text-center p-3 bg-slate-50 rounded-lg">
+                              <p className="text-xl font-bold">{spotifyData.playlistsCount || 0}</p>
+                              <p className="text-xs text-muted-foreground mt-1">Playlists</p>
+                            </div>
+                            <div className="text-center p-3 bg-slate-50 rounded-lg">
+                              <p className="text-xl font-bold">{spotifyData.topSongs?.length || 0}</p>
+                              <p className="text-xs text-muted-foreground mt-1">Top Songs</p>
+                            </div>
+                            <div className="text-center p-3 bg-slate-50 rounded-lg">
+                              <p className="text-xl font-bold">{spotifyData.playlists?.reduce((sum: number, p: any) => sum + (p.tracksCount || 0), 0) || 0}</p>
+                              <p className="text-xs text-muted-foreground mt-1">Total Songs</p>
+                            </div>
+                          </div>
+
+                          {/* Top Songs (Most Streamed/Popular) */}
+                          {spotifyData.topSongs && spotifyData.topSongs.length > 0 && (
+                            <div className="mt-4">
+                              <p className="text-sm font-semibold mb-3">Top Songs (Most Popular):</p>
+                              <ul className="space-y-2">
+                                {spotifyData.topSongs.slice(0, 10).map((song: any, idx: number) => (
+                                  <li key={song.id} className="text-sm flex items-center gap-3 p-2 bg-slate-50 rounded hover:bg-slate-100 transition-colors">
+                                    <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
+                                    <span className="flex-1 truncate">{song.name}</span>
+                                    <span className="text-xs text-muted-foreground truncate max-w-[150px]">{song.artists}</span>
+                                    <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
+                                      {song.popularity}/100 popularity
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Playlists with Songs */}
+                          {spotifyData.playlists && spotifyData.playlists.length > 0 && (
+                            <div className="mt-4">
+                              <p className="text-sm font-semibold mb-3">Your Playlists:</p>
+                              <div className="space-y-3">
+                                {spotifyData.playlists.map((playlist: any) => (
+                                  <div key={playlist.id} className="p-3 bg-slate-50 rounded-lg">
+                                    <p className="font-semibold text-sm mb-2">
+                                      {playlist.name} ({playlist.tracksCount || 0} {playlist.tracksCount === 1 ? 'song' : 'songs'})
+                                    </p>
+                                    {playlist.tracks && playlist.tracks.length > 0 && (
+                                      <ul className="space-y-1 ml-4">
+                                        {playlist.tracks.slice(0, 10).map((track: any) => (
+                                          <li key={track.id} className="text-xs text-muted-foreground flex items-center justify-between">
+                                            <span className="flex-1 truncate">• {track.name} - {track.artists}</span>
+                                            <span className="ml-2 text-xs font-medium">
+                                              {track.popularity}/100
+                                            </span>
+                                          </li>
+                                        ))}
+                                        {playlist.tracks.length > 10 && (
+                                          <li className="text-xs text-muted-foreground italic">
+                                            ...and {playlist.tracks.length - 10} more
+                                          </li>
+                                        )}
+                                      </ul>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Top Tracks (Listening History) */}
+                          {spotifyData.topTracks && spotifyData.topTracks.length > 0 && (
+                            <div className="mt-4">
+                              <p className="text-sm font-semibold mb-2">Your Most Played Tracks (Last 4 Weeks):</p>
+                              <ul className="space-y-2">
+                                {spotifyData.topTracks.slice(0, 5).map((track: any, idx: number) => (
+                                  <li key={track.id} className="text-sm flex items-center gap-2 p-2 bg-slate-50 rounded">
+                                    <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
+                                    <span className="flex-1 truncate">{track.name}</span>
+                                    <span className="text-xs text-muted-foreground truncate max-w-[150px]">
+                                      {track.artists?.[0]?.name || "Unknown"}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </CollapsibleContent>
                   </div>
-                )}
-                </div>
+                </Collapsible>
 
                 {/* Audiomack Connection */}
                 <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
@@ -1957,128 +2056,185 @@ const ArtistDashboard = () => {
                 </div>
 
                 {/* YouTube Music Connection */}
-                <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">
-                        Y
+                <Collapsible 
+                  open={expandedSections.youtube} 
+                  onOpenChange={(open) => setExpandedSections(prev => ({ ...prev, youtube: open }))}
+                >
+                  <div className="p-4 border rounded-lg bg-gradient-to-br from-white to-slate-50/50 shadow-[0_8px_30px_rgba(10,37,64,0.15)] hover:shadow-[0_20px_60px_rgba(10,37,64,0.3)] transition-all duration-300 border-slate-200/50 backdrop-blur-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white font-bold">
+                          Y
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">YouTube Music</h3>
+                          {youtubeConnection ? (
+                            <p className="text-sm text-green-600">Connected</p>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Not connected</p>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold">YouTube Music</h3>
-                        {youtubeConnection ? (
-                          <p className="text-sm text-green-600">Connected</p>
-                        ) : (
-                          <p className="text-sm text-muted-foreground">Not connected</p>
-                        )}
-                      </div>
-                    </div>
-                    {youtubeConnection ? (
-                      <div className="flex gap-2">
+                      {youtubeConnection ? (
+                        <div className="flex gap-2">
+                          <Button
+                            variant="hero"
+                            size="sm"
+                            onClick={handleSyncYouTube}
+                            disabled={syncingYoutube}
+                          >
+                            {syncingYoutube ? "Syncing..." : "Sync Data"}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleDisconnectYouTube}
+                          >
+                            Disconnect
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
                           variant="hero"
                           size="sm"
-                          onClick={handleSyncYouTube}
-                          disabled={syncingYoutube}
+                          onClick={handleConnectYouTube}
                         >
-                          {syncingYoutube ? "Syncing..." : "Sync Data"}
+                          Connect YouTube Music
                         </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={handleDisconnectYouTube}
-                        >
-                          Disconnect
-                        </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="hero"
-                        size="sm"
-                        onClick={handleConnectYouTube}
-                      >
-                        Connect YouTube Music
-                      </Button>
-                    )}
-                  </div>
-                  {youtubeConnection && (
-                    <div className="mt-3 pt-3 border-t border-border">
-                      <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                        <span>Last synced:</span>
-                        <span>
-                          {youtubeConnection.last_synced_at
-                            ? new Date(youtubeConnection.last_synced_at).toLocaleString()
-                            : "Never"}
-                        </span>
-                      </div>
-                      {youtubeConnection.platform_user_id && (
-                        <div className="text-xs text-muted-foreground">
-                          Channel ID: {youtubeConnection.platform_user_id}
-                        </div>
                       )}
                     </div>
-                  )}
-                </div>
+                    {youtubeConnection && (
+                      <div className="mt-3 pt-3 border-t border-border">
+                        <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                          <span>Last synced:</span>
+                          <span>
+                            {youtubeConnection.last_synced_at
+                              ? new Date(youtubeConnection.last_synced_at).toLocaleString()
+                              : "Never"}
+                          </span>
+                        </div>
+                        {youtubeConnection.platform_user_id && (
+                          <div className="text-xs text-muted-foreground">
+                            Channel ID: {youtubeConnection.platform_user_id}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
-                {/* YouTube Data Display */}
-                {youtubeData && (
-                  <div className="mt-4 pt-4 border-t border-border">
-                    <h4 className="font-semibold mb-3">Your YouTube Data</h4>
-                    {youtubeData.channel && (
-                      <div className="grid grid-cols-3 gap-4 mb-4">
-                        <div className="text-center">
-                          <p className="text-2xl font-bold">{youtubeData.channel.subscriberCount || 0}</p>
-                          <p className="text-xs text-muted-foreground">Subscribers</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold">{youtubeData.channel.videoCount || 0}</p>
-                          <p className="text-xs text-muted-foreground">Videos</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold">{Number(youtubeData.channel.viewCount || 0).toLocaleString()}</p>
-                          <p className="text-xs text-muted-foreground">Total Views</p>
-                        </div>
-                      </div>
+                    {/* Collapsible Data Section */}
+                    {youtubeData && (
+                      <CollapsibleTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="w-full mt-3 flex items-center justify-between"
+                        >
+                          <span className="font-semibold">View Analytics</span>
+                          {expandedSections.youtube ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </CollapsibleTrigger>
                     )}
-                    <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div className="text-center">
-                        <p className="text-2xl font-bold">{youtubeData.playlistsCount || 0}</p>
-                        <p className="text-xs text-muted-foreground">Playlists</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="text-2xl font-bold">{youtubeData.topVideos?.length || 0}</p>
-                        <p className="text-xs text-muted-foreground">Top Videos</p>
-                      </div>
-                    </div>
-                    {youtubeData.topVideos && youtubeData.topVideos.length > 0 && (
-                      <div className="mt-4">
-                        <p className="text-sm font-semibold mb-2">Top Videos (by views):</p>
-                        <ul className="space-y-2">
-                          {youtubeData.topVideos.map((video: any, idx: number) => (
-                            <li key={video.id} className="text-sm flex items-center gap-2">
-                              <span className="text-muted-foreground">{idx + 1}.</span>
-                              <span className="flex-1">{video.title}</span>
-                              <span className="text-xs text-muted-foreground">
-                                {video.viewCount.toLocaleString()} views
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {youtubeData.playlists && youtubeData.playlists.length > 0 && (
-                      <div className="mt-4">
-                        <p className="text-sm font-semibold mb-2">Your Playlists:</p>
-                        <ul className="space-y-1">
-                          {youtubeData.playlists.map((playlist: any) => (
-                            <li key={playlist.id} className="text-sm text-muted-foreground">
-                              • {playlist.title} ({playlist.itemCount} items)
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+
+                    <CollapsibleContent>
+                      {youtubeData && (
+                        <div className="mt-4 pt-4 border-t border-border space-y-4">
+                          {/* Channel Stats - Better Aligned */}
+                          {youtubeData.channel && (
+                            <div className="grid grid-cols-5 gap-3">
+                              <div className="text-center p-3 bg-slate-50 rounded-lg">
+                                <p className="text-xl font-bold">{Number(youtubeData.channel.subscriberCount || 0).toLocaleString()}</p>
+                                <p className="text-xs text-muted-foreground mt-1">Subscribers</p>
+                              </div>
+                              <div className="text-center p-3 bg-slate-50 rounded-lg">
+                                <p className="text-xl font-bold">{Number(youtubeData.channel.videoCount || 0).toLocaleString()}</p>
+                                <p className="text-xs text-muted-foreground mt-1">Videos</p>
+                              </div>
+                              <div className="text-center p-3 bg-slate-50 rounded-lg">
+                                <p className="text-xl font-bold">{Number(youtubeData.channel.viewCount || 0).toLocaleString()}</p>
+                                <p className="text-xs text-muted-foreground mt-1">Total Views</p>
+                              </div>
+                              <div className="text-center p-3 bg-slate-50 rounded-lg">
+                                <p className="text-xl font-bold">{youtubeData.playlistsCount || 0}</p>
+                                <p className="text-xs text-muted-foreground mt-1">Playlists</p>
+                              </div>
+                              <div className="text-center p-3 bg-slate-50 rounded-lg">
+                                <p className="text-xl font-bold">{youtubeData.topSongs?.length || 0}</p>
+                                <p className="text-xs text-muted-foreground mt-1">Top Songs</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Top Songs (Most Streamed) */}
+                          {youtubeData.topSongs && youtubeData.topSongs.length > 0 && (
+                            <div className="mt-4">
+                              <p className="text-sm font-semibold mb-3">Top Songs (Most Streamed):</p>
+                              <ul className="space-y-2">
+                                {youtubeData.topSongs.slice(0, 10).map((song: any, idx: number) => (
+                                  <li key={song.id} className="text-sm flex items-center gap-3 p-2 bg-slate-50 rounded hover:bg-slate-100 transition-colors">
+                                    <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
+                                    <span className="flex-1 truncate">{song.title}</span>
+                                    <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
+                                      {song.viewCount.toLocaleString()} streams
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Playlists with Songs */}
+                          {youtubeData.playlists && youtubeData.playlists.length > 0 && (
+                            <div className="mt-4">
+                              <p className="text-sm font-semibold mb-3">Your Playlists:</p>
+                              <div className="space-y-3">
+                                {youtubeData.playlists.map((playlist: any) => (
+                                  <div key={playlist.id} className="p-3 bg-slate-50 rounded-lg">
+                                    <p className="font-semibold text-sm mb-2">
+                                      {playlist.title} ({playlist.itemCount} {playlist.itemCount === 1 ? 'song' : 'songs'})
+                                    </p>
+                                    {playlist.songs && playlist.songs.length > 0 && (
+                                      <ul className="space-y-1 ml-4">
+                                        {playlist.songs.map((song: any) => (
+                                          <li key={song.id} className="text-xs text-muted-foreground flex items-center justify-between">
+                                            <span className="flex-1 truncate">• {song.title}</span>
+                                            <span className="ml-2 text-xs font-medium">
+                                              {song.viewCount.toLocaleString()} streams
+                                            </span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Top Videos (if no songs in playlists) */}
+                          {youtubeData.topVideos && youtubeData.topVideos.length > 0 && (!youtubeData.topSongs || youtubeData.topSongs.length === 0) && (
+                            <div className="mt-4">
+                              <p className="text-sm font-semibold mb-2">Top Videos (by views):</p>
+                              <ul className="space-y-2">
+                                {youtubeData.topVideos.map((video: any, idx: number) => (
+                                  <li key={video.id} className="text-sm flex items-center gap-2 p-2 bg-slate-50 rounded">
+                                    <span className="text-muted-foreground font-bold w-6">{idx + 1}.</span>
+                                    <span className="flex-1 truncate">{video.title}</span>
+                                    <span className="text-xs text-muted-foreground font-semibold whitespace-nowrap">
+                                      {video.viewCount.toLocaleString()} views
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </CollapsibleContent>
                   </div>
-                )}
+                </Collapsible>
               </div>
             </Card>
           )}
