@@ -100,7 +100,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to artist
     const emailResult = await resend.emails.send({
-      from: "Grace Rhythm Sounds <nwekeemmanuel850@gmail.com>",
+      from: Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <noreply@gracerhythmsounds.com>",
       to: [email],
       subject: config.subject,
       html: `

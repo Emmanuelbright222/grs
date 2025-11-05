@@ -1379,7 +1379,7 @@ const ArtistDashboard = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="pt-24 pb-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2 sm:px-4">
           {/* Admin Viewing Artist Banner */}
           {viewingAsArtist && isAdmin && (
             <Card className="mb-6 p-4 bg-accent/10 border-accent/20">
@@ -1444,14 +1444,14 @@ const ArtistDashboard = () => {
                 </div>
               )}
               <div className="text-center md:text-left">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-center md:justify-start gap-2 mb-2">
+                <div className="flex flex-row items-center justify-center md:justify-start gap-2 mb-2 flex-wrap">
                   <h1 className="text-1xl md:text-3xl lg:text-4xl font-bold">
                     {isAdmin && !viewingAsArtist
                       ? "Admin Dashboard" 
                       : `Welcome, ${profile?.artist_name || profile?.full_name || profile?.email?.split("@")[0] || "Artist"}!`}
                   </h1>
                   {isAdmin && !viewingAsArtist && (
-                    <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium inline-flex items-center self-center sm:self-start">
+                    <span className="px-3 py-1 bg-accent/20 text-accent rounded-full text-sm font-medium inline-flex items-center">
                       Admin
                     </span>
                   )}
