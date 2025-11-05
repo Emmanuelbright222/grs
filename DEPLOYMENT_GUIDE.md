@@ -266,20 +266,24 @@ See `STREAMING_PLATFORMS_SETUP.md` for detailed instructions on:
 
 #### Step 3: Add Environment Variables in Vercel
 
+**Important**: `.env.local` files are NOT uploaded to Vercel. You must add all environment variables in the Vercel Dashboard.
+
 1. Go to your project in Vercel Dashboard
 2. **Settings** → **Environment Variables**
 3. Add all variables from `.env.local`:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_PUBLISHABLE_KEY`
-   - `VITE_SPOTIFY_CLIENT_ID`
-   - `VITE_YOUTUBE_CLIENT_ID`
-   - `VITE_APPLE_MUSIC_CLIENT_ID`
-   - `VITE_AUDIOMACK_CLIENT_ID`
-   - `VITE_BOOMPLAY_CLIENT_ID`
-   - `VITE_HCAPTCHA_SITE_KEY`
-4. Select environments: **Production, Preview, Development**
+   - `VITE_SUPABASE_URL` (required)
+   - `VITE_SUPABASE_PUBLISHABLE_KEY` (required)
+   - `VITE_SPOTIFY_CLIENT_ID` (optional - if using Spotify)
+   - `VITE_YOUTUBE_CLIENT_ID` (optional - if using YouTube)
+   - `VITE_APPLE_MUSIC_CLIENT_ID` (optional - if using Apple Music)
+   - `VITE_AUDIOMACK_CLIENT_ID` (optional - if using Audiomack)
+   - `VITE_BOOMPLAY_CLIENT_ID` (optional - if using Boomplay)
+   - `VITE_HCAPTCHA_SITE_KEY` (recommended - forms work with test key fallback, but production should use real key)
+4. Select environments: **Production, Preview, Development** (or select all)
 5. Click "Save"
-6. Redeploy your project
+6. Redeploy your project (Vercel usually auto-redeploys after adding variables)
+
+**Note**: hCaptcha works locally with a test key fallback (`10000000-ffff-ffff-ffff-000000000001`), but for production you should use your real site key from hCaptcha dashboard. See `HCAPTCHA_SETUP.md` for details.
 
 #### Step 4: Deploy Supabase Edge Functions
 
