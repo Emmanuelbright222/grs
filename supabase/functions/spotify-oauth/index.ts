@@ -120,8 +120,12 @@ serve(async (req: Request) => {
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.text();
       console.error("Token exchange failed:", errorData);
+      console.error("Used redirect URI:", redirectUri);
       return new Response(
-        JSON.stringify({ error: "Failed to exchange authorization code for token" }),
+        JSON.stringify({ 
+          error: "Failed to exchange authorization code for token",
+          details: errorData.substring(0, 200) // Limit error message length
+        }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
