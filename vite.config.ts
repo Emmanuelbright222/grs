@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: './', // ✅ this line fixes asset paths for shared hosting
+  base: '/', // Use absolute paths for Vercel deployment
   server: {
     host: "::",
     port: 8080,
