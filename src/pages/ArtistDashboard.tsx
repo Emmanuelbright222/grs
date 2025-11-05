@@ -165,8 +165,10 @@ const ArtistDashboard = () => {
         console.log("Profile loaded by id:", profileData);
         setProfile(profileData);
         
+        // Update viewingArtistId to user_id for proper data loading
         // Use user_id from profile to load streaming data
         if (profileData.user_id) {
+          setViewingArtistId(profileData.user_id);
           await loadPlatformConnectionsForArtist(profileData.user_id);
           await loadStreamingData(profileData.user_id);
           await loadDemoUploads(profileData.user_id);

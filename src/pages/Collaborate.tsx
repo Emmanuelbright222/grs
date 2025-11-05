@@ -249,7 +249,7 @@ const Collaborate = () => {
             </div>
 
             {/* Form Section */}
-            <Card className="max-w-3xl mx-auto p-8 md:p-12 border-0 shadow-strong animate-fade-in">
+            <Card className="max-w-3xl mx-auto p-8 md:p-12 border-0 shadow-strong animate-fade-in bg-white/95 backdrop-blur-sm border border-slate-200/50">
               <h2 className="text-3xl font-bold mb-4 text-center">
                 Submit Your Collaboration Request
               </h2>
