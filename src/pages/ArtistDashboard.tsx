@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { BarChart3, Music, TrendingUp, DollarSign, ExternalLink, Upload, User, Edit2, Save, X, Camera, AlertCircle, Calendar, MoreVertical, Trash2, CheckCircle2, XCircle, ArrowLeft, AlertTriangle, Download, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +47,8 @@ const ArtistDashboard = () => {
     eventsCount: 0,
   });
   const [uploadingDemo, setUploadingDemo] = useState(false);
+  const [demoHcaptchaToken, setDemoHcaptchaToken] = useState<string | null>(null);
+  const demoHcaptchaRef = useRef<HCaptcha>(null);
   const [demoForm, setDemoForm] = useState({
     name: "",
     message: "",
@@ -1285,6 +1288,15 @@ const ArtistDashboard = () => {
 
   const handleDemoSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!demoHcaptchaToken) {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the hCaptcha verification",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (viewingAsArtist) {
       toast({
