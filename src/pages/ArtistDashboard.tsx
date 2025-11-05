@@ -887,7 +887,6 @@ const ArtistDashboard = () => {
 
       const scopes = [
         "https://www.googleapis.com/auth/youtube.readonly",
-        "https://www.googleapis.com/auth/youtube.analytics.readonly",
       ].join(" ");
 
       const authUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");

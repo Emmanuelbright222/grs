@@ -180,9 +180,10 @@ You'll need:
 
 ### Step 4: Configure OAuth Scopes
 
-The app will request these scopes:
+The app will request this scope:
 - `https://www.googleapis.com/auth/youtube.readonly`
-- `https://www.googleapis.com/auth/youtube.force-ssl`
+
+**Note**: The `youtube.analytics.readonly` scope requires special approval from Google and is not available for basic OAuth apps. We use only the `youtube.readonly` scope which provides access to read YouTube channel data.
 
 ---
 
