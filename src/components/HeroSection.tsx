@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroVideo from "@/assets/hero-artists.mp4";
 import heroImage from "@/assets/hero-artists.jpg";
+import heroArtistsPng from "@/assets/hero-artist.png";
 
 // Toggle between video and image background
 // Set to false to use static image instead
@@ -32,7 +33,7 @@ const HeroSection = () => {
           </video>
         ) : (
           <img
-            src={heroImage}
+            src={heroArtistsPng}
             alt="Grace Rhythm Sounds Artists"
             className="w-full h-full object-cover"
           />
