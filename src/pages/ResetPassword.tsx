@@ -25,6 +25,7 @@ const ResetPassword = () => {
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
   const hcaptchaRef = useRef<HCaptcha>(null);
+  const [captchaReady, setCaptchaReady] = useState(false);
 
   useEffect(() => {
     // Check if we have the required hash/access token in URL
@@ -36,6 +37,13 @@ const ResetPassword = () => {
         variant: "destructive",
       });
     }
+    
+    // Ensure page is fully loaded before rendering captcha
+    const timer = setTimeout(() => {
+      setCaptchaReady(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [searchParams, toast]);
 
   const validatePassword = (password: string): string[] => {
@@ -228,27 +236,29 @@ const ResetPassword = () => {
                 </div>
               )}
 
-              <div className="flex justify-center">
-                <HCaptcha
-                  sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
-                  onVerify={(token) => {
-                    setHcaptchaToken(token);
-                  }}
-                  onExpire={() => {
-                    setHcaptchaToken(null);
-                  }}
-                  onError={(err) => {
-                    console.error("hCaptcha error:", err);
-                    toast({
-                      title: "Captcha Error",
-                      description: "Please refresh the page and try again",
-                      variant: "destructive",
-                    });
-                  }}
-                  ref={hcaptchaRef}
-                  theme="light"
-                />
-              </div>
+              {captchaReady && (
+                <div className="flex justify-center">
+                  <HCaptcha
+                    sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
+                    onVerify={(token) => {
+                      setHcaptchaToken(token);
+                    }}
+                    onExpire={() => {
+                      setHcaptchaToken(null);
+                    }}
+                    onError={(err) => {
+                      console.error("hCaptcha error:", err);
+                      toast({
+                        title: "Captcha Error",
+                        description: "Please refresh the page and try again",
+                        variant: "destructive",
+                      });
+                    }}
+                    ref={hcaptchaRef}
+                    theme="light"
+                  />
+                </div>
+              )}
 
               <Button
                 type="submit"
