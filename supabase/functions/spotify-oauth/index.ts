@@ -41,6 +41,7 @@ serve(async (req: Request) => {
     let code: string | null = null;
     let state: string | null = null;
     let error: string | null = null;
+    let purpose: string | null = null;
 
     if (req.method === "POST") {
       // Frontend callback sends code and state in body
@@ -48,6 +49,7 @@ serve(async (req: Request) => {
       code = body.code || null;
       state = body.state || null;
       error = body.error || null;
+      purpose = body.purpose || null;
     } else {
       // Direct Spotify redirect (GET with query params)
       const url = new URL(req.url);
@@ -70,8 +72,9 @@ serve(async (req: Request) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    const userId = state;
+    
+    let userId: string | null = null;
+    let userEmail: string | null = null;
 
     // Get Spotify credentials from environment
     const clientId = Deno.env.get("SPOTIFY_CLIENT_ID");
@@ -139,11 +142,161 @@ serve(async (req: Request) => {
       },
     });
 
-    let platformUserId = null;
-    if (profileResponse.ok) {
-      const profile = await profileResponse.json();
-      platformUserId = profile.id;
+    if (!profileResponse.ok) {
+      return new Response(
+        JSON.stringify({ error: "Failed to fetch Spotify profile" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    const spotifyProfile = await profileResponse.json();
+    const platformUserId = spotifyProfile.id;
+    userEmail = spotifyProfile.email;
+
+    // Handle login/signup flow
+    if (purpose === 'login' || purpose === 'signup') {
+      if (!userEmail) {
+        return new Response(
+          JSON.stringify({ error: "Spotify account email not found. Please ensure your Spotify account has an email." }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Check if user exists
+      const { data: existingUser } = await supabase.auth.admin.listUsers();
+      const user = existingUser?.users?.find(u => u.email === userEmail);
+
+      if (user) {
+        // Login: User exists, generate session
+        const { data: sessionData, error: sessionError } = await supabase.auth.admin.generateLink({
+          type: 'magiclink',
+          email: userEmail,
+        });
+
+        if (sessionError || !sessionData) {
+          // Alternative: Create a session token manually
+          // For now, we'll return the user info and let frontend handle it
+          userId = user.id;
+        } else {
+          userId = user.id;
+        }
+      } else if (purpose === 'signup') {
+        // Signup: Create new user
+        const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+          email: userEmail,
+          email_confirm: true, // Auto-confirm email from OAuth
+          user_metadata: {
+            full_name: spotifyProfile.display_name || spotifyProfile.name || '',
+            provider: 'spotify',
+          },
+        });
+
+        if (createError || !newUser) {
+          return new Response(
+            JSON.stringify({ error: createError?.message || "Failed to create account" }),
+            { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+
+        userId = newUser.user.id;
+      } else {
+        // Login but user doesn't exist
+        return new Response(
+          JSON.stringify({ error: "No account found with this Spotify email. Please sign up first." }),
+          { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Calculate token expiration
+      const expiresAt = new Date();
+      expiresAt.setSeconds(expiresAt.getSeconds() + tokenData.expires_in);
+
+      // Save Spotify connection
+      const { error: dbError } = await supabase
+        .from("streaming_platform_connections")
+        .upsert(
+          {
+            user_id: userId,
+            platform: "spotify",
+            access_token: tokenData.access_token,
+            refresh_token: tokenData.refresh_token,
+            token_expires_at: expiresAt.toISOString(),
+            platform_user_id: platformUserId,
+            is_active: true,
+            updated_at: new Date().toISOString(),
+          },
+          {
+            onConflict: "user_id,platform",
+          }
+        );
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+      }
+
+      // Generate a magic link to get session tokens
+      const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+        type: 'magiclink',
+        email: userEmail,
+      });
+
+      if (linkError || !linkData) {
+        console.error("Error generating link:", linkError);
+        // Return user ID and let frontend handle it
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            userId,
+            email: userEmail,
+            message: purpose === 'signup' ? "Account created successfully" : "Signed in successfully"
+          }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Extract tokens from the magic link
+      const magicLink = linkData.properties?.action_link || '';
+      const urlParams = new URL(magicLink).searchParams;
+      const accessToken = urlParams.get('token') || linkData.properties?.access_token || '';
+      const refreshToken = linkData.properties?.refresh_token || '';
+
+      // Return session tokens
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          session: {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          },
+          userId,
+          message: purpose === 'signup' ? "Account created successfully" : "Signed in successfully"
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Dashboard connection flow (existing logged-in user)
+    // Get auth header to get current user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authorization required for connecting Spotify" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Verify user from token
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser(token);
+    
+    if (userError || !currentUser) {
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    userId = currentUser.id;
 
     // Calculate token expiration
     const expiresAt = new Date();
