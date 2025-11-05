@@ -26,16 +26,10 @@ const ResetPassword = () => {
   const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
   const hcaptchaRef = useRef<HCaptcha>(null);
 
-  const [isValidLink, setIsValidLink] = useState(false);
-
   useEffect(() => {
     // Check if we have the required hash/access token in URL
     const hash = window.location.hash;
-    const accessToken = searchParams.get('access_token');
-    if (hash || accessToken) {
-      setIsValidLink(true);
-    } else {
-      setIsValidLink(false);
+    if (!hash && !searchParams.get('access_token')) {
       toast({
         title: "Invalid Link",
         description: "This password reset link is invalid or has expired. Please request a new one.",
@@ -234,34 +228,26 @@ const ResetPassword = () => {
                 </div>
               )}
 
-              <div className="flex justify-center py-4">
-                <div className="w-full flex justify-center" style={{ minHeight: '78px' }}>
-                  <HCaptcha
-                    sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
-                    onVerify={(token) => {
-                      console.log("hCaptcha verified:", token);
-                      setHcaptchaToken(token);
-                    }}
-                    onExpire={() => {
-                      console.log("hCaptcha expired");
-                      setHcaptchaToken(null);
-                    }}
-                    onError={(err) => {
-                      console.error("hCaptcha error:", err);
-                      toast({
-                        title: "Captcha Error",
-                        description: "Please refresh the page and try again",
-                        variant: "destructive",
-                      });
-                    }}
-                    onLoad={() => {
-                      console.log("hCaptcha loaded");
-                    }}
-                    ref={hcaptchaRef}
-                    theme="light"
-                    size="normal"
-                  />
-                </div>
+              <div className="flex justify-center">
+                <HCaptcha
+                  sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
+                  onVerify={(token) => {
+                    setHcaptchaToken(token);
+                  }}
+                  onExpire={() => {
+                    setHcaptchaToken(null);
+                  }}
+                  onError={(err) => {
+                    console.error("hCaptcha error:", err);
+                    toast({
+                      title: "Captcha Error",
+                      description: "Please refresh the page and try again",
+                      variant: "destructive",
+                    });
+                  }}
+                  ref={hcaptchaRef}
+                  theme="light"
+                />
               </div>
 
               <Button
