@@ -2385,9 +2385,22 @@ const ArtistDashboard = () => {
                     <div className="flex justify-center">
                       <HCaptcha
                         sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
-                        onVerify={(token) => setDemoHcaptchaToken(token)}
-                        onExpire={() => setDemoHcaptchaToken(null)}
+                        onVerify={(token) => {
+                          setDemoHcaptchaToken(token);
+                        }}
+                        onExpire={() => {
+                          setDemoHcaptchaToken(null);
+                        }}
+                        onError={(err) => {
+                          console.error("hCaptcha error:", err);
+                          toast({
+                            title: "Captcha Error",
+                            description: "Please refresh the page and try again",
+                            variant: "destructive",
+                          });
+                        }}
                         ref={demoHcaptchaRef}
+                        theme="light"
                       />
                     </div>
                     <Button type="submit" disabled={uploadingDemo || !demoHcaptchaToken}>

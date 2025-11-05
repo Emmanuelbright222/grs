@@ -91,6 +91,7 @@ const Signup = () => {
         password: formData.password,
         options: {
           emailRedirectTo: `${window.location.origin}/login`,
+          captchaToken: hcaptchaToken || undefined,
           data: {
             full_name: formData.fullName,
             artist_name: formData.artistName,
@@ -99,7 +100,14 @@ const Signup = () => {
         },
       });
 
-      if (authError) throw authError;
+      if (authError) {
+        // If captcha error, reset the captcha
+        if (authError.message?.includes('captcha') || authError.message?.includes('verification')) {
+          hcaptchaRef.current?.resetCaptcha();
+          setHcaptchaToken(null);
+        }
+        throw authError;
+      }
 
       if (authData.user) {
         console.log("🔄 Creating profile for user:", authData.user.id);
@@ -368,9 +376,22 @@ const Signup = () => {
               <div className="flex justify-center">
                 <HCaptcha
                   sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
-                  onVerify={(token) => setHcaptchaToken(token)}
-                  onExpire={() => setHcaptchaToken(null)}
+                  onVerify={(token) => {
+                    setHcaptchaToken(token);
+                  }}
+                  onExpire={() => {
+                    setHcaptchaToken(null);
+                  }}
+                  onError={(err) => {
+                    console.error("hCaptcha error:", err);
+                    toast({
+                      title: "Captcha Error",
+                      description: "Please refresh the page and try again",
+                      variant: "destructive",
+                    });
+                  }}
                   ref={hcaptchaRef}
+                  theme="light"
                 />
               </div>
 

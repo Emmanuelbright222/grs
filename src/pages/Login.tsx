@@ -41,9 +41,19 @@ const Login = () => {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
+        options: {
+          captchaToken: hcaptchaToken || undefined,
+        },
       });
 
-      if (error) throw error;
+      if (error) {
+        // If captcha error, reset the captcha
+        if (error.message?.includes('captcha') || error.message?.includes('verification')) {
+          hcaptchaRef.current?.resetCaptcha();
+          setHcaptchaToken(null);
+        }
+        throw error;
+      }
 
       toast({
         title: "Welcome back!",
@@ -128,9 +138,22 @@ const Login = () => {
               <div className="flex justify-center">
                 <HCaptcha
                   sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
-                  onVerify={(token) => setHcaptchaToken(token)}
-                  onExpire={() => setHcaptchaToken(null)}
+                  onVerify={(token) => {
+                    setHcaptchaToken(token);
+                  }}
+                  onExpire={() => {
+                    setHcaptchaToken(null);
+                  }}
+                  onError={(err) => {
+                    console.error("hCaptcha error:", err);
+                    toast({
+                      title: "Captcha Error",
+                      description: "Please refresh the page and try again",
+                      variant: "destructive",
+                    });
+                  }}
                   ref={hcaptchaRef}
+                  theme="light"
                 />
               </div>
 
