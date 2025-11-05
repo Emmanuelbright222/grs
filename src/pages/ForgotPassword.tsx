@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -9,15 +9,28 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Music2, Mail, ArrowLeft } from "lucide-react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 const ForgotPassword = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
+  const hcaptchaRef = useRef<HCaptcha>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!hcaptchaToken) {
+      toast({
+        title: "Verification Required",
+        description: "Please complete the hCaptcha verification",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -25,7 +38,14 @@ const ForgotPassword = () => {
         redirectTo: `${window.location.origin}/reset-password`,
       });
 
-      if (error) throw error;
+      if (error) {
+        // If captcha error, reset the captcha
+        if (error.message?.includes('captcha') || error.message?.includes('verification')) {
+          hcaptchaRef.current?.resetCaptcha();
+          setHcaptchaToken(null);
+        }
+        throw error;
+      }
 
       setEmailSent(true);
       toast({
@@ -78,10 +98,33 @@ const ForgotPassword = () => {
                   </div>
                 </div>
 
+                <div className="flex justify-center">
+                  <HCaptcha
+                    sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
+                    onVerify={(token) => {
+                      setHcaptchaToken(token);
+                    }}
+                    onExpire={() => {
+                      setHcaptchaToken(null);
+                    }}
+                    onError={(err) => {
+                      console.error("hCaptcha error:", err);
+                      toast({
+                        title: "Captcha Error",
+                        description: "Please refresh the page and try again",
+                        variant: "destructive",
+                      });
+                    }}
+                    ref={hcaptchaRef}
+                    theme="light"
+                  />
+                </div>
+
                 <Button
                   type="submit"
+                  variant="hero"
                   className="w-full"
-                  disabled={loading}
+                  disabled={loading || !hcaptchaToken}
                 >
                   {loading ? "Sending..." : "Send Reset Link"}
                 </Button>
