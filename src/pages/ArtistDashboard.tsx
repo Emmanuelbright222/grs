@@ -378,6 +378,33 @@ const ArtistDashboard = () => {
     }
   };
 
+  const loadPlatformConnectionsForArtist = async (userId: string) => {
+    if (!userId) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from("streaming_platform_connections" as any)
+        .select("*")
+        .eq("user_id", userId)
+        .eq("is_active", true);
+
+      if (error) throw error;
+
+      const spotifyConn = data?.find((conn: any) => conn.platform === "spotify");
+      const audiomackConn = data?.find((conn: any) => conn.platform === "audiomack");
+      const boomplayConn = data?.find((conn: any) => conn.platform === "boomplay");
+      const appleMusicConn = data?.find((conn: any) => conn.platform === "apple_music");
+      const youtubeConn = data?.find((conn: any) => conn.platform === "youtube");
+      setSpotifyConnection(spotifyConn || null);
+      setAudiomackConnection(audiomackConn || null);
+      setBoomplayConnection(boomplayConn || null);
+      setAppleMusicConnection(appleMusicConn || null);
+      setYoutubeConnection(youtubeConn || null);
+    } catch (error: any) {
+      console.error("Error loading platform connections for artist:", error);
+    }
+  };
+
   const handleConnectSpotify = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
