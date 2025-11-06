@@ -207,7 +207,7 @@ const Signup = () => {
             const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-artist`;
             const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
             
-            await fetch(functionUrl, {
+            const notifyResponse = await fetch(functionUrl, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -221,11 +221,17 @@ const Signup = () => {
                 genre: formData.genre,
               }),
             });
-          } catch (notifyError) {
-            // Silently fail - notification is not critical
-            if (import.meta.env.DEV) {
-              console.error("Failed to notify admin:", notifyError);
+
+            if (!notifyResponse.ok) {
+              const errorText = await notifyResponse.text();
+              console.error("Failed to notify admin:", errorText);
+            } else {
+              const result = await notifyResponse.json();
+              console.log("Admin notification sent:", result);
             }
+          } catch (notifyError) {
+            // Log error but don't fail signup
+            console.error("Failed to notify admin:", notifyError);
           }
         }
       }

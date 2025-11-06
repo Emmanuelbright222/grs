@@ -6,6 +6,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface ArtistRegistration {
@@ -38,49 +39,16 @@ serve(async (req) => {
     // Get artist registration data from request
     const registrationData: ArtistRegistration = await req.json();
 
-    // Get all admin emails via profiles table (which has email field)
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    
-    // Query user_roles to get admin user IDs
-    const { data: adminRoles, error: adminError } = await supabase
-      .from("user_roles")
-      .select("user_id")
-      .eq("role", "admin");
-    
-    let adminEmails: string[] = [];
-    
-    if (adminRoles && adminRoles.length > 0) {
-      const userIds = adminRoles.map((r: any) => r.user_id);
-      
-      // Try to get emails from profiles table first
-      const { data: profiles, error: profileError } = await supabase
-        .from("profiles")
-        .select("email")
-        .in("user_id", userIds);
-      
-      if (profiles && profiles.length > 0) {
-        adminEmails = profiles.map((p: any) => p.email).filter(Boolean);
-      }
-      
-      // If no emails from profiles, try auth.users table as fallback
-      if (adminEmails.length === 0) {
-        const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-        if (authUsers && !authError) {
-          const adminAuthUsers = authUsers.users.filter((u: any) => userIds.includes(u.id));
-          adminEmails = adminAuthUsers.map((u: any) => u.email).filter(Boolean);
-        }
-      }
-    }
-    
-    console.log("Admin emails found:", adminEmails);
-
     // Use Resend's default test email (onboarding@resend.dev) for testing
     // This works immediately without domain verification
+    // Note: With onboarding@resend.dev, we can only send to the registered Resend account email
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
     const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
     
-    // Use the admin email directly (onboarding@resend.dev can send to any email)
-    const recipientEmail = adminEmails.length > 0 ? adminEmails[0] : adminEmail;
+    // Always use the registered account email for testing
+    const recipientEmail = adminEmail;
+    
+    console.log("Email configuration:", { fromEmail, recipientEmail });
 
     console.log("Preparing to send email:", {
       from: fromEmail,
