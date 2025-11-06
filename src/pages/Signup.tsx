@@ -114,28 +114,47 @@ const Signup = () => {
         throw new Error("Please enter a valid email address");
       }
 
+      // Build options object conditionally
+      const signUpOptions: any = {
+        emailRedirectTo: `${window.location.origin}/login`,
+        data: {
+          full_name: formData.fullName,
+          artist_name: formData.artistName,
+          genre: formData.genre,
+        },
+      };
+      
+      if (hcaptchaToken) {
+        signUpOptions.captchaToken = hcaptchaToken;
+      }
+
       // Sign up the user
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
+        email: formData.email.trim(),
         password: formData.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login`,
-          captchaToken: hcaptchaToken || undefined,
-          data: {
-            full_name: formData.fullName,
-            artist_name: formData.artistName,
-            genre: formData.genre,
-          },
-        },
+        options: signUpOptions,
       });
 
       if (authError) {
         // If captcha error, reset the captcha
-        if (authError.message?.includes('captcha') || authError.message?.includes('verification')) {
+        if (authError.message?.includes('captcha') || authError.message?.includes('verification') || authError.message?.includes('User already registered')) {
           hcaptchaRef.current?.resetCaptcha();
           setHcaptchaToken(null);
         }
-        throw authError;
+        
+        // Provide more specific error messages
+        let errorMessage = authError.message || "Failed to create account. Please try again.";
+        if (authError.message?.includes('User already registered')) {
+          errorMessage = "This email is already registered. Please sign in instead or use a different email.";
+        } else if (authError.message?.includes('Password')) {
+          errorMessage = "Password does not meet requirements. Please check the password requirements.";
+        } else if (authError.message?.includes('Invalid email')) {
+          errorMessage = "Please enter a valid email address.";
+        } else if (authError.message?.includes('Too many requests')) {
+          errorMessage = "Too many signup attempts. Please wait a few minutes before trying again.";
+        }
+        
+        throw new Error(errorMessage);
       }
 
       if (authData.user) {

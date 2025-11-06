@@ -66,21 +66,42 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
+      // Build options object conditionally
+      const signInOptions: { captchaToken?: string } = {};
+      if (hcaptchaToken) {
+        signInOptions.captchaToken = hcaptchaToken;
+      }
+
+      const signInParams: any = {
+        email: formData.email.trim(),
         password: formData.password,
-        options: {
-          captchaToken: hcaptchaToken || undefined,
-        },
-      });
+      };
+
+      // Only add options if we have a captcha token
+      if (hcaptchaToken) {
+        signInParams.options = signInOptions;
+      }
+
+      const { data, error } = await supabase.auth.signInWithPassword(signInParams);
 
       if (error) {
         // If captcha error, reset the captcha
-        if (error.message?.includes('captcha') || error.message?.includes('verification')) {
+        if (error.message?.includes('captcha') || error.message?.includes('verification') || error.message?.includes('Invalid login credentials')) {
           hcaptchaRef.current?.resetCaptcha();
           setHcaptchaToken(null);
         }
-        throw error;
+        
+        // Provide more specific error messages
+        let errorMessage = error.message || "Failed to sign in. Please try again.";
+        if (error.message?.includes('Invalid login credentials')) {
+          errorMessage = "Invalid email or password. Please check your credentials and try again.";
+        } else if (error.message?.includes('Email not confirmed')) {
+          errorMessage = "Please verify your email address before signing in. Check your inbox for the confirmation link.";
+        } else if (error.message?.includes('Too many requests')) {
+          errorMessage = "Too many login attempts. Please wait a few minutes before trying again.";
+        }
+        
+        throw new Error(errorMessage);
       }
 
       toast({
