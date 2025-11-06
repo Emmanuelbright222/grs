@@ -74,21 +74,29 @@ const handler = async (req: Request): Promise<Response> => {
     // This works immediately without domain verification
     // Note: With onboarding@resend.dev, we can only send to the registered Resend account email
     // Emails sent to nwekeemmanuel850@gmail.com will be forwarded to miztabrightstar@gmail.com
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
+    // IMPORTANT: Use exact string format - no display name, just the email address
+    const fromEmail = "onboarding@resend.dev";
     // Send to Resend account email (nwekeemmanuel850@gmail.com) - will be forwarded to admin (miztabrightstar@gmail.com)
+    // Must be exact match with registered Resend account email
     const recipientEmail = "nwekeemmanuel850@gmail.com";
     const adminEmail = "miztabrightstar@gmail.com"; // Actual admin email for reference
     
+    // Validate email format before sending
+    const validatedFromEmail = "onboarding@resend.dev";
+    const validatedToEmail = "nwekeemmanuel850@gmail.com";
+    
     console.log("Email configuration:", { 
-      fromEmail, 
-      recipientEmail,
-      recipientEmailLength: recipientEmail.length,
-      recipientEmailExact: JSON.stringify(recipientEmail)
+      fromEmail: validatedFromEmail, 
+      recipientEmail: validatedToEmail,
+      fromEmailType: typeof validatedFromEmail,
+      toEmailType: typeof validatedToEmail,
+      fromEmailLength: validatedFromEmail.length,
+      toEmailLength: validatedToEmail.length
     });
 
     console.log("Preparing to send email:", {
-      from: fromEmail,
-      to: recipientEmail,
+      from: validatedFromEmail,
+      to: validatedToEmail,
       hasApiKey: !!resendApiKey,
       apiKeyPrefix: resendApiKey ? resendApiKey.substring(0, 10) + "..." : "none",
       registrationData: {
@@ -99,9 +107,11 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     // Send email to admin
+    // Use exact same pattern as working send-contact-email function
+    // Use validated email addresses to ensure exact format
     const emailResult = await resend.emails.send({
-      from: fromEmail,
-      to: recipientEmail,
+      from: validatedFromEmail,
+      to: validatedToEmail, // Must be nwekeemmanuel850@gmail.com for test domain
       subject: `New Artist Registration: ${registrationData.artist_name || registrationData.full_name || "Unknown"}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
