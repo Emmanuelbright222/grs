@@ -68,9 +68,9 @@ const News = () => {
         {/* Hero Section */}
         <section className="py-20 gradient-hero text-white">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+            <h2 className="text-3xl md:text-6xl font-bold mb-6 animate-fade-in">
               News & Updates
-            </h1>
+            </h2>
             <p className="text-xl max-w-2xl mx-auto opacity-90 animate-fade-in-up">
               Stay informed about the latest happenings at Grace Rhythm Sounds
             </p>
