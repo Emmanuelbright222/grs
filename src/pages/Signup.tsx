@@ -192,7 +192,7 @@ const Signup = () => {
         
         // Use database function to create/update profile (bypasses RLS)
         const { data: profileData, error: profileError } = await supabase
-          .rpc('create_or_update_profile', {
+          .rpc('create_or_update_profile' as any, {
             p_user_id: authData.user.id,
             p_full_name: formData.fullName,
             p_artist_name: formData.artistName,
@@ -332,7 +332,7 @@ const Signup = () => {
           <Card className="p-8 border-0 shadow-strong bg-white/95 backdrop-blur-sm border border-slate-200/50">
             <div className="text-center mb-8">
               <Music2 className="w-12 h-12 mx-auto mb-4 text-accent" />
-              <h1 className="text-3xl font-bold mb-2">Create Artist Account</h1>
+              <h1 className="text-2xl font-bold mb-2">Create Artist Account</h1>
               <p className="text-muted-foreground">
                 Join Grace Rhythm Sounds
               </p>
