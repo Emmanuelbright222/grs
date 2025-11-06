@@ -1383,15 +1383,15 @@ const ArtistDashboard = () => {
 
       if (insertError) throw insertError;
 
-      // Send email notification to admin
+      // Send email notification to admin using dedicated demo submission function
       try {
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
         const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
         
         if (supabaseUrl && anonKey) {
-          const functionUrl = `${supabaseUrl}/functions/v1/send-contact-email`;
+          const functionUrl = `${supabaseUrl}/functions/v1/notify-demo-submission`;
           
-          await fetch(functionUrl, {
+          const emailResponse = await fetch(functionUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1401,13 +1401,20 @@ const ArtistDashboard = () => {
             body: JSON.stringify({
               name: profile?.full_name || profile?.artist_name || "Unknown Artist",
               email: profile?.email || "",
-              message: demoForm.message || "Demo submission",
-              type: "demo",
-              artistName: profile?.artist_name || "",
+              artist_name: profile?.artist_name || "",
               genre: profile?.genre || "",
+              message: demoForm.message || "Demo submission",
               demoUrl: fileUrl,
             }),
           });
+
+          if (!emailResponse.ok) {
+            const errorText = await emailResponse.text();
+            console.error("Demo notification email failed:", errorText);
+          } else {
+            const result = await emailResponse.json();
+            console.log("Demo notification sent:", result);
+          }
         }
       } catch (emailError) {
         // Don't fail the demo submission if email fails

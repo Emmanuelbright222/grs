@@ -74,26 +74,30 @@ serve(async (req) => {
     
     console.log("Admin emails found:", adminEmails);
 
-    // Use Resend's default test email (onboarding@resend.dev) which works immediately
-    // This will forward emails to nwekeemmanuel850@gmail.com
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <onboarding@resend.dev>";
-    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
+    // Use Resend's default test email (onboarding@resend.dev) for testing
+    // This works immediately without domain verification
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
+    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
     
-    // With onboarding@resend.dev, emails sent to nwekeemmanuel850@gmail.com will be received
-    // Use the admin email directly
-    const recipientEmails = adminEmails.length > 0 ? adminEmails : [adminEmail];
+    // Use the admin email directly (onboarding@resend.dev can send to any email)
+    const recipientEmail = adminEmails.length > 0 ? adminEmails[0] : adminEmail;
 
     console.log("Preparing to send email:", {
       from: fromEmail,
-      to: recipientEmails,
+      to: recipientEmail,
       hasApiKey: !!resendApiKey,
-      apiKeyPrefix: resendApiKey ? resendApiKey.substring(0, 10) + "..." : "none"
+      apiKeyPrefix: resendApiKey ? resendApiKey.substring(0, 10) + "..." : "none",
+      registrationData: {
+        artist_name: registrationData.artist_name,
+        full_name: registrationData.full_name,
+        email: registrationData.email
+      }
     });
 
-    // Send email to admins
+    // Send email to admin
     const emailResult = await resend.emails.send({
       from: fromEmail,
-      to: recipientEmails,
+      to: recipientEmail,
       subject: `New Artist Registration: ${registrationData.artist_name || registrationData.full_name || "Unknown"}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -118,19 +122,32 @@ serve(async (req) => {
       success: !!emailResult.data,
       error: emailResult.error,
       emailId: emailResult.data?.id,
-      recipientEmails
+      recipientEmail
     });
 
     if (emailResult.error) {
-      console.error("Resend email error:", emailResult.error);
+      console.error("Resend email error details:", {
+        message: emailResult.error.message,
+        name: emailResult.error.name,
+        statusCode: emailResult.error.statusCode,
+        fullError: JSON.stringify(emailResult.error)
+      });
       throw new Error(`Failed to send email: ${emailResult.error.message || JSON.stringify(emailResult.error)}`);
     }
+
+    if (!emailResult.data) {
+      console.error("No email data returned from Resend");
+      throw new Error("Email sent but no confirmation data returned");
+    }
+
+    console.log("Email sent successfully to:", recipientEmail);
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        emailId: emailResult.data?.id,
-        sentTo: recipientEmails
+        emailId: emailResult.data.id,
+        sentTo: recipientEmail,
+        message: "Admin notification sent successfully"
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

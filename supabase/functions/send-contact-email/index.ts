@@ -90,18 +90,21 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Processing email request:", { name, email, type });
 
-    // Use Resend's default test email (onboarding@resend.dev) which works immediately
-    // This will forward to nwekeemmanuel850@gmail.com
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <onboarding@resend.dev>";
-    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
+    // Use Resend's default test email (onboarding@resend.dev) for testing
+    // This works immediately without domain verification
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
+    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
+    
+    console.log("Email configuration:", { fromEmail, toEmail, userEmail: email });
     
     // Send confirmation email to user
-    // Note: With onboarding@resend.dev, we can only send to the Resend account owner's email
-    // So we'll send the confirmation to the user, but the notification will go to nwekeemmanuel850@gmail.com
-    const confirmationEmail = await resend.emails.send({
-      from: fromEmail,
-      to: [email],
-      subject: type === "contact" ? "Thanks for contacting us!" : type === "collaborate" ? "Thanks for your collaboration request!" : "Thanks for submitting your demo!",
+    // With onboarding@resend.dev, we can send to any email address
+    let confirmationEmail;
+    try {
+      confirmationEmail = await resend.emails.send({
+        from: fromEmail,
+        to: email,
+        subject: type === "contact" ? "Thanks for contacting us!" : type === "collaborate" ? "Thanks for your collaboration request!" : "Thanks for submitting your demo!",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">Thank you, ${name}!</h1>
@@ -125,20 +128,25 @@ const handler = async (req: Request): Promise<Response> => {
           </p>
         </div>
       `,
-    });
+      });
+      console.log("Confirmation email sent successfully:", confirmationEmail);
+    } catch (confirmationError: any) {
+      console.error("Failed to send confirmation email:", confirmationError);
+      // Continue with notification email even if confirmation fails
+    }
 
-    console.log("Confirmation email sent:", confirmationEmail);
-
-    // Send notification email to Grace Rhythm Sounds
-    // Using onboarding@resend.dev, emails will be forwarded to nwekeemmanuel850@gmail.com
-    const notificationEmail = await resend.emails.send({
-      from: fromEmail,
-      to: [toEmail],
-      subject: type === "contact" 
-        ? `New Contact Form Submission from ${name}` 
-        : type === "collaborate"
-        ? `New Collaboration Request from ${name}`
-        : `New Demo Submission from ${name}`,
+    // Send notification email to admin
+    // Using onboarding@resend.dev, we can send to any email
+    let notificationEmail;
+    try {
+      notificationEmail = await resend.emails.send({
+        from: fromEmail,
+        to: toEmail,
+        subject: type === "contact" 
+          ? `New Contact Form Submission from ${name}` 
+          : type === "collaborate"
+          ? `New Collaboration Request from ${name}`
+          : `New Demo Submission from ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">New ${type === "contact" ? "Contact" : type === "collaborate" ? "Collaboration" : "Demo"} ${type === "demo" ? "Submission" : "Form Submission"}</h1>
@@ -158,15 +166,33 @@ const handler = async (req: Request): Promise<Response> => {
           </p>
         </div>
       `,
-    });
-
-    console.log("Notification email sent:", notificationEmail);
+      });
+      console.log("Notification email sent successfully:", {
+        emailId: notificationEmail.data?.id,
+        to: toEmail,
+        from: fromEmail,
+        subject: type === "contact" 
+          ? `New Contact Form Submission from ${name}` 
+          : type === "collaborate"
+          ? `New Collaboration Request from ${name}`
+          : `New Demo Submission from ${name}`
+      });
+    } catch (notificationError: any) {
+      console.error("Failed to send notification email:", {
+        error: notificationError?.message,
+        stack: notificationError?.stack,
+        name: notificationError?.name,
+        fullError: JSON.stringify(notificationError)
+      });
+      throw new Error(`Failed to send notification email: ${notificationError?.message || JSON.stringify(notificationError)}`);
+    }
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        confirmationId: confirmationEmail.data?.id,
-        notificationId: notificationEmail.data?.id
+        confirmationId: confirmationEmail?.data?.id || null,
+        notificationId: notificationEmail?.data?.id || null,
+        message: "Emails sent successfully"
       }),
       {
         status: 200,
