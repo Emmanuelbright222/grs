@@ -141,7 +141,8 @@ const handler = async (req: Request): Promise<Response> => {
       success: !!emailResult.data,
       error: emailResult.error,
       emailId: emailResult.data?.id,
-      recipientEmail
+      recipientEmail: validatedToEmail,
+      fromEmail: validatedFromEmail
     });
 
     if (emailResult.error) {
@@ -159,7 +160,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Email sent but no confirmation data returned");
     }
 
-    console.log("Email sent successfully to:", recipientEmail);
+    console.log("Email sent successfully to:", validatedToEmail);
 
     return new Response(
       JSON.stringify({ 
