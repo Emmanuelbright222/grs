@@ -15,26 +15,60 @@ interface ArtistRegistration {
   genre?: string;
 }
 
-serve(async (req) => {
-  // Handle CORS preflight
+const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests FIRST
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 200, headers: corsHeaders });
+    return new Response(null, { 
+      status: 200,
+      headers: corsHeaders 
+    });
   }
 
+  // Wrap everything in try-catch to ensure CORS headers on errors
   try {
+    // Check if Resend API key is configured
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     if (!resendApiKey) {
-      console.error("RESEND_API_KEY not configured");
+      console.error("RESEND_API_KEY is not set in Supabase secrets");
       return new Response(
-        JSON.stringify({ error: "Email service not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ 
+          error: "Email service not configured. Please contact support.",
+          success: false 
+        }),
+        {
+          status: 500,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
       );
     }
 
+    // Initialize Resend client only after we know the key exists
     const resend = new Resend(resendApiKey);
-
+    
     // Get artist registration data from request
-    const registrationData: ArtistRegistration = await req.json();
+    let registrationData: ArtistRegistration;
+    try {
+      registrationData = await req.json();
+      console.log("Received registration data:", registrationData);
+    } catch (parseError) {
+      console.error("Failed to parse request body:", parseError);
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid request data",
+          success: false 
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+            ...corsHeaders,
+          },
+        }
+      );
+    }
 
     // Use Resend's default test email (onboarding@resend.dev) for testing
     // This works immediately without domain verification
@@ -117,11 +151,29 @@ serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: any) {
-    console.error("Error in notify-new-artist:", error);
+    console.error("Error in notify-new-artist function:", error);
+    const errorMessage = error?.message || "An unexpected error occurred";
+    console.error("Error details:", {
+      message: errorMessage,
+      stack: error?.stack,
+      name: error?.name
+    });
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify({ 
+        error: errorMessage,
+        success: false 
+      }),
+      {
+        status: 500,
+        headers: { 
+          "Content-Type": "application/json", 
+          ...corsHeaders 
+        },
+      }
     );
   }
-});
+};
+
+serve(handler);
 
