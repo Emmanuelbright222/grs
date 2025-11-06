@@ -74,34 +74,14 @@ serve(async (req) => {
     
     console.log("Admin emails found:", adminEmails);
 
-    // Get email from environment variable, fallback to Resend test domain
-    // Use onboarding@resend.dev for unverified domains (works immediately)
-    // Or use your verified domain once verified in Resend dashboard
+    // Use Resend's default test email (onboarding@resend.dev) which works immediately
+    // This will forward emails to nwekeemmanuel850@gmail.com
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <onboarding@resend.dev>";
-    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
+    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
     
-    // IMPORTANT: Resend test domain (onboarding@resend.dev) only allows sending to account owner's email
-    // The Resend account owner email (used to sign up) is: nwekeemmanuel850@gmail.com
-    // When using test domain, we must send to the Resend account owner, but we'll include admin email in content
-    const isTestDomain = fromEmail.includes("onboarding@resend.dev") || fromEmail.includes("resend.dev");
-    const resendAccountOwnerEmail = "nwekeemmanuel850@gmail.com"; // Resend account owner email
-    
-    // Determine recipient emails
-    let recipientEmails: string[] = [];
-    let actualAdminEmails: string[] = [];
-    
-    if (isTestDomain) {
-      // With test domain, can only send to Resend account owner's email
-      recipientEmails = [resendAccountOwnerEmail];
-      // Collect actual admin emails to include in email content
-      actualAdminEmails = adminEmails.length > 0 ? adminEmails : [adminEmail];
-      console.log("Using test domain - sending to Resend account owner:", resendAccountOwnerEmail);
-      console.log("Admin emails (will be notified via forwarded email):", actualAdminEmails);
-    } else {
-      // With verified domain, can send to any email
-      recipientEmails = adminEmails.length > 0 ? adminEmails : [adminEmail];
-      actualAdminEmails = recipientEmails;
-    }
+    // With onboarding@resend.dev, emails sent to nwekeemmanuel850@gmail.com will be received
+    // Use the admin email directly
+    const recipientEmails = adminEmails.length > 0 ? adminEmails : [adminEmail];
 
     console.log("Preparing to send email:", {
       from: fromEmail,
@@ -118,12 +98,6 @@ serve(async (req) => {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">New Artist Registration</h1>
-          ${isTestDomain && actualAdminEmails.length > 0 ? `
-          <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px;">
-            <p style="margin: 0; color: #856404;"><strong>📧 Forward to Admin:</strong> ${actualAdminEmails.join(", ")}</p>
-            <p style="margin: 5px 0 0 0; color: #856404; font-size: 12px;">This email was sent to the Resend account owner. Please forward to the admin email(s) above.</p>
-          </div>
-          ` : ''}
           <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="margin: 5px 0;"><strong>Artist Name:</strong> ${registrationData.artist_name || "Not provided"}</p>
             <p style="margin: 5px 0;"><strong>Full Name:</strong> ${registrationData.full_name || "Not provided"}</p>
@@ -131,7 +105,7 @@ serve(async (req) => {
             ${registrationData.genre ? `<p style="margin: 5px 0;"><strong>Genre:</strong> ${registrationData.genre}</p>` : ''}
           </div>
           <p style="color: #666; line-height: 1.6;">
-            A new artist has registered on NovaTune Records. You can view their profile in the admin dashboard.
+            A new artist has registered on Grace Rhythm Sounds. You can view their profile in the admin dashboard.
           </p>
           <p style="color: #999; font-size: 12px;">
             Registered at ${new Date().toLocaleString()}

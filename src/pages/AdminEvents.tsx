@@ -498,7 +498,7 @@ const AdminEvents = () => {
             </div>
 
             <div className="flex gap-2 justify-end">
-              <Button variant="hero" onClick={() => setIsDialogOpen(false)} disabled={uploadingImage} className="bg-muted text-muted-foreground hover:bg-muted/80">
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={uploadingImage}>
                 Cancel
               </Button>
               <Button onClick={handleSave} disabled={uploadingImage}>

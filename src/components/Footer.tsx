@@ -126,7 +126,7 @@ const Footer = () => {
               href="https://webs.brights.com.ng"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-accent transition-smooth"
+              className="text-sky-400 underline hover:text-sky-300 transition-smooth"
             >
               Bright Webs
             </a>

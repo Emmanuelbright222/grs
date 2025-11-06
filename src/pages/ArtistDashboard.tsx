@@ -1383,6 +1383,37 @@ const ArtistDashboard = () => {
 
       if (insertError) throw insertError;
 
+      // Send email notification to admin
+      try {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+        
+        if (supabaseUrl && anonKey) {
+          const functionUrl = `${supabaseUrl}/functions/v1/send-contact-email`;
+          
+          await fetch(functionUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "apikey": anonKey,
+              "Authorization": `Bearer ${anonKey}`,
+            },
+            body: JSON.stringify({
+              name: profile?.full_name || profile?.artist_name || "Unknown Artist",
+              email: profile?.email || "",
+              message: demoForm.message || "Demo submission",
+              type: "demo",
+              artistName: profile?.artist_name || "",
+              genre: profile?.genre || "",
+              demoUrl: fileUrl,
+            }),
+          });
+        }
+      } catch (emailError) {
+        // Don't fail the demo submission if email fails
+        console.error("Failed to send demo notification email:", emailError);
+      }
+
       toast({
         title: "Demo submitted!",
         description: "Your demo has been uploaded successfully. We'll review it soon.",

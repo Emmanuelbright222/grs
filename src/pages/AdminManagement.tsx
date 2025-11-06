@@ -433,7 +433,7 @@ const AdminManagement = () => {
             </DialogDescription>
           </DialogHeader>
           <div className="flex gap-2 justify-end">
-            <Button variant="hero" onClick={() => setIsDialogOpen(false)} className="bg-muted text-muted-foreground hover:bg-muted/80">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancel
             </Button>
             <Button onClick={() => promoteToAdmin(selectedUser)}>

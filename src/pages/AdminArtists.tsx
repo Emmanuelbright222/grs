@@ -933,8 +933,7 @@ const AdminArtists = () => {
 
             <div className="flex gap-2 justify-end">
               <Button 
-                variant="hero" 
-                className="bg-muted text-muted-foreground hover:bg-muted/80"
+                variant="outline"
                 onClick={() => {
                   setIsCreateDialogOpen(false);
                   setIsEditing(false);

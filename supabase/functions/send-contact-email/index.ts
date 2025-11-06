@@ -15,18 +15,20 @@ const contactSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name too long"),
   email: z.string().trim().email("Invalid email").max(255, "Email too long"),
   message: z.string().trim().min(1, "Message is required").max(2000, "Message too long"),
-  type: z.enum(["contact", "collaborate"]),
+  type: z.enum(["contact", "collaborate", "demo"]),
   artistName: z.string().trim().max(100).optional(),
   genre: z.string().trim().max(50).optional(),
+  demoUrl: z.union([z.string().url(), z.literal("")]).optional(),
 });
 
 interface ContactEmailRequest {
   name: string;
   email: string;
   message: string;
-  type: "contact" | "collaborate";
+  type: "contact" | "collaborate" | "demo";
   artistName?: string;
   genre?: string;
+  demoUrl?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -84,29 +86,33 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { name, email, message, type, artistName, genre }: ContactEmailRequest = validationResult.data;
+    const { name, email, message, type, artistName, genre, demoUrl }: ContactEmailRequest = validationResult.data;
 
     console.log("Processing email request:", { name, email, type });
 
-    // Get email from environment variable, fallback to default
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <noreply@gracerhythmsounds.com>";
+    // Use Resend's default test email (onboarding@resend.dev) which works immediately
+    // This will forward to nwekeemmanuel850@gmail.com
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "Grace Rhythm Sounds <onboarding@resend.dev>";
     const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
     
     // Send confirmation email to user
+    // Note: With onboarding@resend.dev, we can only send to the Resend account owner's email
+    // So we'll send the confirmation to the user, but the notification will go to nwekeemmanuel850@gmail.com
     const confirmationEmail = await resend.emails.send({
       from: fromEmail,
       to: [email],
-      subject: type === "contact" ? "Thanks for contacting us!" : "Thanks for your collaboration request!",
+      subject: type === "contact" ? "Thanks for contacting us!" : type === "collaborate" ? "Thanks for your collaboration request!" : "Thanks for submitting your demo!",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #333;">Thank you, ${name}!</h1>
           <p style="color: #666; line-height: 1.6;">
-            We've received your ${type === "contact" ? "message" : "collaboration request"} and will get back to you as soon as possible.
+            We've received your ${type === "contact" ? "message" : type === "collaborate" ? "collaboration request" : "demo submission"} and will get back to you as soon as possible.
           </p>
-          ${type === "collaborate" && artistName ? `
+          ${(type === "collaborate" || type === "demo") && artistName ? `
             <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
               <p style="margin: 5px 0;"><strong>Artist/Producer Name:</strong> ${artistName}</p>
               ${genre ? `<p style="margin: 5px 0;"><strong>Genre:</strong> ${genre}</p>` : ''}
+              ${type === "demo" && demoUrl ? `<p style="margin: 5px 0;"><strong>Demo File:</strong> <a href="${demoUrl}" target="_blank">Download Demo</a></p>` : ''}
             </div>
           ` : ''}
           <p style="color: #666; line-height: 1.6;">
@@ -124,20 +130,24 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Confirmation email sent:", confirmationEmail);
 
     // Send notification email to Grace Rhythm Sounds
+    // Using onboarding@resend.dev, emails will be forwarded to nwekeemmanuel850@gmail.com
     const notificationEmail = await resend.emails.send({
       from: fromEmail,
       to: [toEmail],
       subject: type === "contact" 
         ? `New Contact Form Submission from ${name}` 
-        : `New Collaboration Request from ${name}`,
+        : type === "collaborate"
+        ? `New Collaboration Request from ${name}`
+        : `New Demo Submission from ${name}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #333;">New ${type === "contact" ? "Contact" : "Collaboration"} Form Submission</h1>
+          <h1 style="color: #333;">New ${type === "contact" ? "Contact" : type === "collaborate" ? "Collaboration" : "Demo"} ${type === "demo" ? "Submission" : "Form Submission"}</h1>
           <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 20px 0;">
             <p style="margin: 5px 0;"><strong>Name:</strong> ${name}</p>
             <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
-            ${type === "collaborate" && artistName ? `<p style="margin: 5px 0;"><strong>Artist/Producer Name:</strong> ${artistName}</p>` : ''}
+            ${(type === "collaborate" || type === "demo") && artistName ? `<p style="margin: 5px 0;"><strong>Artist/Producer Name:</strong> ${artistName}</p>` : ''}
             ${genre ? `<p style="margin: 5px 0;"><strong>Genre:</strong> ${genre}</p>` : ''}
+            ${type === "demo" && demoUrl ? `<p style="margin: 5px 0;"><strong>Demo File:</strong> <a href="${demoUrl}" target="_blank" style="color: #0066cc;">Download Demo</a></p>` : ''}
           </div>
           <div style="background: #fff; border-left: 4px solid #333; padding: 15px; margin: 20px 0;">
             <p style="margin: 0;"><strong>Message:</strong></p>
