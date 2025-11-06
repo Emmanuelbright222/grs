@@ -73,10 +73,11 @@ const handler = async (req: Request): Promise<Response> => {
     // Use Resend's default test email (onboarding@resend.dev) for testing
     // This works immediately without domain verification
     // Note: With onboarding@resend.dev, we can only send to the registered Resend account email
+    // Emails sent to nwekeemmanuel850@gmail.com will be forwarded to miztabrightstar@gmail.com
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
-    // Must be exactly the registered Resend account email - hardcoded to ensure exact match
-    // Resend validation is strict and requires exact match with registered account email
+    // Send to Resend account email (nwekeemmanuel850@gmail.com) - will be forwarded to admin (miztabrightstar@gmail.com)
     const recipientEmail = "nwekeemmanuel850@gmail.com";
+    const adminEmail = "miztabrightstar@gmail.com"; // Actual admin email for reference
     
     console.log("Email configuration:", { 
       fromEmail, 
@@ -114,6 +115,11 @@ const handler = async (req: Request): Promise<Response> => {
           <p style="color: #666; line-height: 1.6;">
             A new artist has registered on Grace Rhythm Sounds. You can view their profile in the admin dashboard.
           </p>
+          <div style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 10px; margin: 15px 0; border-radius: 4px;">
+            <p style="margin: 0; color: #1565c0; font-size: 12px;">
+              <strong>Admin Notification:</strong> This email is forwarded to ${adminEmail}
+            </p>
+          </div>
           <p style="color: #999; font-size: 12px;">
             Registered at ${new Date().toLocaleString()}
           </p>
