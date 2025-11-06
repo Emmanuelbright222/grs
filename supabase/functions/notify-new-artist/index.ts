@@ -1,7 +1,6 @@
 // @ts-nocheck - This is a Deno edge function
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -33,8 +32,6 @@ serve(async (req) => {
     }
 
     const resend = new Resend(resendApiKey);
-    const supabaseUrl = Deno.env.get("SUPABASE_URL") || "";
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 
     // Get artist registration data from request
     const registrationData: ArtistRegistration = await req.json();
