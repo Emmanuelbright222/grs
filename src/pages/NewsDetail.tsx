@@ -155,7 +155,7 @@ const NewsDetail = () => {
               )}
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">{article.title}</h1>
+            <h1 className="text-3xl md:text-5xl font-bold mb-6">{article.title}</h1>
 
             {article.excerpt && (
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">

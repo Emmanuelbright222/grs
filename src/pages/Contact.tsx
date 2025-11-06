@@ -142,7 +142,7 @@ const Contact = () => {
         <section className="py-20 gradient-hero text-white">
           <div className="container mx-auto px-4 text-center">
             <Mail className="w-16 h-16 mx-auto mb-6 animate-pulse-glow" />
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
+            <h1 className="text-3xl md:text-6xl font-bold mb-6 animate-fade-in">
               Get In Touch
             </h1>
             <p className="text-xl max-w-2xl mx-auto opacity-90 animate-fade-in-up">

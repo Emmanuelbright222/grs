@@ -17,7 +17,7 @@ const About = () => {
           <div className="container mx-auto px-4">
             <AnimatedSection animationType="zoom">
               <div className="max-w-4xl mx-auto text-center">
-                <h1 className="text-5xl md:text-6xl font-bold mb-6">Our Story</h1>
+                <h1 className="text-3xl md:text-6xl font-bold mb-6">Our Story</h1>
                 <p className="text-xl opacity-90">
                   Building bridges between cultures through the universal language of music
                 </p>
@@ -39,7 +39,7 @@ const About = () => {
                 />
               </AnimatedSection>
               <AnimatedSection animationType="slideRight" delay={200}>
-                <h2 className="text-4xl font-bold mb-6">Our Mission</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Mission</h2>
                 <p className="text-lg text-muted-foreground mb-4">
                   Grace Rhythm Sounds was founded with a vision to empower artists from diverse backgrounds and genres, creating a platform where talent meets opportunity.
                 </p>
@@ -59,7 +59,7 @@ const About = () => {
           <div className="container mx-auto px-4">
             <AnimatedSection animationType="fadeUp">
               <div className="max-w-4xl mx-auto text-center mb-16">
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">Our Vision</h2>
+                <h2 className="text-3xl md:text-5xl font-bold mb-6">Our Vision</h2>
                 <p className="text-xl text-muted-foreground">
                   To become the leading global record label that champions diversity, innovation, and artistic integrity across all music genres
                 </p>
@@ -111,7 +111,7 @@ const About = () => {
           <div className="container mx-auto px-4">
             <AnimatedSection animationType="fadeUp">
               <div className="text-center mb-12">
-                <h2 className="text-4xl md:text-5xl font-bold mb-4">Meet Our Founder</h2>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">Meet Our Founder</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                   The visionary behind Grace Rhythm Sounds
                 </p>
