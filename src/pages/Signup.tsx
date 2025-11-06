@@ -331,7 +331,7 @@ const Signup = () => {
           <Card className="p-8 border-0 shadow-strong bg-white/95 backdrop-blur-sm border border-slate-200/50">
             <div className="text-center mb-8">
               <Music2 className="w-12 h-12 mx-auto mb-4 text-accent" />
-              <h1 className="text-2xl font-bold mb-2">Create Artist Account</h1>
+              <h2 className="text-2xl font-bold mb-2">Create Artist Account</h2>
               <p className="text-muted-foreground">
                 Join Grace Rhythm Sounds
               </p>
