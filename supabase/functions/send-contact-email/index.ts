@@ -93,17 +93,18 @@ const handler = async (req: Request): Promise<Response> => {
     // Use Resend's default test email (onboarding@resend.dev) for testing
     // This works immediately without domain verification
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
-    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
+    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
     
     console.log("Email configuration:", { fromEmail, toEmail, userEmail: email });
     
     // Send confirmation email to user
-    // With onboarding@resend.dev, we can send to any email address
+    // Note: With onboarding@resend.dev, we can only send to the registered Resend account email
+    // So we'll send confirmation to the admin email for testing
     let confirmationEmail;
     try {
       confirmationEmail = await resend.emails.send({
         from: fromEmail,
-        to: email,
+        to: toEmail, // Send to registered account email for testing
         subject: type === "contact" ? "Thanks for contacting us!" : type === "collaborate" ? "Thanks for your collaboration request!" : "Thanks for submitting your demo!",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

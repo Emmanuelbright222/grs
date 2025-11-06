@@ -77,7 +77,7 @@ serve(async (req) => {
     // Use Resend's default test email (onboarding@resend.dev) for testing
     // This works immediately without domain verification
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
-    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
+    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
     
     // Use the admin email directly (onboarding@resend.dev can send to any email)
     const recipientEmail = adminEmails.length > 0 ? adminEmails[0] : adminEmail;
