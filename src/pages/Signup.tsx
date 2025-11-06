@@ -207,6 +207,8 @@ const Signup = () => {
             const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-artist`;
             const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
             
+            console.log("Sending artist registration notification to:", functionUrl);
+            
             const notifyResponse = await fetch(functionUrl, {
               method: "POST",
               headers: {
@@ -222,16 +224,26 @@ const Signup = () => {
               }),
             });
 
+            console.log("Notification response status:", notifyResponse.status);
+
             if (!notifyResponse.ok) {
               const errorText = await notifyResponse.text();
-              console.error("Failed to notify admin:", errorText);
+              console.error("Failed to notify admin - Response:", {
+                status: notifyResponse.status,
+                statusText: notifyResponse.statusText,
+                error: errorText
+              });
             } else {
               const result = await notifyResponse.json();
-              console.log("Admin notification sent:", result);
+              console.log("✅ Admin notification sent successfully:", result);
             }
-          } catch (notifyError) {
+          } catch (notifyError: any) {
             // Log error but don't fail signup
-            console.error("Failed to notify admin:", notifyError);
+            console.error("❌ Failed to notify admin - Exception:", {
+              message: notifyError?.message,
+              stack: notifyError?.stack,
+              error: notifyError
+            });
           }
         }
       }
