@@ -78,30 +78,22 @@ const handler = async (req: Request): Promise<Response> => {
     // Use Resend's default test email (onboarding@resend.dev) for testing
     // This works immediately without domain verification
     // Note: With onboarding@resend.dev, we can only send to the registered Resend account email
-    // Emails sent to nwekeemmanuel850@gmail.com will be forwarded to miztabrightstar@gmail.com
-    // IMPORTANT: Use exact string format - no display name, just the email address
-    const fromEmail = "onboarding@resend.dev";
-    // Send to Resend account email (nwekeemmanuel850@gmail.com) - will be forwarded to admin (miztabrightstar@gmail.com)
+    // Emails sent to the Resend account email will be forwarded to the admin email
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
+    // Send to Resend account email - will be forwarded to admin email
     // Must be exact match with registered Resend account email
-    const recipientEmail = "nwekeemmanuel850@gmail.com";
-    const adminEmail = "miztabrightstar@gmail.com"; // Actual admin email for reference
-    
-    // Validate email format before sending
-    const validatedFromEmail = "onboarding@resend.dev";
-    const validatedToEmail = "nwekeemmanuel850@gmail.com";
+    const recipientEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
+    const adminEmail = Deno.env.get("ADMIN_EMAIL") || "miztabrightstar@gmail.com"; // Actual admin email for reference
     
     console.log("Email configuration:", { 
-      fromEmail: validatedFromEmail, 
-      recipientEmail: validatedToEmail,
-      fromEmailType: typeof validatedFromEmail,
-      toEmailType: typeof validatedToEmail,
-      fromEmailLength: validatedFromEmail.length,
-      toEmailLength: validatedToEmail.length
+      fromEmail, 
+      recipientEmail,
+      adminEmail
     });
 
     console.log("Preparing to send email:", {
-      from: validatedFromEmail,
-      to: validatedToEmail,
+      from: fromEmail,
+      to: recipientEmail,
       hasApiKey: !!resendApiKey,
       apiKeyPrefix: resendApiKey ? resendApiKey.substring(0, 10) + "..." : "none",
       registrationData: {
@@ -113,10 +105,9 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email to admin
     // Use exact same pattern as working send-contact-email function
-    // Use validated email addresses to ensure exact format
     const emailResult = await resend.emails.send({
-      from: validatedFromEmail,
-      to: validatedToEmail, // Must be nwekeemmanuel850@gmail.com for test domain
+      from: fromEmail,
+      to: recipientEmail, // Must be the registered Resend account email for test domain
       subject: `New Artist Registration: ${registrationData.artist_name || registrationData.full_name || "Unknown"}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -146,8 +137,8 @@ const handler = async (req: Request): Promise<Response> => {
       success: !!emailResult.data,
       error: emailResult.error,
       emailId: emailResult.data?.id,
-      recipientEmail: validatedToEmail,
-      fromEmail: validatedFromEmail
+      recipientEmail,
+      fromEmail
     });
 
     if (emailResult.error) {
@@ -165,7 +156,7 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Email sent but no confirmation data returned");
     }
 
-    console.log("Email sent successfully to:", validatedToEmail);
+    console.log("Email sent successfully to:", recipientEmail);
 
     return new Response(
       JSON.stringify({ 
