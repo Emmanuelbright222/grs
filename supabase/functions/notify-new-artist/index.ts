@@ -74,12 +74,16 @@ const handler = async (req: Request): Promise<Response> => {
     // This works immediately without domain verification
     // Note: With onboarding@resend.dev, we can only send to the registered Resend account email
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
-    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
+    // Must be exactly the registered Resend account email - hardcoded to ensure exact match
+    // Resend validation is strict and requires exact match with registered account email
+    const recipientEmail = "nwekeemmanuel850@gmail.com";
     
-    // Always use the registered account email for testing
-    const recipientEmail = adminEmail;
-    
-    console.log("Email configuration:", { fromEmail, recipientEmail });
+    console.log("Email configuration:", { 
+      fromEmail, 
+      recipientEmail,
+      recipientEmailLength: recipientEmail.length,
+      recipientEmailExact: JSON.stringify(recipientEmail)
+    });
 
     console.log("Preparing to send email:", {
       from: fromEmail,
