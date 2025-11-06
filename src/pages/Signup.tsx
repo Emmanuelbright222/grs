@@ -191,8 +191,7 @@ const Signup = () => {
         });
         
         // Use database function to create/update profile (bypasses RLS)
-        const { data: profileData, error: profileError } = await supabase
-          .rpc('create_or_update_profile' as any, {
+        const { data: profileData, error: profileError } = await (supabase.rpc as any)('create_or_update_profile', {
             p_user_id: authData.user.id,
             p_full_name: formData.fullName,
             p_artist_name: formData.artistName,
