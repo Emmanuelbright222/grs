@@ -137,21 +137,43 @@ const Signup = () => {
       });
 
       if (authError) {
+        // Check for account already exists errors (multiple possible formats)
+        const errorMessageLower = authError.message?.toLowerCase() || '';
+        const isAccountExists = 
+          errorMessageLower.includes('user already registered') ||
+          errorMessageLower.includes('already registered') ||
+          errorMessageLower.includes('email already exists') ||
+          errorMessageLower.includes('user already exists') ||
+          errorMessageLower.includes('email address is already') ||
+          authError.status === 422 || // Supabase often returns 422 for duplicate accounts
+          authError.code === 'user_already_registered';
+        
+        if (isAccountExists) {
+          // Reset captcha if needed
+          hcaptchaRef.current?.resetCaptcha();
+          setHcaptchaToken(null);
+          
+          toast({
+            title: "Account already exists",
+            description: "This email is already registered. Please sign in instead or use a different email address.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
         // If captcha error, reset the captcha
-        if (authError.message?.includes('captcha') || authError.message?.includes('verification') || authError.message?.includes('User already registered')) {
+        if (errorMessageLower.includes('captcha') || errorMessageLower.includes('verification')) {
           hcaptchaRef.current?.resetCaptcha();
           setHcaptchaToken(null);
         }
         
-        // Provide more specific error messages
+        // Provide more specific error messages for other errors
         let errorMessage = authError.message || "Failed to create account. Please try again.";
-        if (authError.message?.includes('User already registered')) {
-          errorMessage = "This email is already registered. Please sign in instead or use a different email.";
-        } else if (authError.message?.includes('Password')) {
+        if (errorMessageLower.includes('password')) {
           errorMessage = "Password does not meet requirements. Please check the password requirements.";
-        } else if (authError.message?.includes('Invalid email')) {
+        } else if (errorMessageLower.includes('invalid email')) {
           errorMessage = "Please enter a valid email address.";
-        } else if (authError.message?.includes('Too many requests')) {
+        } else if (errorMessageLower.includes('too many requests')) {
           errorMessage = "Too many signup attempts. Please wait a few minutes before trying again.";
         }
         
