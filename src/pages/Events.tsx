@@ -74,8 +74,8 @@ const Events = () => {
                 No upcoming events scheduled. Check back soon!
               </p>
             ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-                {upcomingEvents.map((event, index) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {upcomingEvents.slice(0, 9).map((event, index) => (
                   <Card
                     key={event.id}
                     className="overflow-hidden border-0 shadow-soft hover:shadow-strong transition-smooth animate-scale-in"
