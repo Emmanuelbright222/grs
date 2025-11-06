@@ -71,7 +71,8 @@ const FeaturedArtists = () => {
               {displayArtists.map((artist, index) => (
                 <Card
                   key={artist.id || index}
-                  className="group overflow-hidden border-0 shadow-soft hover:shadow-strong transition-smooth"
+                  className="group overflow-hidden border-0 shadow-soft hover:shadow-strong transition-smooth max-w-sm mx-auto"
+                  style={{ width: '100%', maxWidth: '400px' }}
                 >
                 <div className="relative overflow-hidden">
                   {artist.artist_image_url || artist.avatar_url ? (
@@ -79,6 +80,7 @@ const FeaturedArtists = () => {
                       src={artist.artist_image_url || artist.avatar_url}
                       alt={artist.artist_name || artist.name || "Artist"}
                       className="w-full h-80 object-contain object-top bg-muted transition-spring group-hover:scale-105 rounded-[10px]"
+                      style={{ maxWidth: '100%', width: '100%' }}
                       loading="lazy"
                     />
                   ) : (

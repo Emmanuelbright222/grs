@@ -22,7 +22,7 @@ const LatestNews = () => {
         .eq("is_published", true)
         .eq("is_featured", true)
         .order("published_at", { ascending: false })
-        .limit(6); // Show 6 featured articles on homepage
+        .limit(9); // Show 9 featured articles on homepage (3 rows)
 
       if (error) throw error;
       setNews(data || []);
@@ -60,7 +60,7 @@ const LatestNews = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {news.map((article, index) => (
+          {news.slice(0, 9).map((article, index) => (
             <Card
               key={article.id}
               className="overflow-hidden border-0 shadow-soft hover:shadow-strong transition-smooth animate-scale-in"
@@ -102,7 +102,7 @@ const LatestNews = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-3 line-clamp-2">{article.title}</h3>
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                  {article.excerpt || article.content.substring(0, 150) + "..."}
+                  {article.excerpt || (article.content ? article.content.replace(/<[^>]*>/g, '').substring(0, 150) + "..." : "")}
                 </p>
                 <Link to={`/news/${article.slug || article.id}`}>
                   <Button variant="hero" className="w-full">

@@ -174,9 +174,10 @@ const NewsDetail = () => {
             )}
 
             <div className="prose prose-lg max-w-none mb-12">
-              <div className="whitespace-pre-wrap text-muted-foreground leading-relaxed">
-                {article.content}
-              </div>
+              <div 
+                className="text-muted-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: article.content }}
+              />
             </div>
 
             {/* Related Articles */}
@@ -203,7 +204,7 @@ const NewsDetail = () => {
                         <div className="p-4">
                           <h3 className="font-bold text-sm mb-2 line-clamp-2">{related.title}</h3>
                           <p className="text-xs text-muted-foreground line-clamp-2">
-                            {related.excerpt || related.content.substring(0, 100) + "..."}
+                            {related.excerpt || (related.content ? related.content.replace(/<[^>]*>/g, '').substring(0, 100) + "..." : "")}
                           </p>
                         </div>
                       </Card>

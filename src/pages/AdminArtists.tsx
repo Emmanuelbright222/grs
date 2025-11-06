@@ -49,6 +49,7 @@ const AdminArtists = () => {
     phone_number: "",
     genre: "",
     bio: "",
+    gender: "",
     is_featured: false,
     is_approved: false,
   });
@@ -121,6 +122,7 @@ const AdminArtists = () => {
       phone_number: artist.phone_number || "",
       genre: artist.genre || "",
       bio: artist.bio || "",
+      gender: artist.gender || "",
       is_featured: artist.is_featured || false,
       is_approved: artist.is_approved || false,
       spotify_url: artist.spotify_url || "",
@@ -638,17 +640,19 @@ const AdminArtists = () => {
           setFormData({
             full_name: "",
             artist_name: "",
-    email: "",
-    phone_number: "",
-    genre: "",
-    bio: "",
-    is_featured: false,
-    spotify_url: "",
-    apple_music_url: "",
-    youtube_music_url: "",
-    audiomack_url: "",
-    boomplay_url: "",
-  });
+            email: "",
+            phone_number: "",
+            genre: "",
+            bio: "",
+            gender: "",
+            is_featured: false,
+            is_approved: false,
+            spotify_url: "",
+            apple_music_url: "",
+            youtube_music_url: "",
+            audiomack_url: "",
+            boomplay_url: "",
+          });
         }
       }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -706,6 +710,24 @@ const AdminArtists = () => {
                   placeholder="+234 800 000 0000"
                 />
               </div>
+            </div>
+
+            <div>
+              <Label htmlFor="gender">Gender</Label>
+              <Select
+                value={formData.gender}
+                onValueChange={(value) => setFormData({ ...formData, gender: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Male">Male</SelectItem>
+                  <SelectItem value="Female">Female</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
+                  <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
@@ -963,6 +985,7 @@ const AdminArtists = () => {
                       phone_number: formData.phone_number || null,
                       genre: formData.genre || null,
                       bio: formData.bio || null,
+                      gender: formData.gender || null,
                       is_featured: formData.is_featured,
                       is_approved: formData.is_approved,
                       spotify_url: formData.spotify_url || null,
@@ -999,6 +1022,7 @@ const AdminArtists = () => {
                       p_phone_number: formData.phone_number || null,
                       p_genre: formData.genre || null,
                       p_bio: formData.bio || null,
+                      p_gender: formData.gender || null,
                       p_is_featured: formData.is_featured || false,
                       p_is_approved: formData.is_approved || false,
                       p_avatar_url: avatarUrl,
@@ -1029,6 +1053,7 @@ const AdminArtists = () => {
                     phone_number: "",
                     genre: "",
                     bio: "",
+                    gender: "",
                     is_featured: false,
                     is_approved: false,
                   });

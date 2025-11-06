@@ -138,7 +138,7 @@ const News = () => {
                       {featuredArticle.title}
                     </h2>
                     <p className="text-muted-foreground mb-6">
-                      {featuredArticle.excerpt || featuredArticle.content.substring(0, 200) + "..."}
+                      {featuredArticle.excerpt || (featuredArticle.content ? featuredArticle.content.replace(/<[^>]*>/g, '').substring(0, 200) + "..." : "")}
                     </p>
                     <Link to={`/news/${featuredArticle.slug || featuredArticle.id}`}>
                       <Button variant="hero">Read Full Article</Button>
@@ -208,7 +208,7 @@ const News = () => {
                           {article.title}
                         </h3>
                         <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                          {article.excerpt || article.content.substring(0, 150) + "..."}
+                          {article.excerpt || (article.content ? article.content.replace(/<[^>]*>/g, '').substring(0, 150) + "..." : "")}
                         </p>
                         <Link to={`/news/${article.slug || article.id}`}>
                           <Button variant="hero" className="w-full">

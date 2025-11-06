@@ -11,6 +11,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { FileText, Plus, X, Save, Calendar, Tag, Upload, Image as ImageIcon } from "lucide-react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import {
   Dialog,
   DialogContent,
@@ -410,16 +412,34 @@ const AdminNews = () => {
 
             <div>
               <Label htmlFor="content">Content (Full Article) *</Label>
-              <Textarea
-                id="content"
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                placeholder="Write your full article content here..."
-                rows={12}
-                required
-              />
+              <div className="mt-2">
+                <ReactQuill
+                  theme="snow"
+                  value={formData.content}
+                  onChange={(value) => setFormData({ ...formData, content: value })}
+                  placeholder="Write your full article content here..."
+                  modules={{
+                    toolbar: [
+                      [{ 'header': [1, 2, 3, false] }],
+                      ['bold', 'italic', 'underline', 'strike'],
+                      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                      [{ 'color': [] }, { 'background': [] }],
+                      ['link', 'image'],
+                      ['clean']
+                    ],
+                  }}
+                  formats={[
+                    'header',
+                    'bold', 'italic', 'underline', 'strike',
+                    'list', 'bullet',
+                    'color', 'background',
+                    'link', 'image'
+                  ]}
+                  style={{ minHeight: '300px' }}
+                />
+              </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Full article text. You can use basic formatting with line breaks.
+                Use the toolbar to format text, add links, and insert images.
               </p>
             </div>
 

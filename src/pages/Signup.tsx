@@ -55,6 +55,7 @@ const Signup = () => {
     confirmPassword: "",
     genre: "",
     phoneNumber: "",
+    gender: "",
   });
   
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
@@ -156,6 +157,7 @@ const Signup = () => {
             p_email: formData.email,
             p_genre: formData.genre,
             p_phone_number: formData.phoneNumber || null,
+            p_gender: formData.gender || null,
           });
 
         if (profileError) {
@@ -317,6 +319,23 @@ const Signup = () => {
                   onChange={handleChange}
                   placeholder="+234 800 000 0000"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gender">Gender</Label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
               </div>
 
               <div className="space-y-2">

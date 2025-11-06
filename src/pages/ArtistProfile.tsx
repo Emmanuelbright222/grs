@@ -23,6 +23,7 @@ const ArtistProfile = () => {
     artist_name: "",
     genre: "",
     bio: "",
+    gender: "",
     avatarFile: null as File | null,
     artistImageFile: null as File | null,
   });
@@ -66,6 +67,7 @@ const ArtistProfile = () => {
             artist_name: data.artist_name || "",
             genre: data.genre || "",
             bio: data.bio || "",
+            gender: data.gender || "",
             avatarFile: null,
             artistImageFile: null,
           });
@@ -239,6 +241,7 @@ const ArtistProfile = () => {
           artist_name: profileForm.artist_name,
           genre: profileForm.genre,
           bio: profileForm.bio,
+          gender: profileForm.gender || null,
         })
         .eq("user_id", user.id);
 
@@ -360,6 +363,7 @@ const ArtistProfile = () => {
                             artist_name: profile.artist_name || "",
                             genre: profile.genre || "",
                             bio: profile.bio || "",
+                            gender: profile.gender || "",
                             avatarFile: null,
                             artistImageFile: null,
                           });
@@ -553,6 +557,26 @@ const ArtistProfile = () => {
                 <div>
                   <Label className="text-sm text-muted-foreground">Phone Number</Label>
                   <p className="font-medium mt-1">{profile?.phone_number || "-"}</p>
+                </div>
+                <div>
+                  <Label htmlFor="gender" className="text-sm text-muted-foreground">Gender</Label>
+                  {isEditingProfile ? (
+                    <select
+                      id="gender"
+                      value={profileForm.gender}
+                      onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    >
+                      <option value="">Select gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                      <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                  ) : (
+                    <p className="font-medium mt-1">{profile?.gender || "-"}</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="genre" className="text-sm text-muted-foreground">Genre</Label>
