@@ -43,6 +43,7 @@ const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const notificationSentRef = useRef(false); // Prevent duplicate notifications
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [hcaptchaToken, setHcaptchaToken] = useState<string | null>(null);
@@ -202,48 +203,55 @@ const Signup = () => {
           return;
         } else if (profileData) {
           console.log("✅ Profile created/updated successfully:", profileData);
-          // Notify admin about new artist registration
-          try {
-            const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-artist`;
-            const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-            
-            console.log("Sending artist registration notification to:", functionUrl);
-            
-            const notifyResponse = await fetch(functionUrl, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "apikey": anonKey || "",
-                "Authorization": `Bearer ${anonKey || ""}`,
-              },
-              body: JSON.stringify({
-                artist_name: formData.artistName,
-                full_name: formData.fullName,
-                email: formData.email,
-                genre: formData.genre,
-              }),
-            });
-
-            console.log("Notification response status:", notifyResponse.status);
-
-            if (!notifyResponse.ok) {
-              const errorText = await notifyResponse.text();
-              console.error("Failed to notify admin - Response:", {
-                status: notifyResponse.status,
-                statusText: notifyResponse.statusText,
-                error: errorText
+          // Notify admin about new artist registration (only once)
+          if (notificationSentRef.current) {
+            console.log("⚠️ Notification already sent, skipping duplicate");
+          } else {
+            notificationSentRef.current = true;
+            try {
+              const functionUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-new-artist`;
+              const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+              
+              console.log("Sending artist registration notification to:", functionUrl);
+              
+              const notifyResponse = await fetch(functionUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "apikey": anonKey || "",
+                  "Authorization": `Bearer ${anonKey || ""}`,
+                },
+                body: JSON.stringify({
+                  artist_name: formData.artistName,
+                  full_name: formData.fullName,
+                  email: formData.email,
+                  genre: formData.genre,
+                }),
               });
-            } else {
-              const result = await notifyResponse.json();
-              console.log("✅ Admin notification sent successfully:", result);
+
+              console.log("Notification response status:", notifyResponse.status);
+
+              if (!notifyResponse.ok) {
+                const errorText = await notifyResponse.text();
+                console.error("Failed to notify admin - Response:", {
+                  status: notifyResponse.status,
+                  statusText: notifyResponse.statusText,
+                  error: errorText
+                });
+              } else {
+                const result = await notifyResponse.json();
+                console.log("✅ Admin notification sent successfully:", result);
+              }
+            } catch (notifyError: any) {
+              // Log error but don't fail signup
+              console.error("❌ Failed to notify admin - Exception:", {
+                message: notifyError?.message,
+                stack: notifyError?.stack,
+                error: notifyError
+              });
+              // Reset flag on error so it can be retried if needed
+              notificationSentRef.current = false;
             }
-          } catch (notifyError: any) {
-            // Log error but don't fail signup
-            console.error("❌ Failed to notify admin - Exception:", {
-              message: notifyError?.message,
-              stack: notifyError?.stack,
-              error: notifyError
-            });
           }
         }
       }

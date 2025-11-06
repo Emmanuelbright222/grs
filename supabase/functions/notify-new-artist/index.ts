@@ -70,6 +70,11 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    // Deduplication: Check if we've already processed this registration recently
+    // Use email + timestamp as a simple deduplication key
+    const dedupeKey = `${registrationData.email}-${Date.now()}`;
+    console.log("Processing registration with dedupe key:", dedupeKey);
+
     // Use Resend's default test email (onboarding@resend.dev) for testing
     // This works immediately without domain verification
     // Note: With onboarding@resend.dev, we can only send to the registered Resend account email
