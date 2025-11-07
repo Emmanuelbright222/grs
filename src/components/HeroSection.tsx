@@ -27,8 +27,8 @@ const HeroSection = () => {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center relative">
         <div className="max-w-4xl mx-auto animate-fade-in-up">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-bold mb-4 md:mb-6 text-white leading-tight px-4">
-            GSR | Empowering Global Rhythms
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold mb-4 md:mb-6 text-white leading-tight px-4">
+            Grace Rhythm Sounds
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 text-white/90 font-light max-w-2xl mx-auto px-4">
             Inspiring souls through gospel music, uplifting melodies, and divine rhythms.
