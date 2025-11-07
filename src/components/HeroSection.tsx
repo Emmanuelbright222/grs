@@ -5,7 +5,7 @@ import heroImage from "@/assets/hero-artists.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[900px] md:min-h-[700px] md:max-h-[1000px] flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen min-h-[500px] max-h-[800px] md:min-h-[700px] md:max-h-[1000px] flex items-center justify-center overflow-hidden pt-16 pb-8 md:pt-0 md:pb-0">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
@@ -27,20 +27,20 @@ const HeroSection = () => {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center relative">
         <div className="max-w-4xl mx-auto animate-fade-in-up">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl font-bold mb-4 md:mb-6 text-white leading-tight px-4">
+          <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-bold mb-3 md:mb-6 text-white leading-tight px-4">
             Grace Rhythm Sounds
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 text-white/90 font-light max-w-2xl mx-auto px-4">
+          <p className="text-base sm:text-lg md:text-2xl mb-4 md:mb-8 text-white/90 font-light max-w-2xl mx-auto px-4">
             helps gospel artists produce and distribute music globally while earning
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
-            <Link to="/signup">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center px-4">
+            <Link to="/signup" className="w-full sm:w-auto">
               <Button variant="hero" size="lg" className="group w-full sm:w-auto h-10 sm:h-14 px-6 sm:px-10 text-sm sm:text-base">
                 Get Started
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-smooth" />
               </Button>
             </Link>
-            <Link to="/releases">
+            <Link to="/releases" className="hidden sm:inline-block">
               <Button variant="hero" size="lg" className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/30 hover:text-white w-full sm:w-auto h-10 sm:h-14 px-6 sm:px-10 text-sm sm:text-base">
                 Latest Releases
               </Button>
