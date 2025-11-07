@@ -49,6 +49,7 @@ const ArtistDashboard = () => {
   const [uploadingDemo, setUploadingDemo] = useState(false);
   const [demoHcaptchaToken, setDemoHcaptchaToken] = useState<string | null>(null);
   const demoHcaptchaRef = useRef<HCaptcha>(null);
+  const demoFileInputRef = useRef<HTMLInputElement>(null);
   const [demoForm, setDemoForm] = useState({
     name: "",
     message: "",
@@ -1421,12 +1422,19 @@ const ArtistDashboard = () => {
         console.error("Failed to send demo notification email:", emailError);
       }
 
+
       toast({
         title: "Demo submitted!",
         description: "Your demo has been uploaded successfully. We'll review it soon.",
       });
 
+      // Reset form and captcha
       setDemoForm({ name: "", message: "", file: null });
+      demoHcaptchaRef.current?.resetCaptcha();
+      setDemoHcaptchaToken(null);
+      if (demoFileInputRef.current) {
+        demoFileInputRef.current.value = "";
+      }
       await loadDemoUploads(user.id);
     } catch (error: any) {
       toast({
@@ -2476,6 +2484,7 @@ const ArtistDashboard = () => {
                       <Label htmlFor="demo-file">Demo File</Label>
                       <Input
                         id="demo-file"
+                        ref={demoFileInputRef}
                         type="file"
                         accept="audio/*"
                         onChange={(e) => setDemoForm({ ...demoForm, file: e.target.files?.[0] || null })}
@@ -2502,7 +2511,13 @@ const ArtistDashboard = () => {
                         theme="light"
                       />
                     </div>
-                    <Button type="submit" disabled={uploadingDemo || !demoHcaptchaToken}>
+                    <Button 
+                      type="submit" 
+                      variant="hero" 
+                      size="lg"
+                      className="w-full"
+                      disabled={uploadingDemo || !demoHcaptchaToken}
+                    >
                       {uploadingDemo ? "Uploading..." : "Submit Demo"}
                     </Button>
                   </div>

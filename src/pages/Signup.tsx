@@ -154,10 +154,15 @@ const Signup = () => {
           setHcaptchaToken(null);
           
           toast({
-            title: "Account already exists",
-            description: "This email is already registered. Please sign in instead or use a different email address.",
+            title: "Email address already exists",
+            description: "Please login or reset your password or contact admin",
             variant: "destructive",
           });
+          
+          // Redirect to login after a short delay
+          setTimeout(() => {
+            navigate("/login");
+          }, 2000);
           return;
         }
         
@@ -206,12 +211,16 @@ const Signup = () => {
           
           // Handle specific duplicate errors
           let errorMessage = profileError.message || "Could not create profile. Please contact support.";
+          let shouldRedirect = false;
+          
           if (profileError.message?.includes("Email already exists")) {
-            errorMessage = "This email is already registered. Please use a different email or sign in.";
-          } else if (profileError.message?.includes("Artist name already exists")) {
-            errorMessage = "This artist name is already taken. Please choose a different name.";
-          } else if (profileError.message?.includes("Phone number already in use")) {
-            errorMessage = "This phone number is already in use. Please use a different number.";
+            errorMessage = "Email address already exists. Please login or reset your password or contact admin";
+            shouldRedirect = true;
+          } else if (profileError.message?.includes("Artist name already exists") || profileError.message?.includes("Username already exists")) {
+            errorMessage = "Username already exists, use another username";
+          } else if (profileError.message?.includes("Phone number already in use") || profileError.message?.includes("Phone Number already existing")) {
+            errorMessage = "Phone Number already existing. Kindly login or reset your password or contact admin";
+            shouldRedirect = true;
           } else if (profileError.code === "23503") {
             errorMessage = "Account creation failed. Please try again or contact support.";
           }
@@ -221,6 +230,13 @@ const Signup = () => {
             description: errorMessage,
             variant: "destructive",
           });
+          
+          // Redirect to login for email/phone already exists
+          if (shouldRedirect) {
+            setTimeout(() => {
+              navigate("/login");
+            }, 2000);
+          }
           return;
         } else if (profileData) {
           console.log("✅ Profile created/updated successfully:", profileData);
