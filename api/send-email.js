@@ -15,10 +15,10 @@ export default async function handler(req, res) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Send to your admin email
+    // Send to forwarding email address
     await resend.emails.send({
-      from: 'Grace Rhythm Sounds <onboarding@resend.dev>',
-      to: 'nwekeemmanuel850@gmail.com',
+      from: 'Grace Rhythm Sounds <info@gracerhythmsounds.com>',
+      to: 'miztabrightstar@gmail.com',
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2>New Message from ${name}</h2>
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     // Confirmation email to user
     await resend.emails.send({
-      from: 'Grace Rhythm Sounds <onboarding@resend.dev>',
+      from: 'Grace Rhythm Sounds <info@gracerhythmsounds.com>',
       to: email,
       subject: 'We Received Your Message 🎶',
       html: `

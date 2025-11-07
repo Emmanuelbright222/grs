@@ -98,8 +98,8 @@ const handler = async (req: Request): Promise<Response> => {
     const config = statusConfig[status] || statusConfig.rejected;
     const customMessage = message || `Your demo submission status has been updated to: ${status}`;
 
-    // Use Resend's test email (onboarding@resend.dev) for testing
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
+    // Use the website email address
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "info@gracerhythmsounds.com";
     
     console.log("Sending demo status email:", { fromEmail, to: email, status });
 

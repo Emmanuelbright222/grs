@@ -42,9 +42,9 @@ serve(async (req) => {
       artist_name: demoData.artist_name
     });
 
-    // Use Resend's test email (onboarding@resend.dev) for testing
-    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "onboarding@resend.dev";
-    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "nwekeemmanuel850@gmail.com";
+    // Use the website email address
+    const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "info@gracerhythmsounds.com";
+    const adminEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
 
     console.log("Email configuration:", { fromEmail, adminEmail });
 

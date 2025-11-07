@@ -9,51 +9,51 @@ All colors MUST be HSL.
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 210 100% 6%;
+    --foreground: 210 100% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 210 100% 6%;
+    --card-foreground: 210 100% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 100% 6%;
+    --popover-foreground: 210 100% 8%;
 
-    --primary: 210 100% 12%;
+    --primary: 210 100% 15%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 0%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96%;
+    --muted: 210 20% 95%;
     --muted-foreground: 210 10% 40%;
 
-    --accent: 214 100% 50%;
+    --accent: 210 85% 45%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 30% 90%;
-    --input: 210 30% 90%;
-    --ring: 210 100% 12%;
+    --border: 210 20% 85%;
+    --input: 210 20% 85%;
+    --ring: 210 100% 15%;
 
     --radius: 0.75rem;
 
-    /* Grace Rhythm Sounds Brand Colors */
-    --navy-blue: 210 100% 12%;
-    --electric-blue: 214 100% 50%;
+    /* Grace Rhythm Sounds Brand Colors - Blue and Black Theme */
+    --navy-blue: 210 100% 15%;
+    --electric-blue: 210 85% 45%;
     --pure-black: 0 0% 0%;
     --pure-white: 0 0% 100%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(210 100% 12%) 0%, hsl(214 100% 50%) 100%);
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(210 100% 12% / 0.8) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(210 100% 12% / 0.05) 0%, hsl(214 100% 50% / 0.1) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(210 100% 15%) 0%, hsl(210 85% 45%) 100%);
+    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.8) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(210 100% 15% / 0.05) 0%, hsl(210 85% 45% / 0.1) 100%);
 
     /* Shadows */
-    --shadow-soft: 0 4px 20px hsl(210 100% 12% / 0.08);
-    --shadow-medium: 0 8px 30px hsl(210 100% 12% / 0.12);
-    --shadow-strong: 0 20px 60px hsl(210 100% 12% / 0.2);
-    --shadow-glow: 0 0 40px hsl(214 100% 50% / 0.3);
+    --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.08);
+    --shadow-medium: 0 8px 30px hsl(0 0% 0% / 0.12);
+    --shadow-strong: 0 20px 60px hsl(0 0% 0% / 0.2);
+    --shadow-glow: 0 0 40px hsl(210 85% 45% / 0.3);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,30 +61,30 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 210 100% 6%;
+    --background: 0 0% 5%;
     --foreground: 0 0% 100%;
 
-    --card: 210 100% 8%;
+    --card: 0 0% 8%;
     --card-foreground: 0 0% 100%;
 
-    --popover: 210 100% 8%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 100%;
 
-    --primary: 214 100% 50%;
+    --primary: 210 85% 45%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 100% 12%;
+    --secondary: 210 100% 15%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 50% 15%;
+    --muted: 0 0% 12%;
     --muted-foreground: 210 20% 70%;
 
-    --accent: 214 100% 50%;
+    --accent: 210 85% 45%;
     --accent-foreground: 0 0% 100%;
 
-    --border: 210 50% 15%;
-    --input: 210 50% 15%;
-    --ring: 214 100% 50%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 210 85% 45%;
   }
 }
 

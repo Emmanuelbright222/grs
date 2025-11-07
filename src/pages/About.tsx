@@ -17,7 +17,7 @@ const About = () => {
           <div className="container mx-auto px-4">
             <AnimatedSection animationType="zoom">
               <div className="max-w-4xl mx-auto text-center">
-                <h1 className="text-3xl md:text-6xl font-bold mb-6">Our Story</h1>
+                <h1 className="text-3xl md:text-6xl font-bold mb-6">About Us</h1>
                 <p className="text-xl opacity-90">
                   Building bridges between cultures through the universal language of music
                 </p>
@@ -54,55 +54,31 @@ const About = () => {
           </div>
         </section>
 
-        {/* Vision Section */}
-        <section className="py-20 bg-muted/30">
+        {/* Vision Statement Section */}
+        <section className="relative py-20 bg-primary text-primary-foreground">
           <div className="container mx-auto px-4">
-            <AnimatedSection animationType="fadeUp">
-              <div className="max-w-4xl mx-auto text-center mb-16">
-                <h2 className="text-3xl md:text-5xl font-bold mb-6">Our Vision</h2>
-                <p className="text-xl text-muted-foreground">
-                  To become the leading global record label that champions diversity, innovation, and artistic integrity across all music genres
+            <AnimatedSection animationType="zoom">
+              <div className="max-w-4xl mx-auto text-center">
+                <h2 className="text-3xl md:text-6xl font-bold mb-8">🌍 Vision Statement</h2>
+                <p className="text-xl md:text-2xl opacity-90 leading-relaxed">
+                  To be the world's leading platform for gospel artistry — amplifying voices of faith, transforming lives through music, and connecting heaven's message to every corner of the earth.
                 </p>
               </div>
             </AnimatedSection>
+          </div>
+        </section>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              <AnimatedSection animationType="zoom" delay={0}>
-                <Card className="p-8 text-center border-0 shadow-soft hover:shadow-strong transition-smooth">
-                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🎵</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Artist Development</h3>
-                <p className="text-muted-foreground">
-                  Nurturing talent through mentorship, training, and world-class production facilities
+        {/* Mission Statement Section */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <AnimatedSection animationType="fadeUp">
+              <div className="max-w-4xl mx-auto text-center">
+                <h2 className="text-3xl md:text-5xl font-bold mb-8">🎯 Mission Statement</h2>
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                  We empower gospel artists by producing, promoting, and distributing their music with excellence — ensuring they earn sustainably, reach global audiences, and carry the sound of grace across generations.
                 </p>
-                </Card>
-              </AnimatedSection>
-
-              <AnimatedSection animationType="zoom" delay={100}>
-                <Card className="p-8 text-center border-0 shadow-soft hover:shadow-strong transition-smooth">
-                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">🌍</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Global Reach</h3>
-                <p className="text-muted-foreground">
-                  Connecting artists with audiences worldwide through strategic partnerships and distribution
-                </p>
-                </Card>
-              </AnimatedSection>
-
-              <AnimatedSection animationType="zoom" delay={200}>
-                <Card className="p-8 text-center border-0 shadow-soft hover:shadow-strong transition-smooth">
-                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-3xl">💡</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3">Innovation</h3>
-                <p className="text-muted-foreground">
-                  Embracing cutting-edge technology and creative approaches to music production and promotion
-                </p>
-                </Card>
-              </AnimatedSection>
-            </div>
+              </div>
+            </AnimatedSection>
           </div>
         </section>
 
@@ -124,12 +100,12 @@ const About = () => {
                 <div className="grid md:grid-cols-2 gap-0">
                   <img
                     src={peterAlechenu}
-                    alt="Peter Alechenu - Founder"
+                    alt="Peter Alechenu Apeh - Founder"
                     className="w-full h-full object-contain object-top rounded-[10px]"
                     loading="lazy"
                   />
                   <div className="p-8 md:p-12 flex flex-col justify-center">
-                    <h3 className="text-3xl font-bold mb-2">Peter Alechenu</h3>
+                    <h3 className="text-3xl font-bold mb-2">Peter Alechenu Apeh</h3>
                     <p className="text-accent font-semibold mb-4">Founder & CEO</p>
                     <p className="text-muted-foreground mb-4">
                       With over a decade of experience in the music industry, Peter Alechenu founded Grace Rhythm Sounds to create a platform that celebrates diversity and empowers artists globally.

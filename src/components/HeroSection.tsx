@@ -31,12 +31,12 @@ const HeroSection = () => {
             Grace Rhythm Sounds
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 text-white/90 font-light max-w-2xl mx-auto px-4">
-            Inspiring souls through gospel music, uplifting melodies, and divine rhythms.
+            helps gospel artists produce and distribute music globally while earning
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
-            <Link to="/artists">
+            <Link to="/signup">
               <Button variant="hero" size="lg" className="group w-full sm:w-auto h-10 sm:h-14 px-6 sm:px-10 text-sm sm:text-base">
-                Explore Artists
+                Get Started
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-smooth" />
               </Button>
             </Link>
