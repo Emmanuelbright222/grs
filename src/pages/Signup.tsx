@@ -337,7 +337,6 @@ const Signup = () => {
             }
           }
         }
-      }
 
       // Check if email confirmation is required
       if (authData.user && !authData.session) {
