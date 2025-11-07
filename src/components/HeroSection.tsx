@@ -35,13 +35,13 @@ const HeroSection = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
             <Link to="/artists">
-              <Button variant="hero" size="lg" className="group w-full sm:w-auto">
+              <Button variant="hero" size="lg" className="group w-full sm:w-auto h-10 sm:h-14 px-6 sm:px-10 text-sm sm:text-base">
                 Explore Artists
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-smooth" />
               </Button>
             </Link>
             <Link to="/releases">
-              <Button variant="hero" size="lg" className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white hover:text-primary w-full sm:w-auto">
+              <Button variant="hero" size="lg" className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/30 hover:text-white w-full sm:w-auto h-10 sm:h-14 px-6 sm:px-10 text-sm sm:text-base">
                 Latest Releases
               </Button>
             </Link>
