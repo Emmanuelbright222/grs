@@ -137,16 +137,26 @@ const Signup = () => {
       });
 
       if (authError) {
+        console.error("❌ AUTH ERROR:", authError);
+        console.error("❌ Auth error details:", {
+          message: authError.message,
+          status: authError.status,
+          code: authError.code,
+          name: authError.name
+        });
+        
         // Check for account already exists errors (multiple possible formats)
-        const errorMessageLower = authError.message?.toLowerCase() || '';
+        const errorMessageLower = (authError.message || '').toLowerCase();
         const isAccountExists = 
           errorMessageLower.includes('user already registered') ||
           errorMessageLower.includes('already registered') ||
           errorMessageLower.includes('email already exists') ||
           errorMessageLower.includes('user already exists') ||
           errorMessageLower.includes('email address is already') ||
+          errorMessageLower.includes('email address already registered') ||
           authError.status === 422 || // Supabase often returns 422 for duplicate accounts
-          authError.code === 'user_already_registered';
+          authError.code === 'user_already_registered' ||
+          authError.code === 'email_already_registered';
         
         if (isAccountExists) {
           // Reset captcha if needed
@@ -185,51 +195,87 @@ const Signup = () => {
         throw new Error(errorMessage);
       }
 
-      if (authData.user) {
-        console.log("🔄 Creating profile for user:", authData.user.id);
-        console.log("📝 Profile data:", {
-          user_id: authData.user.id,
-          full_name: formData.fullName,
-          artist_name: formData.artistName,
-          email: formData.email,
-          genre: formData.genre,
+      if (!authData.user) {
+        console.error("❌ No user returned from signup");
+        toast({
+          title: "Account creation failed",
+          description: "Unable to create account. Please try again or contact support.",
+          variant: "destructive",
         });
-        
-        // Use database function to create/update profile (bypasses RLS)
-        const { data: profileData, error: profileError } = await (supabase.rpc as any)('create_or_update_profile', {
-            p_user_id: authData.user.id,
-            p_full_name: formData.fullName,
-            p_artist_name: formData.artistName,
-            p_email: formData.email,
-            p_genre: formData.genre,
-            p_phone_number: formData.phoneNumber || null,
-            p_gender: formData.gender || null,
-          });
+        return;
+      }
+
+      console.log("🔄 Creating profile for user:", authData.user.id);
+      console.log("📝 Profile data:", {
+        user_id: authData.user.id,
+        full_name: formData.fullName,
+        artist_name: formData.artistName,
+        email: formData.email,
+        genre: formData.genre,
+        phone_number: formData.phoneNumber || null,
+        gender: formData.gender || null,
+      });
+      
+      // Use database function to create/update profile (bypasses RLS)
+      const { data: profileData, error: profileError } = await (supabase.rpc as any)('create_or_update_profile', {
+          p_user_id: authData.user.id,
+          p_full_name: formData.fullName,
+          p_artist_name: formData.artistName,
+          p_email: formData.email,
+          p_genre: formData.genre,
+          p_phone_number: formData.phoneNumber || null,
+          p_gender: formData.gender || null,
+        });
 
         if (profileError) {
           console.error("❌ PROFILE CREATION FAILED:", profileError);
+          console.error("❌ Error details:", {
+            message: profileError.message,
+            code: profileError.code,
+            details: profileError.details,
+            hint: profileError.hint
+          });
           
-          // Handle specific duplicate errors
+          // Handle specific duplicate errors - check message first
           let errorMessage = profileError.message || "Could not create profile. Please contact support.";
           let shouldRedirect = false;
+          let errorTitle = "Profile creation failed";
           
-          if (profileError.message?.includes("Email already exists")) {
-            errorMessage = "Email address already exists. Please login or reset your password or contact admin";
+          // Check error message for specific cases
+          const errorMsgLower = (profileError.message || "").toLowerCase();
+          
+          if (errorMsgLower.includes("email already exists") || errorMsgLower.includes("email address is already")) {
+            errorTitle = "Email address already exists";
+            errorMessage = "Please login or reset your password or contact admin";
             shouldRedirect = true;
-          } else if (profileError.message?.includes("Artist name already exists") || profileError.message?.includes("Username already exists")) {
-            errorMessage = "Username already exists, use another username";
-          } else if (profileError.message?.includes("Phone number already in use") || profileError.message?.includes("Phone Number already existing")) {
-            errorMessage = "Phone Number already existing. Kindly login or reset your password or contact admin";
+          } else if (errorMsgLower.includes("artist name already exists") || errorMsgLower.includes("username already exists")) {
+            errorTitle = "Username already exists";
+            errorMessage = "Use another username";
+            shouldRedirect = false;
+          } else if (errorMsgLower.includes("phone number already") || errorMsgLower.includes("phone number already in use")) {
+            errorTitle = "Phone Number already existing";
+            errorMessage = "Kindly login or reset your password or contact admin";
             shouldRedirect = true;
-          } else if (profileError.code === "23503") {
-            errorMessage = "Account creation failed. Please try again or contact support.";
+          } else if (errorMsgLower.includes("user account not found")) {
+            // This shouldn't happen during signup, but if it does, show a better message
+            errorTitle = "Account creation error";
+            errorMessage = "There was an issue creating your account. Please try again or contact support.";
+          } else if (profileError.code === "23503" || profileError.code === "23505") {
+            // Foreign key constraint or unique constraint violation
+            errorTitle = "Account creation failed";
+            errorMessage = "The information you provided is already in use. Please use different details or login to your existing account.";
+            shouldRedirect = true;
           }
           
           toast({
-            title: "Profile creation failed",
+            title: errorTitle,
             description: errorMessage,
             variant: "destructive",
           });
+          
+          // Note: If profile creation failed, the auth user might be orphaned
+          // This will need to be cleaned up manually or via a server-side function
+          // Client-side cannot delete auth users without admin privileges
           
           // Redirect to login for email/phone already exists
           if (shouldRedirect) {

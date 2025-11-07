@@ -21,25 +21,31 @@ DECLARE
   v_profile public.profiles;
   v_user_exists BOOLEAN;
 BEGIN
-  -- Check if user exists in auth.users
+  -- Check if user exists in auth.users FIRST
   SELECT EXISTS(SELECT 1 FROM auth.users WHERE id = p_user_id) INTO v_user_exists;
   
   IF NOT v_user_exists THEN
     RAISE EXCEPTION 'User account not found. Please ensure you are logged in.';
   END IF;
   
-  -- Check for duplicate email (if not updating same user)
-  IF EXISTS (
+  -- Check for duplicate email (case-insensitive, trim whitespace)
+  -- This prevents creating duplicate profiles when email already exists
+  IF p_email IS NOT NULL AND p_email != '' AND EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE email = p_email AND user_id != p_user_id AND email IS NOT NULL
+    WHERE LOWER(TRIM(email)) = LOWER(TRIM(p_email)) 
+      AND (user_id != p_user_id OR user_id IS NULL) 
+      AND email IS NOT NULL 
+      AND email != ''
   ) THEN
     RAISE EXCEPTION 'Email already exists. Please use a different email.';
   END IF;
   
   -- Check for duplicate artist name (if not updating same user)
-  IF p_artist_name IS NOT NULL AND EXISTS (
+  IF p_artist_name IS NOT NULL AND p_artist_name != '' AND EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE artist_name = p_artist_name AND user_id != p_user_id AND artist_name IS NOT NULL
+    WHERE LOWER(TRIM(artist_name)) = LOWER(TRIM(p_artist_name)) 
+      AND (user_id != p_user_id OR user_id IS NULL) 
+      AND artist_name IS NOT NULL
   ) THEN
     RAISE EXCEPTION 'Artist name already exists. Please choose a different name.';
   END IF;
@@ -47,7 +53,9 @@ BEGIN
   -- Check for duplicate phone number (if provided and not updating same user)
   IF p_phone_number IS NOT NULL AND p_phone_number != '' AND EXISTS (
     SELECT 1 FROM public.profiles 
-    WHERE phone_number = p_phone_number AND user_id != p_user_id AND phone_number IS NOT NULL
+    WHERE TRIM(phone_number) = TRIM(p_phone_number) 
+      AND (user_id != p_user_id OR user_id IS NULL) 
+      AND phone_number IS NOT NULL
   ) THEN
     RAISE EXCEPTION 'Phone number already in use. Please use a different number.';
   END IF;
@@ -172,4 +180,8 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION public.admin_create_profile(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN, BOOLEAN, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO authenticated;
+
+-- Grant execute permissions on create_or_update_profile function
+GRANT EXECUTE ON FUNCTION public.create_or_update_profile(UUID, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.create_or_update_profile(UUID, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO anon;
 
