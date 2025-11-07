@@ -27,15 +27,15 @@ const HeroSection = () => {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center relative">
         <div className="max-w-4xl mx-auto animate-fade-in-up">
-          <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-bold mb-3 md:mb-6 text-white leading-tight px-4">
+          <h1 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-bold mb-3 md:mb-6 text-white leading-tight px-4">
             Grace Rhythm Sounds
           </h1>
-          <p className="text-base sm:text-lg md:text-2xl mb-4 md:mb-8 text-white/90 font-light max-w-2xl mx-auto px-4">
+          <p className="text-xl sm:text-base md:text-2xl mb-4 md:mb-8 text-white/90 font-light max-w-2xl mx-auto px-4">
             helps gospel artists produce and distribute music globally while earning
           </p>
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center px-4">
             <Link to="/signup" className="w-full sm:w-auto">
-              <Button variant="hero" size="lg" className="group w-full sm:w-auto h-10 sm:h-14 px-6 sm:px-10 text-sm sm:text-base">
+              <Button variant="hero" size="lg" className="group w-full sm:w-auto h-10 sm:h-14 px-4 sm:px-10 text-sm sm:text-base">
                 Get Started
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-smooth" />
               </Button>
