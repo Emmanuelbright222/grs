@@ -100,12 +100,12 @@ const Navbar = () => {
     path: "/dashboard",
     label: "Dashboard"
   }];
-  return <nav className={`fixed top-0 w-full z-50 transition-smooth ${isScrolled || !isHomePage ? "bg-background/80 backdrop-blur-xl shadow-glow border-b border-white/10" : "bg-white/10 backdrop-blur-md border-b border-white/5"}`}>
+  return <nav className={`fixed top-0 w-full z-50 transition-smooth ${isScrolled || !isHomePage ? "bg-accent/95 backdrop-blur-xl shadow-glow border-b border-accent/20" : "bg-white/10 backdrop-blur-md border-b border-white/5"}`}>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between bg-stone-950/0">
           <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt="Grace Rhythm Sounds" className="h-10 w-10 transition-spring group-hover:scale-110" />
-            <span className={`font-bold text-xl hidden sm:block transition-smooth ${isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+            <span className="font-bold text-xl hidden sm:block transition-smooth text-white">
               Grace Rhythm Sounds
             </span>
           </Link>
@@ -128,7 +128,7 @@ const Navbar = () => {
                 );
               }
               return (
-                <Link key={link.path} to={link.path} className={`font-medium transition-smooth hover:text-accent ${location.pathname === link.path ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                <Link key={link.path} to={link.path} className={`font-medium transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
                   {link.label}
                 </Link>
               );
@@ -136,7 +136,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <Button variant="ghost" size="icon" className={`lg:hidden transition-smooth ${isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          <Button variant="ghost" size="icon" className={`lg:hidden transition-smooth text-white hover:text-white/80`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             {isMobileMenuOpen ? <X /> : <Menu />}
           </Button>
         </div>
@@ -166,22 +166,22 @@ const Navbar = () => {
                           Dashboard
                         </Link>
                       </Button>
-                      <Link to="/dashboard/artists" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-accent ${location.pathname === "/dashboard/artists" ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <Link to="/dashboard/artists" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/artists" ? "text-white font-bold" : "text-white"}`}>
                         Artists
                       </Link>
-                      <Link to="/dashboard/releases" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-accent ${location.pathname === "/dashboard/releases" ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <Link to="/dashboard/releases" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/releases" ? "text-white font-bold" : "text-white"}`}>
                         Releases
                       </Link>
-                      <Link to="/dashboard/events" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-accent ${location.pathname === "/dashboard/events" ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <Link to="/dashboard/events" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/events" ? "text-white font-bold" : "text-white"}`}>
                         Events
                       </Link>
-                      <Link to="/dashboard/news" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-accent ${location.pathname === "/dashboard/news" ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <Link to="/dashboard/news" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/news" ? "text-white font-bold" : "text-white"}`}>
                         News
                       </Link>
-                      <Link to="/dashboard/admin-management" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-accent ${location.pathname === "/dashboard/admin-management" ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <Link to="/dashboard/admin-management" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/admin-management" ? "text-white font-bold" : "text-white"}`}>
                         Admin Management
                       </Link>
-                      <button onClick={handleSignOut} className={`font-medium py-2 text-left transition-smooth hover:text-accent ${isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <button onClick={handleSignOut} className={`font-medium py-2 text-left transition-smooth hover:text-white/80 text-white`}>
                         Sign Out
                       </button>
                     </>
@@ -198,10 +198,10 @@ const Navbar = () => {
                           Dashboard
                         </Link>
                       </Button>
-                      <Link to="/dashboard/profile" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-accent ${location.pathname === "/dashboard/profile" ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <Link to="/dashboard/profile" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/profile" ? "text-white font-bold" : "text-white"}`}>
                         My Profile
                       </Link>
-                      <button onClick={handleSignOut} className={`font-medium py-2 text-left transition-smooth hover:text-accent ${isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <button onClick={handleSignOut} className={`font-medium py-2 text-left transition-smooth hover:text-white/80 text-white`}>
                         Sign Out
                       </button>
                     </>
@@ -227,7 +227,7 @@ const Navbar = () => {
                       );
                     }
                     return (
-                      <Link key={link.path} to={link.path} onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-accent ${location.pathname === link.path ? "text-accent" : isScrolled || !isHomePage ? "text-[#0A2540]" : "text-white"}`}>
+                      <Link key={link.path} to={link.path} onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
                         {link.label}
                       </Link>
                     );
