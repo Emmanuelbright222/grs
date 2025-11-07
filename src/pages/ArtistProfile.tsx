@@ -280,7 +280,7 @@ const ArtistProfile = () => {
   const getProfileCompletion = () => {
     if (!profile) return 0;
     let completed = 0;
-    const total = 8; // full_name, artist_name, email, genre, bio, avatar_url, artist_image_url, phone_number
+    const total = 9; // full_name, artist_name, email, genre, bio, avatar_url, artist_image_url, phone_number, gender
     
     if (profile.full_name) completed++;
     if (profile.artist_name) completed++;
@@ -290,6 +290,7 @@ const ArtistProfile = () => {
     if (profile.avatar_url) completed++;
     if (profile.artist_image_url) completed++;
     if (profile.phone_number) completed++;
+    if (profile.gender) completed++;
     
     return Math.round((completed / total) * 100);
   };
@@ -305,6 +306,7 @@ const ArtistProfile = () => {
     if (!profile.avatar_url) missing.push("Profile Picture");
     if (!profile.artist_image_url) missing.push("Artist Image");
     if (!profile.phone_number) missing.push("Phone Number");
+    if (!profile.gender) missing.push("Gender");
     return missing;
   };
 
