@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import MusicBackground from "@/components/MusicBackground";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Tag, ArrowLeft } from "lucide-react";
+import { Calendar, Tag, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
@@ -14,6 +14,8 @@ const NewsDetail = () => {
   const navigate = useNavigate();
   const [article, setArticle] = useState<any>(null);
   const [relatedArticles, setRelatedArticles] = useState<any[]>([]);
+  const [previousArticle, setPreviousArticle] = useState<any>(null);
+  const [nextArticle, setNextArticle] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,6 +58,32 @@ const NewsDetail = () => {
         .update({ view_count: (data.view_count || 0) + 1 })
         .eq("id", data.id);
 
+      const publishedDate = data.published_at || data.created_at;
+
+      // Load previous article (older article)
+      const { data: previous } = await supabase
+        .from("news")
+        .select("*")
+        .eq("is_published", true)
+        .lt("published_at", publishedDate)
+        .order("published_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      setPreviousArticle(previous || null);
+
+      // Load next article (newer article)
+      const { data: next } = await supabase
+        .from("news")
+        .select("*")
+        .eq("is_published", true)
+        .gt("published_at", publishedDate)
+        .order("published_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      setNextArticle(next || null);
+
       // Load related articles (same category, excluding current)
       if (data.category) {
         const { data: related } = await supabase
@@ -63,6 +91,17 @@ const NewsDetail = () => {
           .select("*")
           .eq("is_published", true)
           .eq("category", data.category)
+          .neq("id", data.id)
+          .order("published_at", { ascending: false })
+          .limit(3);
+
+        setRelatedArticles(related || []);
+      } else {
+        // If no category, load other recent articles
+        const { data: related } = await supabase
+          .from("news")
+          .select("*")
+          .eq("is_published", true)
           .neq("id", data.id)
           .order("published_at", { ascending: false })
           .limit(3);
@@ -104,10 +143,55 @@ const NewsDetail = () => {
       <Navbar />
       <main className="pt-24 pb-20 relative z-10">
         <div className="container mx-auto px-4 max-w-4xl">
+          {/* Navigation Buttons */}
+          <div className="flex items-center justify-between gap-4 mb-6">
+            {previousArticle ? (
+              <Link
+                to={`/news/${previousArticle.slug || previousArticle.id}`}
+                className="flex items-center gap-2 text-accent hover:text-accent/80 transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5" />
+                <div className="hidden sm:block text-left">
+                  <div className="text-xs text-muted-foreground">Previous</div>
+                  <div className="text-sm font-medium line-clamp-1">{previousArticle.title}</div>
+                </div>
+                <div className="sm:hidden text-sm font-medium">Previous</div>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            
+            <Button
+              variant="outline"
+              onClick={() => navigate("/news")}
+              className="hidden sm:flex"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to News
+            </Button>
+
+            {nextArticle ? (
+              <Link
+                to={`/news/${nextArticle.slug || nextArticle.id}`}
+                className="flex items-center gap-2 text-accent hover:text-accent/80 transition-colors ml-auto"
+              >
+                <div className="hidden sm:block text-right">
+                  <div className="text-xs text-muted-foreground">Next</div>
+                  <div className="text-sm font-medium line-clamp-1">{nextArticle.title}</div>
+                </div>
+                <div className="sm:hidden text-sm font-medium">Next</div>
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            ) : (
+              <div></div>
+            )}
+          </div>
+
+          {/* Mobile Back Button */}
           <Button
-            variant="hero"
+            variant="outline"
             onClick={() => navigate("/news")}
-            className="mb-6"
+            className="mb-6 sm:hidden w-full"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to News
@@ -180,10 +264,43 @@ const NewsDetail = () => {
               />
             </div>
 
+            {/* Next/Previous Navigation at Bottom */}
+            <div className="flex items-center justify-between gap-4 mt-12 pt-8 border-t border-border">
+              {previousArticle ? (
+                <Link
+                  to={`/news/${previousArticle.slug || previousArticle.id}`}
+                  className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-accent hover:bg-accent/5 transition-all w-full sm:w-auto"
+                >
+                  <ChevronLeft className="w-5 h-5 text-accent flex-shrink-0" />
+                  <div className="text-left">
+                    <div className="text-xs text-muted-foreground mb-1">Previous Article</div>
+                    <div className="text-sm font-medium line-clamp-2">{previousArticle.title}</div>
+                  </div>
+                </Link>
+              ) : (
+                <div></div>
+              )}
+
+              {nextArticle ? (
+                <Link
+                  to={`/news/${nextArticle.slug || nextArticle.id}`}
+                  className="flex items-center gap-3 p-4 rounded-lg border border-border hover:border-accent hover:bg-accent/5 transition-all w-full sm:w-auto ml-auto"
+                >
+                  <div className="text-right">
+                    <div className="text-xs text-muted-foreground mb-1">Next Article</div>
+                    <div className="text-sm font-medium line-clamp-2">{nextArticle.title}</div>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-accent flex-shrink-0" />
+                </Link>
+              ) : (
+                <div></div>
+              )}
+            </div>
+
             {/* Related Articles */}
             {relatedArticles.length > 0 && (
               <Card className="p-6 border-0 shadow-soft mt-12">
-                <h2 className="text-2xl font-bold mb-4">Related Articles</h2>
+                <h2 className="text-2xl font-bold mb-4">You Might Also Like</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {relatedArticles.map((related) => (
                     <Link
@@ -191,7 +308,7 @@ const NewsDetail = () => {
                       to={`/news/${related.slug || related.id}`}
                       className="block"
                     >
-                      <Card className="overflow-hidden border-0 shadow-soft hover:shadow-strong transition-smooth">
+                      <Card className="overflow-hidden border-0 shadow-soft hover:shadow-strong transition-smooth h-full">
                         {related.featured_image_url && (
                           <div className="aspect-video bg-muted overflow-hidden">
                             <img
