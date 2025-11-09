@@ -5,7 +5,7 @@ import heroImage from "@/assets/hero-artists.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[900px] sm:min-h-[650px] sm:max-h-[950px] md:min-h-[700px] md:max-h-[1000px] lg:min-h-[800px] lg:max-h-[1100px] flex items-center justify-center overflow-hidden pt-20 pb-12 sm:pt-24 sm:pb-16 md:pt-0 md:pb-0">
+    <section className="relative h-screen min-h-[500px] max-h-[700px] sm:min-h-[600px] sm:max-h-[800px] md:min-h-[700px] md:max-h-[1000px] lg:min-h-[800px] lg:max-h-[1100px] flex items-center justify-center overflow-hidden pt-12 pb-6 sm:pt-16 sm:pb-10 md:pt-0 md:pb-0">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
