@@ -5,7 +5,7 @@ import heroImage from "@/assets/hero-artists.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative h-screen min-h-[500px] max-h-[700px] sm:min-h-[600px] sm:max-h-[800px] md:min-h-[700px] md:max-h-[1000px] lg:min-h-[800px] lg:max-h-[1100px] flex items-center justify-center overflow-hidden pt-12 pb-6 sm:pt-16 sm:pb-10 md:pt-0 md:pb-0">
+    <section className="relative h-screen min-h-[400px] max-h-[600px] sm:min-h-[500px] sm:max-h-[700px] md:min-h-[700px] md:max-h-[1000px] lg:min-h-[800px] lg:max-h-[1100px] flex items-center justify-center overflow-hidden pt-6 pb-4 sm:pt-10 sm:pb-6 md:pt-0 md:pb-0">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
@@ -27,10 +27,10 @@ const HeroSection = () => {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 z-10 text-center relative w-full">
         <div className="max-w-5xl mx-auto animate-fade-in-up">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-5 md:mb-6 text-white leading-tight px-2 sm:px-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 md:mb-6 text-white leading-tight px-2 sm:px-4">
             Grace Rhythm Sounds
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-7 md:mb-8 text-white/90 font-light max-w-3xl mx-auto px-2 sm:px-4">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-4 sm:mb-5 md:mb-8 text-white/90 font-light max-w-3xl mx-auto px-2 sm:px-4">
             helps gospel artists produce and distribute music globally while earning
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2 sm:px-4">
