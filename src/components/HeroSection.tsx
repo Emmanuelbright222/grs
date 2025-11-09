@@ -5,7 +5,7 @@ import heroImage from "@/assets/hero-artists.jpg";
 
 const HeroSection = () => {
   return (
-    <section className="relative h-screen min-h-[500px] max-h-[800px] md:min-h-[700px] md:max-h-[1000px] flex items-center justify-center overflow-hidden pt-16 pb-8 md:pt-0 md:pb-0">
+    <section className="relative h-screen min-h-[600px] max-h-[900px] sm:min-h-[650px] sm:max-h-[950px] md:min-h-[700px] md:max-h-[1000px] lg:min-h-[800px] lg:max-h-[1100px] flex items-center justify-center overflow-hidden pt-20 pb-12 sm:pt-24 sm:pb-16 md:pt-0 md:pb-0">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img
@@ -25,17 +25,17 @@ const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 z-10 text-center relative">
-        <div className="max-w-4xl mx-auto animate-fade-in-up">
-          <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-6xl 2xl:text-7xl font-bold mb-3 md:mb-6 text-white leading-tight px-4">
+      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 z-10 text-center relative w-full">
+        <div className="max-w-5xl mx-auto animate-fade-in-up">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-5 md:mb-6 text-white leading-tight px-2 sm:px-4">
             Grace Rhythm Sounds
           </h1>
-          <p className="text-xl sm:text-base md:text-2xl mb-4 md:mb-8 text-white/90 font-light max-w-2xl mx-auto px-4">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-7 md:mb-8 text-white/90 font-light max-w-3xl mx-auto px-2 sm:px-4">
             helps gospel artists produce and distribute music globally while earning
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center px-4">
-            <Link to="/signup" className="w-auto">
-              <Button variant="hero" size="lg" className="group w-auto h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-base">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2 sm:px-4">
+            <Link to="/signup" className="w-full sm:w-auto">
+              <Button variant="hero" size="lg" className="group w-full sm:w-auto h-12 sm:h-14 px-8 sm:px-10 text-base sm:text-lg">
                 Get Started
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-smooth" />
               </Button>
@@ -44,7 +44,7 @@ const HeroSection = () => {
         </div>
 
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden md:block">
+        <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce hidden sm:block">
           <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-3 bg-white/50 rounded-full"></div>
           </div>
