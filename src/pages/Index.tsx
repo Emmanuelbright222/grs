@@ -1,9 +1,11 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
+import AtAGlance from "@/components/AtAGlance";
 import FeaturedArtists from "@/components/FeaturedArtists";
 import LatestReleases from "@/components/LatestReleases";
 import LatestNews from "@/components/LatestNews";
+import FAQ from "@/components/FAQ";
 import GenreMarquee from "@/components/GenreMarquee";
 import MusicBackground from "@/components/MusicBackground";
 
@@ -14,9 +16,11 @@ const Index = () => {
       <Navbar />
       <main className="relative z-10">
         <HeroSection />
+        <AtAGlance />
         <FeaturedArtists />
         <LatestReleases />
         <LatestNews />
+        <FAQ />
         <GenreMarquee />
       </main>
       <Footer />

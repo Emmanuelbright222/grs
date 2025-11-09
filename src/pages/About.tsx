@@ -1,10 +1,9 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Card } from "@/components/ui/card";
 import MusicBackground from "@/components/MusicBackground";
 import AnimatedSection from "@/components/AnimatedSection";
+import FounderSection from "@/components/FounderSection";
 import studioImage from "@/assets/studio.jpg";
-import peterAlechenu from "@/assets/peter-alechenu.jpg";
 
 const About = () => {
   return (
@@ -82,44 +81,8 @@ const About = () => {
           </div>
         </section>
 
-        {/* Team Section */}
-        <section className="py-20 bg-background">
-          <div className="container mx-auto px-4">
-            <AnimatedSection animationType="fadeUp">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">Meet Our Founder</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  The visionary behind Grace Rhythm Sounds
-                </p>
-              </div>
-            </AnimatedSection>
-
-            <AnimatedSection animationType="zoom" delay={200}>
-              <div className="max-w-4xl mx-auto">
-                <Card className="overflow-hidden border-0 shadow-strong">
-                <div className="grid md:grid-cols-2 gap-0">
-                  <img
-                    src={peterAlechenu}
-                    alt="Peter Alechenu Apeh - Founder"
-                    className="w-full h-full object-contain object-top rounded-[10px]"
-                    loading="lazy"
-                  />
-                  <div className="p-8 md:p-12 flex flex-col justify-center">
-                    <h3 className="text-3xl font-bold mb-2">Peter Alechenu Apeh</h3>
-                    <p className="text-accent font-semibold mb-4">Founder & CEO</p>
-                    <p className="text-muted-foreground mb-4">
-                      With over a decade of experience in the music industry, Peter Alechenu founded Grace Rhythm Sounds to create a platform that celebrates diversity and empowers artists globally.
-                    </p>
-                    <p className="text-muted-foreground">
-                      His passion for Afrobeat culture combined with a vision for modern music production has shaped the label into a powerhouse of talent and innovation.
-                    </p>
-                  </div>
-                </div>
-                </Card>
-              </div>
-            </AnimatedSection>
-          </div>
-        </section>
+        {/* Founder Section */}
+        <FounderSection />
       </main>
       <Footer />
     </div>

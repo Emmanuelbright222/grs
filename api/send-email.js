@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     // Send to forwarding email address
     await resend.emails.send({
       from: 'Grace Rhythm Sounds <info@gracerhythmsounds.com>',
-      to: 'miztabrightstar@gmail.com',
+      to: 'gracerhythmsounds@gmail.com',
       subject: `New Contact Form Submission from ${name}`,
       html: `
         <h2>New Message from ${name}</h2>

@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Use the website email address
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "info@gracerhythmsounds.com";
-    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
+    const toEmail = Deno.env.get("RESEND_TO_EMAIL") || "gracerhythmsounds@gmail.com";
     
     console.log("Email configuration:", { fromEmail, toEmail, userEmail: email });
     

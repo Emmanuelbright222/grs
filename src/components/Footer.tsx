@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Youtube, Music } from "lucide-react";
+import { Facebook, Instagram, Youtube, Music, Mail, MapPin, MessageCircle } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
@@ -110,10 +110,39 @@ const Footer = () => {
           {/* Contact Info */}
           <div>
             <h3 className="font-semibold text-lg mb-4">Contact</h3>
-            <ul className="space-y-2 text-sm opacity-80">
-              <li>Email: info@gracerhythmsounds.org</li>
-              <li>Business: support@gracerhythmsounds.org</li>
-              <li>Location: Global Operations, Lagos State</li>
+            <ul className="space-y-3 text-sm opacity-80">
+              <li className="flex items-start gap-3">
+                <Mail className="h-5 w-5 flex-shrink-0 mt-0.5 text-accent" />
+                <div>
+                  <a href="mailto:info@gracerhythmsounds.com" className="hover:text-accent transition-smooth block">
+                    info@gracerhythmsounds.com
+                  </a>
+                  <a href="mailto:support@gracerhythmsounds.com" className="hover:text-accent transition-smooth block mt-1">
+                    support@gracerhythmsounds.com
+                  </a>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5 text-accent" />
+                <div>
+                  <span className="opacity-100 font-semibold">Address:</span>
+                  <p className="mt-1">42 Guilemot Close, IP145GJ Stowmarket, England, UK</p>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <MessageCircle className="h-5 w-5 flex-shrink-0 mt-0.5 text-accent" />
+                <div>
+                  <span className="opacity-100 font-semibold">WhatsApp Only:</span>
+                  <div className="mt-1 space-y-1">
+                    <a href="https://wa.me/2347045501149" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-smooth block">
+                      +234 704 550 1149
+                    </a>
+                    <a href="https://wa.me/447417556926" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-smooth block">
+                      +44 7417 556926
+                    </a>
+                  </div>
+                </div>
+              </li>
             </ul>
           </div>
         </div>

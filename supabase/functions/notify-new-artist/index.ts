@@ -78,8 +78,8 @@ const handler = async (req: Request): Promise<Response> => {
     // Use the website email address
     const fromEmail = Deno.env.get("RESEND_FROM_EMAIL") || "info@gracerhythmsounds.com";
     // Send to forwarding email address
-    const recipientEmail = Deno.env.get("RESEND_TO_EMAIL") || "miztabrightstar@gmail.com";
-    const adminEmail = Deno.env.get("ADMIN_EMAIL") || "miztabrightstar@gmail.com"; // Forwarding email address
+    const recipientEmail = Deno.env.get("RESEND_TO_EMAIL") || "gracerhythmsounds@gmail.com";
+    const adminEmail = Deno.env.get("ADMIN_EMAIL") || "gracerhythmsounds@gmail.com"; // Forwarding email address
     
     console.log("Email configuration:", { 
       fromEmail, 
