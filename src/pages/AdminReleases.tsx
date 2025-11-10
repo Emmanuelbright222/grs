@@ -26,6 +26,46 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type ReleaseFormState = {
+  title: string;
+  artist_name: string;
+  genre: string;
+  release_date: string;
+  release_type: string;
+  streaming_url: string;
+  spotify_url: string;
+  apple_music_url: string;
+  youtube_music_url: string;
+  audiomack_url: string;
+  boomplay_url: string;
+  cover_url: string;
+  description: string;
+  is_latest_release: boolean;
+  distrokid_status: string;
+  distrokid_release_id: string;
+  distrokid_dashboard_url: string;
+};
+
+const initialReleaseFormState: ReleaseFormState = {
+  title: "",
+  artist_name: "",
+  genre: "",
+  release_date: "",
+  release_type: "",
+  streaming_url: "",
+  spotify_url: "",
+  apple_music_url: "",
+  youtube_music_url: "",
+  audiomack_url: "",
+  boomplay_url: "",
+  cover_url: "",
+  description: "",
+  is_latest_release: false,
+  distrokid_status: "not_distributed",
+  distrokid_release_id: "",
+  distrokid_dashboard_url: "",
+};
+
 const AdminReleases = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -35,25 +75,7 @@ const AdminReleases = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingRelease, setEditingRelease] = useState<any>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    artist_name: "",
-    genre: "",
-    release_date: "",
-    release_type: "",
-    streaming_url: "",
-    spotify_url: "",
-    apple_music_url: "",
-    youtube_music_url: "",
-    audiomack_url: "",
-    boomplay_url: "",
-    cover_url: "",
-    description: "",
-    is_latest_release: false,
-    distrokid_status: "not_distributed",
-    distrokid_release_id: "",
-    distrokid_dashboard_url: "",
-  });
+  const [formData, setFormData] = useState<ReleaseFormState>(initialReleaseFormState);
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
 
@@ -109,22 +131,7 @@ const AdminReleases = () => {
     setIsEditing(false);
     setEditingRelease(null);
     setCoverImageFile(null);
-    setFormData({
-      title: "",
-      artist_name: "",
-      genre: "",
-      release_date: "",
-      release_type: "",
-      streaming_url: "",
-      spotify_url: "",
-      apple_music_url: "",
-      youtube_music_url: "",
-      audiomack_url: "",
-      boomplay_url: "",
-      cover_url: "",
-      description: "",
-      is_latest_release: false,
-    });
+    setFormData(initialReleaseFormState);
     setIsDialogOpen(true);
   };
 

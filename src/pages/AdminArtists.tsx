@@ -33,6 +33,40 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type ArtistFormState = {
+  full_name: string;
+  artist_name: string;
+  email: string;
+  phone_number: string;
+  genre: string;
+  bio: string;
+  gender: string;
+  is_featured: boolean;
+  is_approved: boolean;
+  spotify_url: string;
+  apple_music_url: string;
+  youtube_music_url: string;
+  audiomack_url: string;
+  boomplay_url: string;
+};
+
+const initialFormState: ArtistFormState = {
+  full_name: "",
+  artist_name: "",
+  email: "",
+  phone_number: "",
+  genre: "",
+  bio: "",
+  gender: "",
+  is_featured: false,
+  is_approved: false,
+  spotify_url: "",
+  apple_music_url: "",
+  youtube_music_url: "",
+  audiomack_url: "",
+  boomplay_url: "",
+};
+
 const AdminArtists = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -42,17 +76,7 @@ const AdminArtists = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    full_name: "",
-    artist_name: "",
-    email: "",
-    phone_number: "",
-    genre: "",
-    bio: "",
-    gender: "",
-    is_featured: false,
-    is_approved: false,
-  });
+  const [formData, setFormData] = useState<ArtistFormState>(initialFormState);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [artistImageFile, setArtistImageFile] = useState<File | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -149,13 +173,13 @@ const AdminArtists = () => {
       
       // Delete streaming platform connections
       if (userId) {
-        await supabase
+        await (supabase as any)
           .from("streaming_platform_connections")
           .delete()
           .eq("user_id", userId);
         
         // Delete streaming analytics
-        await supabase
+        await (supabase as any)
           .from("streaming_analytics")
           .delete()
           .eq("user_id", userId);
@@ -163,7 +187,7 @@ const AdminArtists = () => {
       
       // Delete demo submissions (by user_id or profile id)
       if (userId) {
-        await supabase
+        await (supabase as any)
           .from("demo_submissions")
           .delete()
           .eq("user_id", userId);
@@ -637,22 +661,7 @@ const AdminArtists = () => {
           setIsEditing(false);
           setAvatarFile(null);
           setArtistImageFile(null);
-          setFormData({
-            full_name: "",
-            artist_name: "",
-            email: "",
-            phone_number: "",
-            genre: "",
-            bio: "",
-            gender: "",
-            is_featured: false,
-            is_approved: false,
-            spotify_url: "",
-            apple_music_url: "",
-            youtube_music_url: "",
-            audiomack_url: "",
-            boomplay_url: "",
-          });
+          setFormData(initialFormState);
         }
       }}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -937,16 +946,7 @@ const AdminArtists = () => {
                   setIsEditing(false);
                   setAvatarFile(null);
                   setArtistImageFile(null);
-                  setFormData({
-                    full_name: "",
-                    artist_name: "",
-                    email: "",
-                    phone_number: "",
-                    genre: "",
-                    bio: "",
-                    is_featured: false,
-                    is_approved: false,
-                  });
+                  setFormData(initialFormState);
                 }}
               >
                 Cancel
@@ -1012,7 +1012,7 @@ const AdminArtists = () => {
                     });
                   } else {
                     // Create new profile using admin function (bypasses RLS)
-                    const { data, error } = await supabase.rpc('admin_create_profile', {
+                    const { data, error } = await (supabase as any).rpc('admin_create_profile', {
                       p_full_name: formData.full_name || null,
                       p_artist_name: formData.artist_name,
                       p_email: formData.email,
@@ -1043,17 +1043,7 @@ const AdminArtists = () => {
                   setAvatarFile(null);
                   setArtistImageFile(null);
                   await loadAllArtists();
-                  setFormData({
-                    full_name: "",
-                    artist_name: "",
-                    email: "",
-                    phone_number: "",
-                    genre: "",
-                    bio: "",
-                    gender: "",
-                    is_featured: false,
-                    is_approved: false,
-                  });
+                  setFormData(initialFormState);
                 } catch (error: any) {
                   toast({
                     title: "Error",
