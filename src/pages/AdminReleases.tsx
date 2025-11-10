@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Music, Plus, X, Save, Calendar, Image as ImageIcon, Upload } from "lucide-react";
+import { Music, Plus, X, Save, Calendar, Image as ImageIcon, Upload, ExternalLink, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -49,6 +49,9 @@ const AdminReleases = () => {
     cover_url: "",
     description: "",
     is_latest_release: false,
+    distrokid_status: "not_distributed",
+    distrokid_release_id: "",
+    distrokid_dashboard_url: "",
   });
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -186,7 +189,11 @@ const AdminReleases = () => {
       cover_url: release.cover_url || "",
       description: release.description || "",
       is_latest_release: release.is_latest_release || false,
+      distrokid_status: release.distrokid_status || "not_distributed",
+      distrokid_release_id: release.distrokid_release_id || "",
+      distrokid_dashboard_url: release.distrokid_dashboard_url || "",
     });
+    setCoverImageFile(null);
     setIsDialogOpen(true);
   };
 
@@ -215,6 +222,12 @@ const AdminReleases = () => {
         cover_url: coverUrl || null,
         description: formData.description || null,
         is_latest_release: formData.is_latest_release || false,
+        distrokid_status: formData.distrokid_status || "not_distributed",
+        distrokid_release_id: formData.distrokid_release_id || null,
+        distrokid_dashboard_url: formData.distrokid_dashboard_url || null,
+        distrokid_submitted_at: formData.distrokid_status !== "not_distributed" && !editingRelease?.distrokid_submitted_at 
+          ? new Date().toISOString() 
+          : editingRelease?.distrokid_submitted_at || null,
         user_id: user.id,
       };
 
@@ -339,6 +352,37 @@ const AdminReleases = () => {
                       {release.genre && <span>{release.genre}</span>}
                       {release.release_type && <span>{release.release_type}</span>}
                     </div>
+                    {release.distrokid_status && release.distrokid_status !== "not_distributed" && (
+                      <div className="mb-3">
+                        <div className="flex items-center gap-2 text-xs">
+                          {release.distrokid_status === "live" && (
+                            <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                          )}
+                          {release.distrokid_status === "pending" && (
+                            <Clock className="w-3.5 h-3.5 text-yellow-500" />
+                          )}
+                          {release.distrokid_status === "processing" && (
+                            <Clock className="w-3.5 h-3.5 text-blue-500" />
+                          )}
+                          {release.distrokid_status === "rejected" && (
+                            <XCircle className="w-3.5 h-3.5 text-red-500" />
+                          )}
+                          <span className="capitalize font-medium">
+                            DistroKid: {release.distrokid_status.replace("_", " ")}
+                          </span>
+                          {release.distrokid_dashboard_url && (
+                            <a
+                              href={release.distrokid_dashboard_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-accent hover:underline flex items-center gap-1"
+                            >
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    )}
                     <div className="flex gap-2 mt-4">
                       <Button
                         variant="hero"
@@ -588,6 +632,58 @@ const AdminReleases = () => {
               <Label htmlFor="is_latest_release" className="cursor-pointer">
                 Latest Release (appears on homepage "Latest Releases" section)
               </Label>
+            </div>
+
+            <div className="border-t pt-4 mt-4">
+              <h3 className="font-semibold text-sm mb-3">DistroKid Distribution</h3>
+              
+              <div className="space-y-3">
+                <div>
+                  <Label htmlFor="distrokid_status">Distribution Status</Label>
+                  <Select
+                    value={formData.distrokid_status}
+                    onValueChange={(value) => setFormData({ ...formData, distrokid_status: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="not_distributed">Not Distributed</SelectItem>
+                      <SelectItem value="pending">Pending Submission</SelectItem>
+                      <SelectItem value="processing">Processing</SelectItem>
+                      <SelectItem value="live">Live on Platforms</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="distrokid_release_id">DistroKid Release ID</Label>
+                  <Input
+                    id="distrokid_release_id"
+                    value={formData.distrokid_release_id}
+                    onChange={(e) => setFormData({ ...formData, distrokid_release_id: e.target.value })}
+                    placeholder="e.g., DK-12345 or submission reference"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Reference ID from DistroKid dashboard
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="distrokid_dashboard_url">DistroKid Dashboard URL</Label>
+                  <Input
+                    id="distrokid_dashboard_url"
+                    type="url"
+                    value={formData.distrokid_dashboard_url}
+                    onChange={(e) => setFormData({ ...formData, distrokid_dashboard_url: e.target.value })}
+                    placeholder="https://distrokid.com/hyperfollow/..."
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Direct link to this release in DistroKid dashboard
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-2 justify-end">
