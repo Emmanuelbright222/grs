@@ -100,7 +100,7 @@ const Navbar = () => {
     path: "/dashboard",
     label: "Dashboard"
   }];
-  return <nav className={`fixed top-0 w-full z-50 transition-smooth ${isScrolled || !isHomePage ? "bg-accent/95 backdrop-blur-xl shadow-glow border-b border-accent/20" : "bg-white/10 backdrop-blur-md border-b border-white/5"}`}>
+  return <nav className={`fixed top-0 w-full z-50 transition-smooth ${isScrolled || !isHomePage ? "bg-[#042147]/95 backdrop-blur-xl shadow-glow border-b border-[#07336b]/40" : "bg-white/10 backdrop-blur-md border-b border-white/5"}`}>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between bg-stone-950/0">
           <Link to="/" className="flex items-center gap-3 group">
@@ -171,7 +171,7 @@ const Navbar = () => {
                         asChild
                         variant="hero"
                         size="lg"
-                        className={`w-full justify-start text-lg ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
+                        className={`w-full justify-start text-xl ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                         onClick={() => {
                           setIsMobileMenuOpen(false);
                           // Clear any query params when navigating to dashboard
@@ -217,7 +217,7 @@ const Navbar = () => {
                           Dashboard
                         </Link>
                       </Button>
-                      <Link to="/dashboard/profile" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/profile" ? "text-white font-bold" : "text-white"}`}>
+                      <Link to="/dashboard/profile" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-xl py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/profile" ? "text-white font-bold" : "text-white"}`}>
                         My Profile
                       </Link>
                       <button onClick={handleSignOut} className={`font-medium text-lg py-2 text-left transition-smooth hover:text-white/80 text-white`}>
@@ -236,7 +236,7 @@ const Navbar = () => {
                           asChild
                           variant="hero"
                           size="lg"
-                          className={`w-full justify-start ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
+                          className={`w-full justify-start text-xl ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Link to={link.path}>
@@ -246,7 +246,7 @@ const Navbar = () => {
                       );
                     }
                     return (
-                      <Link key={link.path} to={link.path} onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
+                      <Link key={link.path} to={link.path} onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-xl py-2 transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
                         {link.label}
                       </Link>
                     );
