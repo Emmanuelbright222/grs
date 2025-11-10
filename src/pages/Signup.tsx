@@ -449,24 +449,26 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phoneNumber">Phone Number</Label>
+                <Label htmlFor="phoneNumber">Phone Number<span className="text-destructive ml-1">*</span></Label>
                 <Input
                   id="phoneNumber"
                   name="phoneNumber"
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={handleChange}
+                  required
                   placeholder="+234 800 000 0000"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="gender">Gender</Label>
+                <Label htmlFor="gender">Gender<span className="text-destructive ml-1">*</span></Label>
                 <select
                   id="gender"
                   name="gender"
                   value={formData.gender}
                   onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                  required
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <option value="">Select gender</option>
@@ -476,12 +478,13 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="genre">Primary Genre</Label>
+                <Label htmlFor="genre">Primary Genre<span className="text-destructive ml-1">*</span></Label>
                 <Input
                   id="genre"
                   name="genre"
                   value={formData.genre}
                   onChange={handleChange}
+                  required
                   placeholder="e.g., Afrobeat, R&B, Hip-Hop"
                 />
               </div>
