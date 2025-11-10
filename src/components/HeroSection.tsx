@@ -25,12 +25,12 @@ const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 z-10 text-center relative w-full">
+      <div className="container mx-auto px-2 sm:px-4 md:px-6 lg:px-8 z-10 text-center relative w-full">
         <div className="max-w-5xl mx-auto animate-fade-in-up">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-3 sm:mb-4 md:mb-6 text-white leading-tight px-2 sm:px-4">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-3 sm:mb-4 md:mb-6 text-white leading-tight px-1 sm:px-2">
             Grace Rhythm Sounds
           </h1>
-          <p className="text-base sm:text-xl md:text-2xl lg:text-3xl mb-4 sm:mb-5 md:mb-8 text-white font-semibold drop-shadow-lg max-w-3xl mx-auto px-2 sm:px-4">
+          <p className="text-base sm:text-xl md:text-2xl lg:text-3xl mb-4 sm:mb-5 md:mb-8 text-white font-semibold drop-shadow-lg max-w-3xl mx-auto px-1 sm:px-2">
             helps gospel artists produce and distribute music globally while earning
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2 sm:px-4">
