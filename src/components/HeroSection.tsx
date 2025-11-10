@@ -27,7 +27,7 @@ const HeroSection = () => {
       {/* Content */}
       <div className="container mx-auto px-2 sm:px-4 md:px-6 lg:px-8 z-10 text-center relative w-full">
         <div className="max-w-5xl mx-auto animate-fade-in-up">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold mb-3 sm:mb-4 md:mb-6 text-white leading-tight px-1 sm:px-2">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-3 sm:mb-4 md:mb-6 text-white leading-tight px-1 sm:px-2">
             Grace Rhythm Sounds
           </h1>
           <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl mb-4 sm:mb-5 md:mb-8 text-white font-semibold drop-shadow-lg max-w-3xl mx-auto px-1 sm:px-2">

@@ -6,7 +6,7 @@ const AtAGlance = () => {
   return (
     <section className="py-12 md:py-20 bg-gradient-to-b from-background to-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl animate-fade-in">
+        <div className="max-w-4xl animate-fade-in text-left lg:text-center mx-auto">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">At A Glance</h2>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground leading-relaxed mb-6 md:mb-8">
             Grace Rhythm Sounds is a faith-driven music production and distribution platform dedicated to gospel artists. 

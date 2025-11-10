@@ -10,7 +10,7 @@ const FounderSection = () => {
           <Card className="p-8 md:p-12 border-2 shadow-soft bg-gradient-to-br from-background to-muted/50">
             <div className="text-center">
               <div className="inline-block mb-6">
-                <span className="text-4xl">🙌</span>
+                
               </div>
               <blockquote className="text-xl md:text-2xl font-medium italic text-foreground mb-6 leading-relaxed">
                 "Every gospel artist carries a divine sound. Grace Rhythm Sounds exists to discover it, refine it, 
@@ -26,7 +26,7 @@ const FounderSection = () => {
         {/* Meet Our Founder */}
         <div className="max-w-5xl mx-auto animate-fade-in">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">🙌 Meet Our Founder — Peter Alechenu Apeh</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Meet Our Founder | Peter Alechenu Apeh</h2>
           </div>
           
           <Card className="overflow-hidden border-2 shadow-strong">
@@ -46,13 +46,13 @@ const FounderSection = () => {
                   Peter Alechenu Apeh is a worship leader, music producer, songwriter, and preacher of the gospel 
                   whose life's work is rooted in a divine calling: to raise a sound that glorifies Christ and empowers 
                   others to do the same. With a legacy of leadership as a choir director and pastor, Peter was a key 
-                  catalyst in the early 2000s music revival in Otukpo, Nigeria—sparking a wave of gospel artists and 
+                  catalyst in the early 2000s music revival in Otukpo, Nigeria sparking a wave of gospel artists and 
                   producers who now minister across the globe.
                 </p>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
                   Now based in the United Kingdom, Peter continues to pioneer faith-driven creativity through Grace 
                   Rhythm Sounds, a platform he founded to discover, mentor, and produce gospel talent. More than a 
-                  music label, Grace Rhythm Sounds is a movement—committed to nurturing artists, distributing their 
+                  music label, Grace Rhythm Sounds is a movement committed to nurturing artists, distributing their 
                   work, helping them earn, and giving them a global stage to preach Christ through music.
                 </p>
                 <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
