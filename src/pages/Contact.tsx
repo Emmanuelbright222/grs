@@ -222,7 +222,7 @@ const Contact = () => {
                       <p className="text-sm text-muted-foreground mb-3">
                         Connect with us on social platforms
                       </p>
-                      <div className="flex gap-3">
+                      <div className="flex gap-3 flex-wrap">
                         <a
                           href="https://facebook.com/gracerhythmsounds"
                           target="_blank"
@@ -248,6 +248,24 @@ const Contact = () => {
                           className="text-accent hover:underline text-sm"
                         >
                           YouTube
+                        </a>
+                        <span className="text-muted-foreground">•</span>
+                        <a
+                          href="https://x.com/grace_sound1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-accent hover:underline text-sm"
+                        >
+                          X
+                        </a>
+                        <span className="text-muted-foreground">•</span>
+                        <a
+                          href="https://tiktok.com/@gracerhythmsounds.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-accent hover:underline text-sm"
+                        >
+                          TikTok
                         </a>
                       </div>
                     </div>

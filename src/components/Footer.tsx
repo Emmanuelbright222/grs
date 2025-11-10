@@ -50,7 +50,7 @@ const Footer = () => {
                 <Youtube className="h-5 w-5" />
               </a>
               <a
-                href="https://x.com/gracerhythmsound"
+                href="https://x.com/grace_sound1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-accent transition-smooth"
@@ -59,7 +59,7 @@ const Footer = () => {
                 <Twitter className="h-5 w-5" />
               </a>
               <a
-                href="https://tiktok.com/@gracerhythmsounds"
+                href="https://tiktok.com/@gracerhythmsounds.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-accent transition-smooth"
