@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Instagram, Youtube, Music, Mail, MapPin, MessageCircle } from "lucide-react";
+import { Facebook, Instagram, Youtube, Music, Mail, MapPin, MessageCircle, Twitter } from "lucide-react";
 import logo from "@/assets/grace-rhythm-sounds-logo.png";
 
 const Footer = () => {
@@ -17,6 +17,9 @@ const Footer = () => {
             </Link>
             <p className="text-sm opacity-80 mb-4">
             Grace Rhythm Sounds | Inspiring souls through gospel music, uplifting melodies, and divine rhythms.
+            </p>
+            <p className="text-sm font-semibold uppercase tracking-wide opacity-80 mb-3">
+              Follow us on social media
             </p>
             <div className="flex gap-4">
               <a
@@ -45,6 +48,15 @@ const Footer = () => {
                 aria-label="YouTube"
               >
                 <Youtube className="h-5 w-5" />
+              </a>
+              <a
+                href="https://x.com/gracerhythmsound"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent transition-smooth"
+                aria-label="X (Twitter)"
+              >
+                <Twitter className="h-5 w-5" />
               </a>
               <a
                 href="https://tiktok.com/@gracerhythmsounds"
