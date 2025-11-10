@@ -105,13 +105,18 @@ const Navbar = () => {
         <div className="flex items-center justify-between bg-stone-950/0">
           <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt="Grace Rhythm Sounds" className="h-10 w-10 transition-spring group-hover:scale-110" />
-            <span className="font-bold text-xl hidden sm:block transition-smooth text-white">
-              Grace Rhythm Sounds
-            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="font-bold text-lg sm:text-xl transition-smooth text-white">
+                Grace Rhythm Sounds
+              </span>
+              <span className="text-xs sm:text-sm text-white/80 tracking-wide">
+                Connecting heaven&apos;s wavelengths
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-5">
             {navLinks.map(link => {
               if (link.path === "/dashboard") {
                 return (
@@ -120,6 +125,7 @@ const Navbar = () => {
                     asChild
                     variant="hero"
                     size="sm"
+                    className="text-lg px-6 py-2"
                   >
                     <Link to={link.path}>
                       {link.label}
@@ -128,7 +134,7 @@ const Navbar = () => {
                 );
               }
               return (
-                <Link key={link.path} to={link.path} className={`font-medium transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
+                    <Link key={link.path} to={link.path} className={`font-medium text-lg transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
                   {link.label}
                 </Link>
               );
@@ -152,7 +158,7 @@ const Navbar = () => {
                         asChild
                         variant="hero"
                         size="sm"
-                        className="w-full justify-start"
+                        className="w-full justify-start text-lg"
                         onClick={() => {
                           setIsMobileMenuOpen(false);
                           // Clear any query params when navigating to dashboard
@@ -166,22 +172,22 @@ const Navbar = () => {
                           Dashboard
                         </Link>
                       </Button>
-                      <Link to="/dashboard/artists" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/artists" ? "text-white font-bold" : "text-white"}`}>
+                      <Link to="/dashboard/artists" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/artists" ? "text-white font-bold" : "text-white"}`}>
                         Artists
                       </Link>
-                      <Link to="/dashboard/releases" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/releases" ? "text-white font-bold" : "text-white"}`}>
+                      <Link to="/dashboard/releases" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/releases" ? "text-white font-bold" : "text-white"}`}>
                         Releases
                       </Link>
-                      <Link to="/dashboard/events" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/events" ? "text-white font-bold" : "text-white"}`}>
+                      <Link to="/dashboard/events" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/events" ? "text-white font-bold" : "text-white"}`}>
                         Events
                       </Link>
-                      <Link to="/dashboard/news" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/news" ? "text-white font-bold" : "text-white"}`}>
+                      <Link to="/dashboard/news" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/news" ? "text-white font-bold" : "text-white"}`}>
                         News
                       </Link>
-                      <Link to="/dashboard/admin-management" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/admin-management" ? "text-white font-bold" : "text-white"}`}>
+                      <Link to="/dashboard/admin-management" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/admin-management" ? "text-white font-bold" : "text-white"}`}>
                         Admin Management
                       </Link>
-                      <button onClick={handleSignOut} className={`font-medium py-2 text-left transition-smooth hover:text-white/80 text-white`}>
+                      <button onClick={handleSignOut} className={`font-medium text-lg py-2 text-left transition-smooth hover:text-white/80 text-white`}>
                         Sign Out
                       </button>
                     </>
@@ -191,17 +197,17 @@ const Navbar = () => {
                         asChild
                         variant="hero"
                         size="sm"
-                        className="w-full justify-start"
+                        className="w-full justify-start text-lg"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <Link to="/dashboard">
                           Dashboard
                         </Link>
                       </Button>
-                      <Link to="/dashboard/profile" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/profile" ? "text-white font-bold" : "text-white"}`}>
+                      <Link to="/dashboard/profile" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/profile" ? "text-white font-bold" : "text-white"}`}>
                         My Profile
                       </Link>
-                      <button onClick={handleSignOut} className={`font-medium py-2 text-left transition-smooth hover:text-white/80 text-white`}>
+                      <button onClick={handleSignOut} className={`font-medium text-lg py-2 text-left transition-smooth hover:text-white/80 text-white`}>
                         Sign Out
                       </button>
                     </>
@@ -227,7 +233,7 @@ const Navbar = () => {
                       );
                     }
                     return (
-                      <Link key={link.path} to={link.path} onClick={() => setIsMobileMenuOpen(false)} className={`font-medium py-2 transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
+                      <Link key={link.path} to={link.path} onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
                         {link.label}
                       </Link>
                     );

@@ -126,7 +126,16 @@ const Footer = () => {
                 <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5 text-accent" />
                 <div>
                   <span className="opacity-100 font-semibold">Address:</span>
-                  <p className="mt-1">42 Guilemot Close, IP145GJ Stowmarket, England, UK</p>
+                  <div className="mt-2 space-y-3">
+                    <div className="border border-white/10 rounded-md p-3 bg-white/5">
+                      <p className="text-xs uppercase tracking-wide text-accent font-semibold mb-1">United Kingdom</p>
+                      <p>42 Guilemot Close, IP145GJ Stowmarket, England, UK</p>
+                    </div>
+                    <div className="border border-white/10 rounded-md p-3 bg-white/5">
+                      <p className="text-xs uppercase tracking-wide text-accent font-semibold mb-1">Nigeria</p>
+                      <p>Behind Ibiza Club, No. 10 Dr. G.C Nsude Street, Koroduma, Karu, Nigeria</p>
+                    </div>
+                  </div>
                 </div>
               </li>
               <li className="flex items-start gap-3">

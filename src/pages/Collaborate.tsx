@@ -240,9 +240,9 @@ const Collaborate = () => {
                   <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">✍️</span>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">For Songwriters, Churches & Charities</h3>
+                  <h3 className="text-xl font-bold mb-2">For Churches & Charities</h3>
                   <p className="text-muted-foreground text-sm">
-                    Partner with us to create chart-topping hits or request artist performances for your events
+                    Partner with us to host spirit-filled events, invite artists, and support kingdom impact
                   </p>
                 </Card>
               </div>
@@ -423,7 +423,7 @@ const Collaborate = () => {
                   How long does it take to hear back?
                 </h3>
                 <p className="text-muted-foreground">
-                  We review all submissions within 2-3 weeks. High-priority demos may receive faster responses.
+                  We review all submissions within 1-3 days. High-priority demos may receive faster responses.
                 </p>
               </Card>
               <Card className="p-6 border-0 shadow-soft">

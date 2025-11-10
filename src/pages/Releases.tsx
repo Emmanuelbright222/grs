@@ -133,12 +133,12 @@ const Releases = () => {
                       {/* Streaming Platform Buttons */}
                       {(() => {
                         const platforms = [
-                          { url: release.spotify_url, name: "Spotify", icon: Music },
-                          { url: release.apple_music_url, name: "Apple Music", icon: Music },
-                          { url: release.youtube_music_url, name: "YouTube Music", icon: Youtube },
-                          { url: release.audiomack_url, name: "Audiomack", icon: Music },
-                          { url: release.boomplay_url, name: "Boomplay", icon: Music },
-                          { url: release.streaming_url, name: "Listen", icon: Play }, // Legacy fallback
+                          { url: release.spotify_url, name: "Spotify", label: "Spotify", icon: Music },
+                          { url: release.apple_music_url, name: "Apple Music", label: "iTunes", icon: Music },
+                          { url: release.youtube_music_url, name: "YouTube Music", label: "YT Music", icon: Youtube },
+                          { url: release.audiomack_url, name: "Audiomack", label: "Audiomack", icon: Music },
+                          { url: release.boomplay_url, name: "Boomplay", label: "Boomplay", icon: Music },
+                          { url: release.streaming_url, name: "Listen", label: "Listen", icon: Play }, // Legacy fallback
                         ].filter(p => p.url && p.url.trim() !== "");
 
                         if (platforms.length === 0) return null;
@@ -148,7 +148,7 @@ const Releases = () => {
                             <h4 className="text-sm font-semibold mb-3 text-muted-foreground">
                               Stream Now On
                             </h4>
-                            <div className="flex flex-wrap gap-2">
+                            <div className="grid grid-cols-2 gap-2">
                               {platforms.map((platform, idx) => (
                                 <a
                                   key={idx}
@@ -156,9 +156,9 @@ const Releases = () => {
                                   target="_blank"
                                   rel="noopener noreferrer"
                                 >
-                                  <Button variant="hero" size="sm" className="text-xs">
+                                  <Button variant="hero" size="sm" className="text-xs w-full justify-center">
                                     <platform.icon className="mr-1.5 h-3.5 w-3.5" />
-                                    {platform.name === "Listen" ? "Listen" : platform.name}
+                                    {platform.label}
                                   </Button>
                                 </a>
                               ))}

@@ -393,8 +393,8 @@ const Signup = () => {
             <div className="text-center mb-8">
               <Music2 className="w-12 h-12 mx-auto mb-4 text-accent" />
               <h2 className="text-2xl font-bold mb-2">Create Artist Account</h2>
-              <p className="text-muted-foreground">
-                Join Grace Rhythm Sounds
+              <p className="text-muted-foreground text-sm sm:text-base">
+                Connecting heaven&apos;s wavelengths
               </p>
             </div>
 
