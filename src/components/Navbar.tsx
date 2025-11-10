@@ -124,7 +124,7 @@ const Navbar = () => {
                     key={link.path}
                     asChild
                     variant="hero"
-                    size="sm"
+                    size="lg"
                     className="text-lg px-6 py-2"
                   >
                     <Link to={link.path}>
@@ -157,7 +157,7 @@ const Navbar = () => {
                       <Button
                         asChild
                         variant="hero"
-                        size="sm"
+                        size="lg"
                         className="w-full justify-start text-lg"
                         onClick={() => {
                           setIsMobileMenuOpen(false);
@@ -196,7 +196,7 @@ const Navbar = () => {
                       <Button
                         asChild
                         variant="hero"
-                        size="sm"
+                        size="lg"
                         className="w-full justify-start text-lg"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
@@ -220,10 +220,10 @@ const Navbar = () => {
                       return (
                         <Button
                           key={link.path}
-                          asChild
-                          variant="hero"
-                          size="sm"
-                          className="w-full justify-start"
+                        asChild
+                        variant="hero"
+                        size="lg"
+                        className="w-full justify-start"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Link to={link.path}>
