@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <footer className="bg-secondary text-secondary-foreground">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-16 mb-8">
           {/* Brand Section */}
           <div>
             <Link to="/" className="flex items-center gap-3 mb-4">
@@ -80,11 +80,6 @@ const Footer = () => {
               <li>
                 <Link to="/events" className="text-sm opacity-80 hover:text-accent transition-smooth">
                   Events
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-sm opacity-80 hover:text-accent transition-smooth">
-                  Terms &amp; Conditions
                 </Link>
               </li>
             </ul>

@@ -18,7 +18,7 @@ const About = () => {
               <div className="max-w-4xl mx-auto text-center">
                 <h1 className="text-3xl md:text-6xl font-bold mb-6">About Us</h1>
                 <p className="text-xl opacity-90">
-                  Building bridges between cultures through the universal language of music
+                  Discovering, mentoring, producing, and distributing faith-driven sound globally.
                 </p>
               </div>
             </AnimatedSection>
