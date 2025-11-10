@@ -262,7 +262,9 @@ const Collaborate = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Full Name *</Label>
+                    <Label htmlFor="name">
+                      Full Name<span className="text-destructive ml-1">*</span>
+                    </Label>
                     <Input
                       id="name"
                       name="name"
@@ -273,7 +275,9 @@ const Collaborate = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
+                    <Label htmlFor="email">
+                      Email Address<span className="text-destructive ml-1">*</span>
+                    </Label>
                     <Input
                       id="email"
                       name="email"
@@ -288,29 +292,37 @@ const Collaborate = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="artistName">Artist/Producer/Organization Name</Label>
+                    <Label htmlFor="artistName">
+                      Artist/Producer/Organization Name<span className="text-destructive ml-1">*</span>
+                    </Label>
                     <Input
                       id="artistName"
                       name="artistName"
                       value={formData.artistName}
                       onChange={handleChange}
                       placeholder="Your stage name, church, or organization"
+                      required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="genre">Primary Genre / Event Type</Label>
+                    <Label htmlFor="genre">
+                      Primary Genre / Event Type<span className="text-destructive ml-1">*</span>
+                    </Label>
                     <Input
                       id="genre"
                       name="genre"
                       value={formData.genre}
                       onChange={handleChange}
                       placeholder="e.g., Afrobeat, R&B, Hip-Hop, or Church Event, Charity Concert"
+                      required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Tell Us About Your Project or Event Request *</Label>
+                  <Label htmlFor="message">
+                    Tell Us About Your Project or Event Request<span className="text-destructive ml-1">*</span>
+                  </Label>
                   <Textarea
                     id="message"
                     name="message"

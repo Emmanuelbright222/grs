@@ -8,6 +8,7 @@ import { Calendar, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import studioImage from "@/assets/grace-rhythm-sounds-studio.jpg";
+import { useToast } from "@/hooks/use-toast";
 
 const categories = ["All", "Artist Spotlight", "Industry News", "Events", "Releases", "Announcements"];
 
@@ -18,6 +19,9 @@ const News = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 6;
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadNews();
@@ -56,6 +60,64 @@ const News = () => {
     setCurrentPage(1); // Reset to first page when category changes
   };
 
+  const handleSubscribe = async (e?: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault();
+
+    const email = newsletterEmail.trim().toLowerCase();
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please provide a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubscribing(true);
+    try {
+      const { error } = await (supabase as any)
+        .from("newsletter_subscribers")
+        .insert({ email });
+
+      if (error) {
+        if (error.code === "23505") {
+          toast({
+            title: "Already subscribed",
+            description: "It looks like this email is already on our list. Thank you!",
+          });
+          setNewsletterEmail("");
+          return;
+        }
+        throw error;
+      }
+
+      toast({
+        title: "Subscribed!",
+        description: "Thank you for subscribing. We'll keep you updated.",
+      });
+      setNewsletterEmail("");
+    } catch (err: any) {
+      console.error("Newsletter subscription error:", err);
+      toast({
+        title: "Subscription failed",
+        description: err?.message || "We couldn't add you to the list. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   // Get featured article (first published article)
   const featuredArticle = news.length > 0 && currentPage === 1 ? news[0] : null;
   const displayNews = featuredArticle ? news.slice(1) : news;
@@ -66,12 +128,12 @@ const News = () => {
       <Navbar />
       <main className="pt-20 relative z-10">
         {/* Hero Section */}
-        <section className="py-20 gradient-hero text-white">
+        <section className="py-20 bg-gradient-to-b from-[#02132B] via-[#03204A] to-[#062d68] text-white">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl md:text-6xl font-bold mb-6 animate-fade-in">
+            <h2 className="text-3xl md:text-6xl font-bold mb-6 animate-fade-in drop-shadow-lg">
               News & Updates
             </h2>
-            <p className="text-xl max-w-2xl mx-auto opacity-90 animate-fade-in-up">
+            <p className="text-xl max-w-2xl mx-auto opacity-95 animate-fade-in-up font-semibold drop-shadow">
               Stay informed about the latest happenings at Grace Rhythm Sounds
             </p>
           </div>
@@ -80,13 +142,14 @@ const News = () => {
         {/* Category Filter */}
         <section className="py-8 bg-background border-b">
           <div className="container mx-auto px-4">
-            <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-wrap gap-3 justify-center">
               {categories.map((category) => (
                 <Button
                   key={category}
                   variant={selectedCategory === category ? "default" : "outline"}
                   onClick={() => handleCategoryChange(category)}
-                  size="sm"
+                  size="lg"
+                  className={`text-sm md:text-base font-semibold ${selectedCategory === category ? "bg-[#042147] text-white hover:bg-[#03204a]" : "border-[#042147] text-[#042147] hover:bg-[#042147] hover:text-white"}`}
                 >
                   {category}
                 </Button>
@@ -266,14 +329,23 @@ const News = () => {
               <p className="text-muted-foreground mb-8">
                 Subscribe to our newsletter for exclusive updates, artist news, and event announcements
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                 <input
                   type="email"
                   placeholder="Enter your email"
                   className="flex-1 px-4 py-3 rounded-lg border border-input bg-background"
+                  value={newsletterEmail}
+                  onChange={(event) => setNewsletterEmail(event.target.value)}
+                  required
                 />
-                <Button variant="hero">Subscribe</Button>
-              </div>
+                <Button
+                  variant="hero"
+                  type="submit"
+                  disabled={isSubscribing}
+                >
+                  {isSubscribing ? "Subscribing..." : "Subscribe"}
+                </Button>
+              </form>
             </Card>
           </div>
         </section>
