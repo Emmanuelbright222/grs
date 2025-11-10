@@ -109,10 +109,9 @@ const Navbar = () => {
               <span className="font-bold text-lg sm:text-xl transition-smooth text-white">
                 Grace Rhythm Sounds
               </span>
-              <ul className="text-[10px] sm:text-xs text-white/90 font-semibold tracking-wide leading-tight">
-                <li>Discover • Mentor • Produce • Distribute</li>
-                <li>Faith-driven sound, globally</li>
-              </ul>
+              <span className="text-[10px] sm:text-xs text-white/80 italic font-semibold tracking-wide">
+                Connecting heaven&apos;s wavelengths
+              </span>
             </div>
           </Link>
 
