@@ -240,9 +240,9 @@ const Collaborate = () => {
                   <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">✍️</span>
                   </div>
-                  <h3 className="text-xl font-bold mb-2">For Songwriters</h3>
+                  <h3 className="text-xl font-bold mb-2">For Songwriters, Churches & Charities</h3>
                   <p className="text-muted-foreground text-sm">
-                    Partner with us to create chart-topping hits
+                    Partner with us to create chart-topping hits or request artist performances for your events
                   </p>
                 </Card>
               </div>
@@ -288,29 +288,29 @@ const Collaborate = () => {
 
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="artistName">Artist/Producer Name</Label>
+                    <Label htmlFor="artistName">Artist/Producer/Organization Name</Label>
                     <Input
                       id="artistName"
                       name="artistName"
                       value={formData.artistName}
                       onChange={handleChange}
-                      placeholder="Your stage name"
+                      placeholder="Your stage name, church, or organization"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="genre">Primary Genre</Label>
+                    <Label htmlFor="genre">Primary Genre / Event Type</Label>
                     <Input
                       id="genre"
                       name="genre"
                       value={formData.genre}
                       onChange={handleChange}
-                      placeholder="e.g., Afrobeat, R&B, Hip-Hop"
+                      placeholder="e.g., Afrobeat, R&B, Hip-Hop, or Church Event, Charity Concert"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="message">Tell Us About Your Project *</Label>
+                  <Label htmlFor="message">Tell Us About Your Project or Event Request *</Label>
                   <Textarea
                     id="message"
                     name="message"
@@ -318,7 +318,7 @@ const Collaborate = () => {
                     onChange={handleChange}
                     required
                     rows={6}
-                    placeholder="Share details about your music, experience, and what you're looking to achieve..."
+                    placeholder="Share details about your music, experience, event details, or what you're looking to achieve. For churches and charities, please include event date, location, and type of performance needed..."
                   />
                 </div>
 
@@ -365,6 +365,48 @@ const Collaborate = () => {
                   {uploading ? "Uploading demo..." : isSubmitting ? "Submitting..." : "Submit Request"}
                 </Button>
               </form>
+            </Card>
+
+            {/* Donation Section */}
+            <Card className="max-w-3xl mx-auto mt-8 p-8 md:p-12 border-0 shadow-strong animate-fade-in bg-gradient-to-br from-accent/10 to-primary/10 backdrop-blur-sm border border-accent/20">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">💝</span>
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                  Support Our Local Events
+                </h2>
+                <p className="text-muted-foreground mb-6 text-base md:text-lg">
+                  Help us continue spreading the gospel through music by supporting our local events. 
+                  Your contributions in cash and kind make a meaningful difference in our mission.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    variant="hero"
+                    size="lg"
+                    onClick={() => {
+                      const subject = encodeURIComponent("Donation Support for Local Events");
+                      const body = encodeURIComponent("Hello Grace Rhythm Sounds,\n\nI would like to support your local events through donation (cash or kind).\n\nPlease contact me to discuss how I can contribute.\n\nThank you!");
+                      window.location.href = `mailto:info@gracerhythmsounds.com?subject=${subject}&body=${body}`;
+                    }}
+                    className="group"
+                  >
+                    Donate via Email
+                    <span className="ml-2">📧</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => {
+                      window.open("https://wa.me/2347045501149?text=Hello%20Grace%20Rhythm%20Sounds,%20I%20would%20like%20to%20support%20your%20local%20events%20through%20donation.", "_blank");
+                    }}
+                    className="group"
+                  >
+                    Contact via WhatsApp
+                    <span className="ml-2">💬</span>
+                  </Button>
+                </div>
+              </div>
             </Card>
           </div>
         </section>
