@@ -90,23 +90,13 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Agreements */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">Support</h3>
+            <h3 className="font-semibold text-lg mb-4">Agreements</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/collaborate" className="text-sm opacity-80 hover:text-accent transition-smooth">
-                  Collaborate
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-sm opacity-80 hover:text-accent transition-smooth">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/news" className="text-sm opacity-80 hover:text-accent transition-smooth">
-                  News &amp; Updates
+                <Link to="/terms" className="text-sm opacity-80 hover:text-accent transition-smooth">
+                  Terms &amp; Conditions
                 </Link>
               </li>
               <li>
