@@ -19,7 +19,7 @@ const Footer = () => {
             Grace Rhythm Sounds | Inspiring souls through gospel music, uplifting melodies, and divine rhythms.
             </p>
             <p className="text-sm font-semibold uppercase tracking-wide opacity-80 mb-3">
-              Follow us on social media
+              Follow Us On Social Media
             </p>
             <div className="flex gap-4">
               <a
