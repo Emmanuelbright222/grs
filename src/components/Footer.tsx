@@ -156,7 +156,7 @@ const Footer = () => {
           <p className="mt-2">
             Developed by{" "}
             <a
-              href="https://webs.brights.com.ng"
+              href="https://brightwebs.vercel.app/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sky-400 underline hover:text-sky-300 transition-smooth"
