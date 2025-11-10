@@ -30,7 +30,7 @@ const HeroSection = () => {
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 md:mb-6 text-white leading-tight px-2 sm:px-4">
             Grace Rhythm Sounds
           </h1>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-4 sm:mb-5 md:mb-8 text-white/90 font-light max-w-3xl mx-auto px-2 sm:px-4">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-4 sm:mb-5 md:mb-8 text-white font-semibold drop-shadow-lg max-w-3xl mx-auto px-2 sm:px-4">
             helps gospel artists produce and distribute music globally while earning
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2 sm:px-4">
