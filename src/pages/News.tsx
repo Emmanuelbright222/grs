@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import studioImage from "@/assets/studio.jpg";
+import studioImage from "@/assets/grace-rhythm-sounds-studio.jpg";
 
 const categories = ["All", "Artist Spotlight", "Industry News", "Events", "Releases", "Announcements"];
 

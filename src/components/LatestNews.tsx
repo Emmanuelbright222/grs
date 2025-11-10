@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Calendar, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import studioImage from "@/assets/studio.jpg";
+import studioImage from "@/assets/grace-rhythm-sounds-studio.jpg";
 
 const LatestNews = () => {
   const [news, setNews] = useState<any[]>([]);

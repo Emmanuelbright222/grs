@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import MusicBackground from "@/components/MusicBackground";
 import AnimatedSection from "@/components/AnimatedSection";
 import FounderSection from "@/components/FounderSection";
-import studioImage from "@/assets/studio.jpg";
+import studioImage from "@/assets/grace-rhythm-sounds-studio.jpg";
 
 const About = () => {
   return (

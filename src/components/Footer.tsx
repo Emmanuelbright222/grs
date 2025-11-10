@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Youtube, Music, Mail, MapPin, MessageCircle } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/grace-rhythm-sounds-logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -82,6 +82,11 @@ const Footer = () => {
                   Events
                 </Link>
               </li>
+              <li>
+                <Link to="/terms" className="text-sm opacity-80 hover:text-accent transition-smooth">
+                  Terms &amp; Conditions
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -101,7 +106,12 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/news" className="text-sm opacity-80 hover:text-accent transition-smooth">
-                  News & Updates
+                  News &amp; Updates
+                </Link>
+              </li>
+              <li>
+                <Link to="/contract-agreement" className="text-sm opacity-80 hover:text-accent transition-smooth">
+                  Contract Agreement
                 </Link>
               </li>
             </ul>

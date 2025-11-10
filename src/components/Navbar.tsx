@@ -4,7 +4,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/grace-rhythm-sounds-logo.png";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -116,8 +116,11 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-5">
+          <div className="hidden lg:flex items-center gap-4">
             {navLinks.map(link => {
+              const isActive = link.path === "/"
+                ? location.pathname === link.path
+                : location.pathname.startsWith(link.path);
               if (link.path === "/dashboard") {
                 return (
                   <Button
@@ -125,7 +128,9 @@ const Navbar = () => {
                     asChild
                     variant="hero"
                     size="lg"
-                    className="text-lg px-6 py-2"
+                    className={`text-lg px-6 py-2 transition-smooth ${
+                      isActive ? "bg-white/25 text-accent-foreground shadow-xl" : ""
+                    }`}
                   >
                     <Link to={link.path}>
                       {link.label}
@@ -134,7 +139,15 @@ const Navbar = () => {
                 );
               }
               return (
-                    <Link key={link.path} to={link.path} className={`font-medium text-lg transition-smooth hover:text-white/80 ${location.pathname === link.path ? "text-white font-bold" : "text-white"}`}>
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`relative font-medium text-lg px-3 py-2 rounded-md transition-smooth ${
+                    isActive
+                      ? "text-white font-semibold bg-white/25 shadow"
+                      : "text-white/80 hover:text-white"
+                  }`}
+                >
                   {link.label}
                 </Link>
               );
@@ -158,7 +171,7 @@ const Navbar = () => {
                         asChild
                         variant="hero"
                         size="lg"
-                        className="w-full justify-start text-lg"
+                        className={`w-full justify-start text-lg ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                         onClick={() => {
                           setIsMobileMenuOpen(false);
                           // Clear any query params when navigating to dashboard
@@ -197,7 +210,7 @@ const Navbar = () => {
                         asChild
                         variant="hero"
                         size="lg"
-                        className="w-full justify-start text-lg"
+                        className={`w-full justify-start text-lg ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <Link to="/dashboard">
@@ -220,10 +233,10 @@ const Navbar = () => {
                       return (
                         <Button
                           key={link.path}
-                        asChild
-                        variant="hero"
-                        size="lg"
-                        className="w-full justify-start"
+                          asChild
+                          variant="hero"
+                          size="lg"
+                          className={`w-full justify-start ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Link to={link.path}>

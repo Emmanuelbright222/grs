@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Music2, Eye, EyeOff } from "lucide-react";
@@ -60,6 +61,8 @@ const Signup = () => {
   });
   
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [agreeContract, setAgreeContract] = useState(false);
 
   const validatePassword = (password: string): string[] => {
     const errors: string[] = [];
@@ -83,6 +86,15 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!agreeTerms || !agreeContract) {
+      toast({
+        title: "Agreement Required",
+        description: "Please confirm that you agree to the Terms and the Contract Agreement.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (!hcaptchaToken) {
       toast({
@@ -400,7 +412,7 @@ const Signup = () => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">Full Name<span className="text-destructive ml-1">*</span></Label>
                 <Input
                   id="fullName"
                   name="fullName"
@@ -412,7 +424,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="artistName">Artist Name</Label>
+                <Label htmlFor="artistName">Artist Name<span className="text-destructive ml-1">*</span></Label>
                 <Input
                   id="artistName"
                   name="artistName"
@@ -424,7 +436,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Email Address<span className="text-destructive ml-1">*</span></Label>
                 <Input
                   id="email"
                   name="email"
@@ -475,7 +487,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Password<span className="text-destructive ml-1">*</span></Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -514,7 +526,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password<span className="text-destructive ml-1">*</span></Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -545,6 +557,38 @@ const Signup = () => {
                 )}
               </div>
 
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground">By signing up, you:</h3>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="signupAgreeTerms"
+                    checked={agreeTerms}
+                    onCheckedChange={(checked) => setAgreeTerms(Boolean(checked))}
+                  />
+                  <Label htmlFor="signupAgreeTerms" className="text-sm leading-snug text-muted-foreground">
+                    Agree to our<span className="text-destructive ml-1">*</span>{" "}
+                    <Link to="/terms" className="text-accent hover:underline font-medium">
+                      Terms and Conditions
+                    </Link>
+                    .
+                  </Label>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="signupAgreeContract"
+                    checked={agreeContract}
+                    onCheckedChange={(checked) => setAgreeContract(Boolean(checked))}
+                  />
+                  <Label htmlFor="signupAgreeContract" className="text-sm leading-snug text-muted-foreground">
+                    Have signed our<span className="text-destructive ml-1">*</span>{" "}
+                    <Link to="/contract-agreement" className="text-accent hover:underline font-medium">
+                      Contract Agreement
+                    </Link>
+                    .
+                  </Label>
+                </div>
+              </div>
+
               <div className="flex justify-center">
                 <HCaptcha
                   sitekey={import.meta.env.VITE_HCAPTCHA_SITE_KEY || "10000000-ffff-ffff-ffff-000000000001"}
@@ -571,7 +615,7 @@ const Signup = () => {
                 type="submit"
                 variant="hero"
                 className="w-full"
-                disabled={loading || !hcaptchaToken}
+                disabled={loading || !hcaptchaToken || !agreeTerms || !agreeContract}
               >
                 {loading ? "Creating account..." : "Create Account"}
               </Button>

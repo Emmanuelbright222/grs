@@ -14,6 +14,8 @@ const Events = lazy(() => import("./pages/Events"));
 const News = lazy(() => import("./pages/News"));
 const Collaborate = lazy(() => import("./pages/Collaborate"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Terms = lazy(() => import("./pages/Terms"));
+const ContractAgreement = lazy(() => import("./pages/ContractAgreement"));
 const Login = lazy(() => import("./pages/Login"));
 const Signup = lazy(() => import("./pages/Signup"));
 const ArtistDashboard = lazy(() => import("./pages/ArtistDashboard"));
@@ -58,6 +60,8 @@ const App = () => (
             <Route path="/news" element={<News />} />
             <Route path="/collaborate" element={<Collaborate />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/contract-agreement" element={<ContractAgreement />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
