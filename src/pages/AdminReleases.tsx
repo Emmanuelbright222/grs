@@ -34,6 +34,7 @@ const AdminReleases = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingRelease, setEditingRelease] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: "",
     artist_name: "",
@@ -79,6 +80,8 @@ const AdminReleases = () => {
       navigate("/dashboard");
       return;
     }
+
+    setCurrentUser(user);
 
     await loadReleases();
     setLoading(false);
@@ -144,7 +147,13 @@ const AdminReleases = () => {
   const handleImageUpload = async (file: File): Promise<string> => {
     setUploadingImage(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      let user = currentUser;
+
+      if (!user) {
+        const { data: { user: freshUser } } = await supabase.auth.getUser();
+        user = freshUser;
+      }
+
       if (!user) throw new Error("Not authenticated");
 
       const validationError = validateImageFile(file);
