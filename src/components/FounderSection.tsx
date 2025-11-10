@@ -32,11 +32,11 @@ const FounderSection = () => {
           <Card className="overflow-hidden border-2 shadow-strong">
             <div className="grid md:grid-cols-2 gap-0">
               {/* Image */}
-              <div className="relative h-64 md:h-full min-h-[400px] bg-muted">
+              <div className="relative aspect-[9/16] w-full md:aspect-auto md:h-full md:min-h-[500px] bg-muted">
                 <img
                   src={peterImage}
                   alt="Peter Alechenu Apeh"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center md:object-cover"
                 />
               </div>
               
