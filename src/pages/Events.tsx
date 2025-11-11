@@ -124,17 +124,27 @@ const Events = () => {
                           </div>
                         )}
                       </div>
-                      {event.ticket_url ? (
-                        <Button variant="hero" className="w-full" asChild>
-                          <a href={event.ticket_url} target="_blank" rel="noopener noreferrer">
-                            Get Tickets
-                          </a>
+                      <p className="mb-6 text-sm text-muted-foreground line-clamp-3">
+                        {event.description && event.description.trim() !== ""
+                          ? event.description
+                          : "No additional details provided."}
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button variant="outline" className="flex-1" asChild>
+                          <a href={`/events/${event.slug || event.id}`}>View Details</a>
                         </Button>
-                      ) : (
-                        <Button variant="hero" className="w-full" asChild>
-                          <a href="/contact">Book Performance</a>
-                        </Button>
-                      )}
+                        {event.ticket_url ? (
+                          <Button variant="hero" className="flex-1" asChild>
+                            <a href={event.ticket_url} target="_blank" rel="noopener noreferrer">
+                              Get Tickets
+                            </a>
+                          </Button>
+                        ) : (
+                          <Button variant="hero" className="flex-1" asChild>
+                            <a href="/contact">Book Performance</a>
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </Card>
                 ))}
