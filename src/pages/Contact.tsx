@@ -203,11 +203,28 @@ const Contact = () => {
                     <div>
                       <h3 className="font-bold mb-1">Location</h3>
                       <p className="text-sm text-muted-foreground">
-                        Global Operations
+                        Visit us at either of our studios
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        Serving artists worldwide
-                      </p>
+                      <div className="mt-3 space-y-3 text-sm">
+                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                          <p className="text-xs uppercase tracking-wide text-accent font-semibold mb-1">
+                            United Kingdom
+                          </p>
+                          <p className="text-muted-foreground">
+                            42 Guilemot Close, IP145GJ<br />
+                            Stowmarket, England, UK
+                          </p>
+                        </div>
+                        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                          <p className="text-xs uppercase tracking-wide text-accent font-semibold mb-1">
+                            Nigeria
+                          </p>
+                          <p className="text-muted-foreground">
+                            Behind Ibiza Club, No. 10 Dr. G.C Nsude Street,<br />
+                            Koroduma, Karu, Nigeria
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Card>
