@@ -426,6 +426,10 @@ const ArtistDashboard = () => {
         return;
       }
 
+      // Store state and purpose for OAuth verification
+      sessionStorage.setItem('spotify_oauth_state', user.id);
+      sessionStorage.setItem('spotify_oauth_purpose', 'dashboard');
+
       // Get Spotify Client ID from environment
       const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
       
