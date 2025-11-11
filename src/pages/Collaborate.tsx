@@ -199,7 +199,7 @@ const Collaborate = () => {
       <Navbar />
       <main className="pt-20 relative z-10">
         {/* Hero Section */}
-        <section className="py-20 gradient-hero text-white">
+        <section className="py-20 bg-navy-black text-white">
           <div className="container mx-auto px-4 text-center">
             <Music2 className="w-16 h-16 mx-auto mb-6 animate-pulse-glow" />
             <h1 className="text-3xl md:text-6xl font-bold mb-6 animate-fade-in">
@@ -217,7 +217,7 @@ const Collaborate = () => {
             <div className="max-w-4xl mx-auto mb-16">
               <div className="grid md:grid-cols-3 gap-8 text-center">
                 <Card className="p-8 border-0 shadow-soft animate-scale-in">
-                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-navy-gradient rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">🎤</span>
                   </div>
                   <h3 className="text-xl font-bold mb-2">For Artists</h3>
@@ -227,7 +227,7 @@ const Collaborate = () => {
                 </Card>
 
                 <Card className="p-8 border-0 shadow-soft animate-scale-in" style={{ animationDelay: "0.1s" }}>
-                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-navy-gradient rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">🎹</span>
                   </div>
                   <h3 className="text-xl font-bold mb-2">For Producers</h3>
@@ -237,7 +237,7 @@ const Collaborate = () => {
                 </Card>
 
                 <Card className="p-8 border-0 shadow-soft animate-scale-in" style={{ animationDelay: "0.2s" }}>
-                  <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                  <div className="w-16 h-16 bg-navy-gradient rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-3xl">✍️</span>
                   </div>
                   <h3 className="text-xl font-bold mb-2">For Churches & Charities</h3>

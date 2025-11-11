@@ -128,7 +128,7 @@ const Navbar = () => {
                     asChild
                     variant="hero"
                     size="lg"
-                    className={`text-lg px-6 py-2 transition-smooth ${
+                    className={`text-lg px-6 py-2 transition-smooth btn-navy-light ${
                       isActive ? "bg-white/25 text-accent-foreground shadow-xl" : ""
                     }`}
                   >
@@ -171,7 +171,7 @@ const Navbar = () => {
                         asChild
                         variant="hero"
                         size="lg"
-                        className={`w-full justify-start text-xl ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
+                        className={`w-full justify-start text-xl btn-navy-light ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                         onClick={() => {
                           setIsMobileMenuOpen(false);
                           // Clear any query params when navigating to dashboard
@@ -210,7 +210,7 @@ const Navbar = () => {
                         asChild
                         variant="hero"
                         size="lg"
-                        className={`w-full justify-start text-lg ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
+                        className={`w-full justify-start text-lg btn-navy-light ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         <Link to="/dashboard">
@@ -231,12 +231,12 @@ const Navbar = () => {
                   {navLinks.map(link => {
                     if (link.path === "/dashboard") {
                       return (
-                        <Button
-                          key={link.path}
-                          asChild
-                          variant="hero"
-                          size="lg"
-                          className={`w-full justify-start text-xl ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
+                      <Button
+                        key={link.path}
+                        asChild
+                        variant="hero"
+                        size="lg"
+                        className={`w-full justify-start text-xl btn-navy-light ${location.pathname.startsWith("/dashboard") ? "bg-white/25 text-accent-foreground shadow-xl" : ""}`}
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           <Link to={link.path}>

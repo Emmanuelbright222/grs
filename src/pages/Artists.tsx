@@ -47,7 +47,7 @@ const Artists = () => {
       <Navbar />
       <main className="pt-20 relative z-10">
         {/* Hero Section */}
-        <section className="py-20 gradient-hero text-white">
+        <section className="py-20 bg-navy-black text-white">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-3xl md:text-6xl font-bold mb-6 animate-fade-in">
               Our Artists

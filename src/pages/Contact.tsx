@@ -139,7 +139,7 @@ const Contact = () => {
       <Navbar />
       <main className="pt-20 relative z-10">
         {/* Hero Section */}
-        <section className="py-20 gradient-hero text-white">
+        <section className="py-20 bg-navy-black text-white">
           <div className="container mx-auto px-4 text-center">
             <Mail className="w-16 h-16 mx-auto mb-6 animate-pulse-glow" />
             <h1 className="text-3xl md:text-6xl font-bold mb-6 animate-fade-in">
@@ -168,8 +168,8 @@ const Contact = () => {
 
                 <Card className="p-6 border-0 shadow-soft hover:shadow-medium transition-smooth">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-6 h-6 text-accent-foreground" />
+                    <div className="w-12 h-12 bg-navy-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="font-bold mb-1">Email</h3>
@@ -197,8 +197,8 @@ const Contact = () => {
 
                 <Card className="p-6 border-0 shadow-soft hover:shadow-medium transition-smooth">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-6 h-6 text-accent-foreground" />
+                    <div className="w-12 h-12 bg-navy-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="font-bold mb-1">Location</h3>
@@ -214,8 +214,8 @@ const Contact = () => {
 
                 <Card className="p-6 border-0 shadow-soft hover:shadow-medium transition-smooth">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Phone className="w-6 h-6 text-accent-foreground" />
+                    <div className="w-12 h-12 bg-navy-gradient rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <h3 className="font-bold mb-1">Social Media</h3>
@@ -251,7 +251,7 @@ const Contact = () => {
                         </a>
                         <span className="text-muted-foreground">•</span>
                         <a
-                          href="https://x.com/grace_sound1"
+                          href="https://x.com/grace_sounds1"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-accent hover:underline text-sm"

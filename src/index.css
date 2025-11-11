@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -226,5 +230,56 @@ All colors MUST be HSL.
 
   .transition-spring {
     transition: var(--transition-spring);
+  }
+}
+
+@layer components {
+  .btn-navy-light {
+    background: linear-gradient(135deg, hsl(214 86% 27%) 0%, hsl(214 81% 39%) 45%, hsl(216 76% 25%) 100%);
+    color: #ffffff;
+    box-shadow: 0 10px 28px hsla(221 72% 23% / 0.28);
+  }
+
+  .btn-navy-light:hover,
+  .btn-navy-light:focus-visible {
+    background: linear-gradient(135deg, hsl(214 85% 33%) 0%, hsl(214 77% 43%) 50%, hsl(216 77% 28%) 100%);
+    color: #ffffff;
+  }
+
+  .btn-navy-outline {
+    border: 1.5px solid hsla(214 87% 12% / 0.6);
+    color: hsl(215 91% 9%);
+    background: transparent;
+  }
+
+  .btn-navy-outline:hover,
+  .btn-navy-outline:focus-visible {
+    background: linear-gradient(135deg, hsl(215 91% 9%) 0%, hsl(216 84% 20%) 55%, hsl(216 100% 5%) 100%);
+    color: #ffffff;
+    border-color: hsla(214 87% 12% / 0.9);
+  }
+
+  .btn-navy-ghost {
+    color: hsl(214 86% 27%);
+  }
+
+  .btn-navy-ghost:hover,
+  .btn-navy-ghost:focus-visible {
+    background-color: hsla(219 76% 27% / 0.18);
+    color: #ffffff;
+  }
+
+  .bg-navy-gradient {
+    background: linear-gradient(135deg, hsl(215 91% 9%) 0%, hsl(216 84% 20%) 55%, hsl(216 100% 5%) 100%);
+    color: #ffffff;
+  }
+
+  .bg-navy-black {
+    background: linear-gradient(150deg, hsl(214 87% 12%) 0%, hsl(215 91% 8%) 50%, hsl(216 100% 3%) 100%);
+  }
+
+  .chip-navy {
+    background: linear-gradient(135deg, hsla(214 87% 12% / 0.85) 0%, hsla(214 85% 33% / 0.92) 100%);
+    color: #ffffff;
   }
 }

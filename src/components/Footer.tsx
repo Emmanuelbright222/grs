@@ -6,7 +6,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-secondary text-secondary-foreground">
+    <footer className="bg-gradient-to-b from-[#02132B] via-[#041B3A] to-black text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-16 mb-8">
           {/* Brand Section */}
@@ -50,7 +50,7 @@ const Footer = () => {
                 <Youtube className="h-5 w-5" />
               </a>
               <a
-                href="https://x.com/grace_sound1"
+                href="https://x.com/grace_sounds1"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-accent transition-smooth"

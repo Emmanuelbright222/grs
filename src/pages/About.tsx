@@ -12,7 +12,7 @@ const About = () => {
       <Navbar />
       <main className="pt-20 relative z-10">
         {/* Hero Section */}
-        <section className="relative py-20 bg-primary text-primary-foreground">
+        <section className="relative py-20 bg-navy-black text-white">
           <div className="container mx-auto px-4">
             <AnimatedSection animationType="zoom">
               <div className="max-w-4xl mx-auto text-center">
