@@ -124,11 +124,6 @@ const Events = () => {
                           </div>
                         )}
                       </div>
-                      <p className="mb-6 text-sm text-muted-foreground line-clamp-3">
-                        {event.description && event.description.trim() !== ""
-                          ? event.description
-                          : "No additional details provided."}
-                      </p>
                       <div className="flex flex-col sm:flex-row gap-3">
                         <Button variant="outline" className="flex-1" asChild>
                           <a href={`/events/${event.slug || event.id}`}>View Details</a>
