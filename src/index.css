@@ -1,287 +1,273 @@
-/* stylelint-disable at-rule-no-unknown */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* stylelint-enable at-rule-no-unknown */
-
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 210 100% 8%;
+:root {
+  --background: 0 0% 100%;
+  --foreground: 210 100% 8%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 210 100% 8%;
+  --card: 0 0% 100%;
+  --card-foreground: 210 100% 8%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 100% 8%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 210 100% 8%;
 
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
+  --primary: 0 0% 0%;
+  --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 0%;
-    --secondary-foreground: 0 0% 100%;
+  --secondary: 0 0% 0%;
+  --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 20% 95%;
-    --muted-foreground: 210 10% 40%;
+  --muted: 210 20% 95%;
+  --muted-foreground: 210 10% 40%;
 
-    --accent: 195 100% 50%;
-    --accent-foreground: 0 0% 100%;
+  --accent: 195 100% 50%;
+  --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
 
-    --border: 210 20% 85%;
-    --input: 210 20% 85%;
-    --ring: 195 100% 50%;
+  --border: 210 20% 85%;
+  --input: 210 20% 85%;
+  --ring: 195 100% 50%;
 
-    --radius: 0.75rem;
+  --radius: 0.75rem;
 
-    /* Grace Rhythm Sounds Brand Colors - #00BFFF (Deep Sky Blue) and Black Theme */
-    --navy-blue: 0 0% 0%;
-    --electric-blue: 195 100% 50%;
-    --pure-black: 0 0% 0%;
-    --pure-white: 0 0% 100%;
+  /* Grace Rhythm Sounds Brand Colors - #00BFFF (Deep Sky Blue) and Black Theme */
+  --navy-blue: 0 0% 0%;
+  --electric-blue: 195 100% 50%;
+  --pure-black: 0 0% 0%;
+  --pure-white: 0 0% 100%;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(195 100% 50%) 100%);
-    --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.8) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 0% / 0.05) 0%, hsl(195 100% 50% / 0.1) 100%);
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, hsl(0 0% 0%) 0%, hsl(195 100% 50%) 100%);
+  --gradient-overlay: linear-gradient(180deg, transparent 0%, hsl(0 0% 0% / 0.8) 100%);
+  --gradient-card: linear-gradient(145deg, hsl(0 0% 0% / 0.05) 0%, hsl(195 100% 50% / 0.1) 100%);
 
-    /* Shadows */
-    --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.08);
-    --shadow-medium: 0 8px 30px hsl(0 0% 0% / 0.12);
-    --shadow-strong: 0 20px 60px hsl(0 0% 0% / 0.2);
-    --shadow-glow: 0 0 40px hsl(195 100% 50% / 0.3);
+  /* Shadows */
+  --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.08);
+  --shadow-medium: 0 8px 30px hsl(0 0% 0% / 0.12);
+  --shadow-strong: 0 20px 60px hsl(0 0% 0% / 0.2);
+  --shadow-glow: 0 0 40px hsl(195 100% 50% / 0.3);
 
-    /* Transitions */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-
-  .dark {
-    --background: 0 0% 5%;
-    --foreground: 0 0% 100%;
-
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 100%;
-
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 100%;
-
-    --primary: 195 100% 50%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 0 0% 0%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 12%;
-    --muted-foreground: 210 20% 70%;
-
-    --accent: 195 100% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 195 100% 50%;
-  }
+  /* Transitions */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@layer base {
-  * {
-    border-color: hsl(var(--border));
-  }
+.dark {
+  --background: 0 0% 5%;
+  --foreground: 0 0% 100%;
 
-  body {
-    background-color: hsl(var(--background));
-    color: hsl(var(--foreground));
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 100%;
 
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 100%;
 
-  html {
-    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    scroll-behavior: smooth;
-  }
+  --primary: 195 100% 50%;
+  --primary-foreground: 0 0% 100%;
 
-  /* Smooth scroll animations */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  --secondary: 0 0% 0%;
+  --secondary-foreground: 0 0% 100%;
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+  --muted: 0 0% 12%;
+  --muted-foreground: 210 20% 70%;
 
-  @keyframes slideInLeft {
-    from {
-      opacity: 0;
-      transform: translateX(-50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
+  --accent: 195 100% 50%;
+  --accent-foreground: 0 0% 100%;
 
-  @keyframes slideInRight {
-    from {
-      opacity: 0;
-      transform: translateX(50px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
+  --border: 0 0% 15%;
+  --input: 0 0% 15%;
+  --ring: 195 100% 50%;
+}
 
-  @keyframes zoomIn {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
+* {
+  border-color: hsl(var(--border));
+}
 
-  .animate-scroll-fade {
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+html {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* Smooth scroll animations */
+@keyframes fadeInUp {
+  from {
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .animate-scroll-fade.visible {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
+}
 
-  .animate-scroll-slide-left {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
     opacity: 0;
     transform: translateX(-50px);
-    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .animate-scroll-slide-left.visible {
+  to {
     opacity: 1;
     transform: translateX(0);
   }
+}
 
-  .animate-scroll-slide-right {
+@keyframes slideInRight {
+  from {
     opacity: 0;
     transform: translateX(50px);
-    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .animate-scroll-slide-right.visible {
+  to {
     opacity: 1;
     transform: translateX(0);
   }
+}
 
-  .animate-scroll-zoom {
+@keyframes zoomIn {
+  from {
     opacity: 0;
     transform: scale(0.9);
-    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .animate-scroll-zoom.visible {
+  to {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-@layer utilities {
-  .gradient-hero {
-    background: var(--gradient-hero);
-  }
-
-  .gradient-overlay {
-    background: var(--gradient-overlay);
-  }
-
-  .gradient-card {
-    background: var(--gradient-card);
-  }
-
-  .shadow-glow {
-    box-shadow: var(--shadow-glow);
-  }
-
-  .transition-smooth {
-    transition: var(--transition-smooth);
-  }
-
-  .transition-spring {
-    transition: var(--transition-spring);
-  }
+.animate-scroll-fade {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-@layer components {
-  .btn-navy-light {
-    background: linear-gradient(135deg, hsl(214 86% 27%) 0%, hsl(214 81% 39%) 45%, hsl(216 76% 25%) 100%);
-    color: #ffffff;
-    box-shadow: 0 10px 28px hsla(221 72% 23% / 0.28);
-  }
+.animate-scroll-fade.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-  .btn-navy-light:hover,
-  .btn-navy-light:focus-visible {
-    background: linear-gradient(135deg, hsl(214 85% 33%) 0%, hsl(214 77% 43%) 50%, hsl(216 77% 28%) 100%);
-    color: #ffffff;
-  }
+.animate-scroll-slide-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  .btn-navy-outline {
-    border: 1.5px solid hsla(214 87% 12% / 0.6);
-    color: hsl(215 91% 9%);
-    background: transparent;
-  }
+.animate-scroll-slide-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
 
-  .btn-navy-outline:hover,
-  .btn-navy-outline:focus-visible {
-    background: linear-gradient(135deg, hsl(215 91% 9%) 0%, hsl(216 84% 20%) 55%, hsl(216 100% 5%) 100%);
-    color: #ffffff;
-    border-color: hsla(214 87% 12% / 0.9);
-  }
+.animate-scroll-slide-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  .btn-navy-ghost {
-    color: hsl(214 86% 27%);
-  }
+.animate-scroll-slide-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
 
-  .btn-navy-ghost:hover,
-  .btn-navy-ghost:focus-visible {
-    background-color: hsla(219 76% 27% / 0.18);
-    color: #ffffff;
-  }
+.animate-scroll-zoom {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  .bg-navy-gradient {
-    background: linear-gradient(135deg, hsl(215 91% 9%) 0%, hsl(216 84% 20%) 55%, hsl(216 100% 5%) 100%);
-    color: #ffffff;
-  }
+.animate-scroll-zoom.visible {
+  opacity: 1;
+  transform: scale(1);
+}
 
-  .bg-navy-black {
-    background: linear-gradient(150deg, hsl(214 87% 12%) 0%, hsl(215 91% 8%) 50%, hsl(216 100% 3%) 100%);
-  }
+.gradient-hero {
+  background: var(--gradient-hero);
+}
 
-  .chip-navy {
-    background: linear-gradient(135deg, hsla(214 87% 12% / 0.85) 0%, hsla(214 85% 33% / 0.92) 100%);
-    color: #ffffff;
-  }
+.gradient-overlay {
+  background: var(--gradient-overlay);
+}
+
+.gradient-card {
+  background: var(--gradient-card);
+}
+
+.shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+.transition-smooth {
+  transition: var(--transition-smooth);
+}
+
+.transition-spring {
+  transition: var(--transition-spring);
+}
+
+.btn-navy-light {
+  background: linear-gradient(135deg, hsl(214 86% 27%) 0%, hsl(214 81% 39%) 45%, hsl(216 76% 25%) 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 28px hsla(221 72% 23% / 0.28);
+}
+
+.btn-navy-light:hover,
+.btn-navy-light:focus-visible {
+  background: linear-gradient(135deg, hsl(214 85% 33%) 0%, hsl(214 77% 43%) 50%, hsl(216 77% 28%) 100%);
+  color: #ffffff;
+}
+
+.btn-navy-outline {
+  border: 1.5px solid hsla(214 87% 12% / 0.6);
+  color: hsl(215 91% 9%);
+  background: transparent;
+}
+
+.btn-navy-outline:hover,
+.btn-navy-outline:focus-visible {
+  background: linear-gradient(135deg, hsl(215 91% 9%) 0%, hsl(216 84% 20%) 55%, hsl(216 100% 5%) 100%);
+  color: #ffffff;
+  border-color: hsla(214 87% 12% / 0.9);
+}
+
+.btn-navy-ghost {
+  color: hsl(214 86% 27%);
+}
+
+.btn-navy-ghost:hover,
+.btn-navy-ghost:focus-visible {
+  background-color: hsla(219 76% 27% / 0.18);
+  color: #ffffff;
+}
+
+.bg-navy-gradient {
+  background: linear-gradient(135deg, hsl(215 91% 9%) 0%, hsl(216 84% 20%) 55%, hsl(216 100% 5%) 100%);
+  color: #ffffff;
+}
+
+.bg-navy-black {
+  background: linear-gradient(150deg, hsl(214 87% 12%) 0%, hsl(215 91% 8%) 50%, hsl(216 100% 3%) 100%);
+}
+
+.chip-navy {
+  background: linear-gradient(135deg, hsla(214 87% 12% / 0.85) 0%, hsla(214 85% 33% / 0.92) 100%);
+  color: #ffffff;
 }
