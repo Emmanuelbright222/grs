@@ -6,11 +6,14 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin, Ticket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Events = () => {
   const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
   const [pastEvents, setPastEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   useEffect(() => {
     loadEvents();
@@ -125,8 +128,15 @@ const Events = () => {
                         )}
                       </div>
                       <div className="flex flex-col sm:flex-row gap-3">
-                        <Button variant="outline" className="flex-1" asChild>
-                          <a href={`/events/${event.slug || event.id}`}>View Details</a>
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => {
+                            setSelectedEvent(event);
+                            setIsDetailsOpen(true);
+                          }}
+                        >
+                          View Details
                         </Button>
                         {event.ticket_url ? (
                           <Button variant="hero" className="flex-1" asChild>
@@ -204,6 +214,107 @@ const Events = () => {
         </section>
       </main>
       <Footer />
+
+      <Dialog
+        open={isDetailsOpen}
+        onOpenChange={(open) => {
+          setIsDetailsOpen(open);
+          if (!open) {
+            setSelectedEvent(null);
+          }
+        }}
+      >
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{selectedEvent?.title || "Event Details"}</DialogTitle>
+            {selectedEvent && (
+              <DialogDescription>
+                {selectedEvent.event_date
+                  ? new Date(selectedEvent.event_date).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : null}
+                {selectedEvent.event_time ? ` • ${selectedEvent.event_time}` : ""}
+              </DialogDescription>
+            )}
+          </DialogHeader>
+
+          {selectedEvent && (
+            <div className="space-y-6">
+              {selectedEvent.image_url && (
+                <img
+                  src={selectedEvent.image_url}
+                  alt={selectedEvent.title}
+                  className="w-full rounded-xl object-cover max-h-64"
+                />
+              )}
+
+              <div className="grid sm:grid-cols-2 gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  <span>
+                    {selectedEvent.event_date
+                      ? new Date(selectedEvent.event_date).toLocaleString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                      : "Date TBA"}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  <span>{selectedEvent.location || "Location TBA"}</span>
+                </div>
+                {selectedEvent.venue && (
+                  <div className="flex items-center gap-2">
+                    <Ticket className="w-4 h-4" />
+                    <span>{selectedEvent.venue}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="text-sm leading-relaxed text-muted-foreground space-y-4">
+                {selectedEvent.description && selectedEvent.description.trim() !== "" ? (
+                  <div
+                    className="space-y-3"
+                    dangerouslySetInnerHTML={{ __html: selectedEvent.description }}
+                  />
+                ) : (
+                  <p>No additional details provided.</p>
+                )}
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                {selectedEvent.ticket_url ? (
+                  <Button variant="hero" className="flex-1" asChild>
+                    <a href={selectedEvent.ticket_url} target="_blank" rel="noopener noreferrer">
+                      Get Tickets
+                    </a>
+                  </Button>
+                ) : (
+                  <Button variant="hero" className="flex-1" asChild>
+                    <a href="/contact">Book Performance</a>
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    setIsDetailsOpen(false);
+                    setSelectedEvent(null);
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
