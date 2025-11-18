@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import logo from "@/assets/grace-rhythm-sounds-logo.png";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -197,6 +202,12 @@ const Navbar = () => {
                       <Link to="/dashboard/news" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/news" ? "text-white font-bold" : "text-white"}`}>
                         News
                       </Link>
+                      <Link to="/dashboard/bank-details" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/bank-details" ? "text-white font-bold" : "text-white"}`}>
+                        Bank Details
+                      </Link>
+                      <Link to="/dashboard/announcements" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/announcements" ? "text-white font-bold" : "text-white"}`}>
+                        Announcements
+                      </Link>
                       <Link to="/dashboard/admin-management" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/admin-management" ? "text-white font-bold" : "text-white"}`}>
                         Admin Management
                       </Link>
@@ -217,6 +228,10 @@ const Navbar = () => {
                           Dashboard
                         </Link>
                       </Button>
+                      <Link to="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-xl py-2 transition-smooth hover:text-white/80 flex items-center gap-2 ${location.pathname === "/dashboard" ? "text-white font-bold" : "text-white"}`}>
+                        <Bell className="w-5 h-5" />
+                        Notifications
+                      </Link>
                       <Link to="/dashboard/profile" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-xl py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/profile" ? "text-white font-bold" : "text-white"}`}>
                         My Profile
                       </Link>

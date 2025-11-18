@@ -1474,6 +1474,29 @@ const ArtistDashboard = () => {
       });
       return;
     }
+
+    if (!demoForm.file) {
+      toast({
+        title: "Error",
+        description: "Please select a master song file to upload",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['audio/mp3', 'audio/mpeg', 'audio/mp4', 'audio/wav', 'audio/wave'];
+    const allowedExtensions = ['mp3', 'mp4', 'wav'];
+    const fileExt = demoForm.file.name.split('.').pop()?.toLowerCase();
+    
+    if (!allowedTypes.includes(demoForm.file.type) || !fileExt || !allowedExtensions.includes(fileExt)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload only MP3, MP4, or WAV files",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (viewingAsArtist) {
       toast({
@@ -1564,8 +1587,8 @@ const ArtistDashboard = () => {
 
 
       toast({
-        title: "Demo submitted!",
-        description: "Your demo has been uploaded successfully. We'll review it soon.",
+        title: "Master song submitted!",
+        description: "Your master song has been uploaded successfully. We'll review it soon.",
       });
 
       // Reset form and captcha
@@ -1579,7 +1602,7 @@ const ArtistDashboard = () => {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to upload demo. Please try again.",
+        description: error.message || "Failed to upload master song. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -1683,6 +1706,7 @@ const ArtistDashboard = () => {
                 </p>
               </div>
             </div>
+            {/* Desktop Buttons */}
             <div className="hidden md:flex flex-wrap gap-2">
               {isAdmin && !viewingAsArtist && (
                 <>
@@ -1809,6 +1833,139 @@ const ArtistDashboard = () => {
               )}
               {!viewingAsArtist && (
                 <Button onClick={handleSignOut} variant="hero">
+                  Sign Out
+                </Button>
+              )}
+            </div>
+
+            {/* Mobile Buttons */}
+            <div className="flex md:hidden flex-wrap gap-2 justify-center">
+              {isAdmin && !viewingAsArtist && (
+                <>
+                  <Button onClick={() => navigate("/dashboard/artists")} variant="hero" size="sm">
+                    Artists
+                  </Button>
+                  <Button onClick={() => navigate("/dashboard/releases")} variant="hero" size="sm">
+                    Releases
+                  </Button>
+                  <Button onClick={() => navigate("/dashboard/events")} variant="hero" size="sm">
+                    Events
+                  </Button>
+                  <Button onClick={() => navigate("/dashboard/news")} variant="hero" size="sm">
+                    News
+                  </Button>
+                  <Button onClick={() => navigate("/dashboard/bank-details")} variant="hero" size="sm">
+                    Bank Details
+                  </Button>
+                  <Button onClick={() => navigate("/dashboard/announcements")} variant="hero" size="sm">
+                    Announcements
+                  </Button>
+                  <Button onClick={() => navigate("/dashboard/admin-management")} variant="hero" size="sm">
+                    Admin
+                  </Button>
+                </>
+              )}
+              {!isAdmin && !viewingAsArtist && (
+                <>
+                  {/* Notifications Bell - Mobile */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="hero" className="relative" size="sm">
+                        <Bell className="w-5 h-5" />
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80 max-h-96 overflow-y-auto">
+                      <div className="p-2 border-b">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold">Notifications</h3>
+                          {unreadCount > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={markAllAsRead}
+                              className="text-xs h-7"
+                            >
+                              Mark all as read
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      {loadingNotifications ? (
+                        <div className="p-4 text-center text-muted-foreground">
+                          Loading...
+                        </div>
+                      ) : notifications.length === 0 ? (
+                        <div className="p-4 text-center text-muted-foreground">
+                          No notifications
+                        </div>
+                      ) : (
+                        <div className="divide-y">
+                          {notifications.map((notification) => (
+                            <div
+                              key={notification.id}
+                              className={`p-3 cursor-pointer hover:bg-muted/50 ${
+                                !notification.is_read ? "bg-accent/10" : ""
+                              }`}
+                              onClick={() => {
+                                if (!notification.is_read) {
+                                  markNotificationAsRead(notification.id);
+                                }
+                              }}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1">
+                                  <p className="font-semibold text-sm">
+                                    {notification.title}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {notification.message}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {new Date(notification.created_at).toLocaleDateString()}{" "}
+                                    {new Date(notification.created_at).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </p>
+                                </div>
+                                {!notification.is_read && (
+                                  <div className="w-2 h-2 bg-accent rounded-full mt-1 flex-shrink-0" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button onClick={() => navigate("/dashboard/profile")} variant="hero" size="sm">
+                    Profile
+                  </Button>
+                </>
+              )}
+              {viewingAsArtist && isAdmin && (
+                <Button 
+                  onClick={() => {
+                    setViewingAsArtist(false);
+                    setViewingArtistId(null);
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('artist_id');
+                    window.history.replaceState({}, '', url.pathname);
+                    window.location.href = "/dashboard";
+                  }} 
+                  variant="hero"
+                  size="sm"
+                >
+                  Back
+                </Button>
+              )}
+              {!viewingAsArtist && (
+                <Button onClick={handleSignOut} variant="hero" size="sm">
                   Sign Out
                 </Button>
               )}
@@ -2691,28 +2848,32 @@ const ArtistDashboard = () => {
           {!isAdmin && !viewingAsArtist && (
             <>
               <Card className="p-6 border-0 shadow-soft mb-8">
-                <h2 className="text-1xl font-bold mb-4">Upload Demo</h2>
+                <h2 className="text-1xl font-bold mb-4">Upload Master Song</h2>
                 <form onSubmit={handleDemoSubmit}>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="demo-message">Message (Optional)</Label>
+                      <Label htmlFor="demo-message">Message</Label>
                       <Textarea
                         id="demo-message"
                         value={demoForm.message}
                         onChange={(e) => setDemoForm({ ...demoForm, message: e.target.value })}
-                        placeholder="Tell us about your demo..."
+                        placeholder="Tell us about your master song..."
                         rows={3}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="demo-file">Demo File</Label>
+                      <Label htmlFor="demo-file">Master Song File</Label>
                       <Input
                         id="demo-file"
                         ref={demoFileInputRef}
                         type="file"
-                        accept="audio/*"
+                        accept="audio/mp3,audio/mpeg,audio/mp4,audio/wav,audio/wave"
                         onChange={(e) => setDemoForm({ ...demoForm, file: e.target.files?.[0] || null })}
+                        className="mt-1"
                       />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Accepted formats: MP3, MP4, WAV only
+                      </p>
                     </div>
                     <div className="flex justify-center">
                       <HCaptcha
@@ -2742,16 +2903,16 @@ const ArtistDashboard = () => {
                       className="w-full"
                       disabled={uploadingDemo || !demoHcaptchaToken}
                     >
-                      {uploadingDemo ? "Uploading..." : "Submit Demo"}
+                      {uploadingDemo ? "Uploading..." : "Submit Master Song"}
                     </Button>
                   </div>
                 </form>
               </Card>
 
-              {/* My Demo Submissions - Show status */}
+              {/* My Master Song Submissions - Show status */}
               {demoUploads.length > 0 && (
                 <Card className="p-6 border-0 shadow-soft mb-8">
-                  <h2 className="text-2xl font-bold mb-4">My Demo Submissions</h2>
+                  <h2 className="text-2xl font-bold mb-4">My Master Song Submissions</h2>
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
