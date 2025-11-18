@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { User, Edit2, Save, X, Camera, AlertCircle } from "lucide-react";
+import { User, Edit2, Save, X, Camera, AlertCircle, CreditCard } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 const ArtistProfile = () => {
@@ -17,6 +17,7 @@ const ArtistProfile = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
+  const [bankDetails, setBankDetails] = useState<any>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({
     full_name: "",
@@ -26,6 +27,8 @@ const ArtistProfile = () => {
     gender: "",
     avatarFile: null as File | null,
     artistImageFile: null as File | null,
+    bank_name: "",
+    account_number: "",
   });
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingArtistImage, setUploadingArtistImage] = useState(false);
@@ -70,12 +73,46 @@ const ArtistProfile = () => {
             gender: data.gender || "",
             avatarFile: null,
             artistImageFile: null,
+            bank_name: "",
+            account_number: "",
           });
         }
+        
+        // Load bank details
+        await loadBankDetails(userId);
+        
         return data;
       }
     } catch (err) {
       console.error("Exception loading profile:", err);
+      return null;
+    }
+  };
+
+  const loadBankDetails = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("bank_details")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error loading bank details:", error);
+        return null;
+      } else {
+        setBankDetails(data || null);
+        if (data) {
+          setProfileForm(prev => ({
+            ...prev,
+            bank_name: data.bank_name || "",
+            account_number: data.account_number || "",
+          }));
+        }
+        return data;
+      }
+    } catch (err) {
+      console.error("Exception loading bank details:", err);
       return null;
     }
   };
@@ -247,6 +284,33 @@ const ArtistProfile = () => {
 
       if (updateError) throw updateError;
 
+      // Save or update bank details
+      if (profileForm.bank_name && profileForm.account_number) {
+        if (bankDetails) {
+          // Update existing bank details
+          const { error: bankError } = await supabase
+            .from("bank_details")
+            .update({
+              bank_name: profileForm.bank_name,
+              account_number: profileForm.account_number,
+            })
+            .eq("user_id", user.id);
+
+          if (bankError) throw bankError;
+        } else {
+          // Insert new bank details
+          const { error: bankError } = await supabase
+            .from("bank_details")
+            .insert({
+              user_id: user.id,
+              bank_name: profileForm.bank_name,
+              account_number: profileForm.account_number,
+            });
+
+          if (bankError) throw bankError;
+        }
+      }
+
       toast({
         title: "Profile updated!",
         description: "Your profile has been saved successfully.",
@@ -368,6 +432,8 @@ const ArtistProfile = () => {
                             gender: profile.gender || "",
                             avatarFile: null,
                             artistImageFile: null,
+                            bank_name: bankDetails?.bank_name || "",
+                            account_number: bankDetails?.account_number || "",
                           });
                         }
                       }} 
@@ -612,6 +678,51 @@ const ArtistProfile = () => {
                   )}
                 </div>
               </div>
+            </div>
+
+            {/* Bank Details Section */}
+            <div className="mt-8 pt-8 border-t border-border">
+              <div className="flex items-center gap-4 mb-6">
+                <CreditCard className="w-6 h-6 text-accent" />
+                <h2 className="text-xl font-bold">Bank Details</h2>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="bank_name" className="text-sm text-muted-foreground">Bank Name</Label>
+                  {isEditingProfile ? (
+                    <Input
+                      id="bank_name"
+                      value={profileForm.bank_name}
+                      onChange={(e) => setProfileForm({ ...profileForm, bank_name: e.target.value })}
+                      placeholder="e.g., Access Bank, GTBank"
+                      className="mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    />
+                  ) : (
+                    <p className="font-medium mt-1">{bankDetails?.bank_name || "-"}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="account_number" className="text-sm text-muted-foreground">Account Number</Label>
+                  {isEditingProfile ? (
+                    <Input
+                      id="account_number"
+                      value={profileForm.account_number}
+                      onChange={(e) => setProfileForm({ ...profileForm, account_number: e.target.value })}
+                      placeholder="Enter your account number"
+                      className="mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    />
+                  ) : (
+                    <p className="font-medium mt-1">{bankDetails?.account_number || "-"}</p>
+                  )}
+                </div>
+              </div>
+              {!isEditingProfile && !bankDetails && (
+                <p className="text-sm text-muted-foreground mt-4">
+                  No bank details added yet. Click 'Edit Profile' to add your bank details.
+                </p>
+              )}
             </div>
           </Card>
         </div>

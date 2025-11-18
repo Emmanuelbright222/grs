@@ -1562,6 +1562,9 @@ const ArtistDashboard = () => {
                   <Button onClick={() => navigate("/dashboard/news")} variant="hero">
                     News
                   </Button>
+                  <Button onClick={() => navigate("/dashboard/bank-details")} variant="hero">
+                    Bank Details
+                  </Button>
                   <Button onClick={() => navigate("/dashboard/admin-management")} variant="hero">
                     Admin Management
                   </Button>

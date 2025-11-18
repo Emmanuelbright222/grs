@@ -25,6 +25,7 @@ const AdminReleases = lazy(() => import("./pages/AdminReleases"));
 const AdminEvents = lazy(() => import("./pages/AdminEvents"));
 const AdminNews = lazy(() => import("./pages/AdminNews"));
 const AdminManagement = lazy(() => import("./pages/AdminManagement"));
+const AdminBankDetails = lazy(() => import("./pages/AdminBankDetails"));
 const NewsDetail = lazy(() => import("./pages/NewsDetail"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -78,6 +79,7 @@ const App = () => (
             <Route path="/dashboard/events" element={<AdminEvents />} />
             <Route path="/dashboard/news" element={<AdminNews />} />
             <Route path="/dashboard/admin-management" element={<AdminManagement />} />
+            <Route path="/dashboard/bank-details" element={<AdminBankDetails />} />
             <Route path="/news/:slug" element={<NewsDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
