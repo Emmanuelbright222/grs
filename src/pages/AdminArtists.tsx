@@ -974,6 +974,30 @@ const AdminArtists = () => {
                     artistImageUrl = await handleArtistImageUpload(artistImageFile);
                   }
 
+                  // Check featured limit (6 max)
+                  if (formData.is_featured) {
+                    const { data: featuredArtists, error: countError } = await supabase
+                      .from("profiles")
+                      .select("id")
+                      .eq("is_featured", true);
+
+                    if (countError) throw countError;
+
+                    const currentFeaturedCount = featuredArtists?.length || 0;
+                    const isCurrentlyFeatured = isEditing && selectedArtist?.is_featured;
+
+                    if (!isCurrentlyFeatured && currentFeaturedCount >= 6) {
+                      toast({
+                        title: "Featured Limit Reached",
+                        description: "Maximum featured limit reached (6 max). This artist will only be published. Unfeature another artist to feature this one.",
+                        variant: "destructive",
+                        duration: 8000, // 8 seconds
+                      });
+                      // Set is_featured to false but continue with save
+                      formData.is_featured = false;
+                    }
+                  }
+
                   if (isEditing && selectedArtist) {
                     const updateData: any = {
                       full_name: formData.full_name || null,

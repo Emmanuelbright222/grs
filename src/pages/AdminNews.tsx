@@ -210,6 +210,30 @@ const AdminNews = () => {
         ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
         : [];
 
+      // Check featured limit (3 max)
+      if (formData.is_featured) {
+        const { data: featuredNews, error: countError } = await supabase
+          .from("news")
+          .select("id")
+          .eq("is_featured", true);
+
+        if (countError) throw countError;
+
+        const currentFeaturedCount = featuredNews?.length || 0;
+        const isCurrentlyFeatured = isEditing && editingNews?.is_featured;
+
+        if (!isCurrentlyFeatured && currentFeaturedCount >= 3) {
+          toast({
+            title: "Featured Limit Reached",
+            description: "Maximum featured limit reached (3 max). This news will only be published. Unfeature another news to feature this one.",
+            variant: "destructive",
+            duration: 8000, // 8 seconds
+          });
+          // Set is_featured to false but continue with save
+          formData.is_featured = false;
+        }
+      }
+
       const newsData: any = {
         title: formData.title,
         slug: slug,

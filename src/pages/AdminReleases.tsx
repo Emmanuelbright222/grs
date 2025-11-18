@@ -223,6 +223,35 @@ const AdminReleases = () => {
         coverUrl = await handleImageUpload(coverImageFile);
       }
 
+      // Check latest release limit (3 max) and auto-remove oldest if exceeded
+      if (formData.is_latest_release) {
+        const { data: latestReleases, error: countError } = await supabase
+          .from("releases")
+          .select("id, release_date")
+          .eq("is_latest_release", true)
+          .order("release_date", { ascending: true }); // Oldest first
+
+        if (countError) throw countError;
+
+        const currentLatestCount = latestReleases?.length || 0;
+        const isCurrentlyLatest = isEditing && editingRelease?.is_latest_release;
+
+        // If adding a new latest release and we already have 3, remove the oldest
+        if (!isCurrentlyLatest && currentLatestCount >= 3 && latestReleases && latestReleases.length > 0) {
+          // Remove the oldest latest release (first one in ascending order)
+          const oldestReleaseId = latestReleases[0].id;
+          await supabase
+            .from("releases")
+            .update({ is_latest_release: false })
+            .eq("id", oldestReleaseId);
+          
+          toast({
+            title: "Latest Release Updated",
+            description: "Oldest latest release has been automatically removed to maintain the 3 max limit.",
+          });
+        }
+      }
+
       const releaseData: any = {
         title: formData.title,
         artist_name: formData.artist_name,

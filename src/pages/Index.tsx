@@ -4,6 +4,7 @@ import HeroSection from "@/components/HeroSection";
 import AtAGlance from "@/components/AtAGlance";
 import FeaturedArtists from "@/components/FeaturedArtists";
 import LatestReleases from "@/components/LatestReleases";
+import FeaturedVideos from "@/components/FeaturedVideos";
 import LatestNews from "@/components/LatestNews";
 import FAQ from "@/components/FAQ";
 import GenreMarquee from "@/components/GenreMarquee";
@@ -19,6 +20,7 @@ const Index = () => {
         <AtAGlance />
         <FeaturedArtists />
         <LatestReleases />
+        <FeaturedVideos />
         <LatestNews />
         <FAQ />
         <GenreMarquee />

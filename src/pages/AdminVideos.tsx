@@ -176,6 +176,30 @@ const AdminVideos = () => {
 
       const thumbnailUrl = getYouTubeThumbnail(videoId);
 
+      // Check featured limit (3 max)
+      if (formData.is_featured) {
+        const { data: featuredVideos, error: countError } = await supabase
+          .from("videos")
+          .select("id")
+          .eq("is_featured", true);
+
+        if (countError) throw countError;
+
+        const currentFeaturedCount = featuredVideos?.length || 0;
+        const isCurrentlyFeatured = isEditing && editingVideo?.is_featured;
+
+        if (!isCurrentlyFeatured && currentFeaturedCount >= 3) {
+          toast({
+            title: "Featured Limit Reached",
+            description: "Maximum featured limit reached (3 max). This video will only be published. Unfeature another video to feature this one.",
+            variant: "destructive",
+            duration: 8000, // 8 seconds
+          });
+          // Set is_featured to false but continue with save
+          formData.is_featured = false;
+        }
+      }
+
       const videoData: any = {
         artist_name: formData.artist_name,
         song_title: formData.song_title,
@@ -386,6 +410,7 @@ const AdminVideos = () => {
               {isEditing ? "Update video information" : "Add a new music video to the platform"}
             </DialogDescription>
           </DialogHeader>
+
           <div className="space-y-4">
             <div>
               <Label htmlFor="artist_name">Artist Name *</Label>
@@ -411,14 +436,13 @@ const AdminVideos = () => {
               <div>
                 <Label htmlFor="genre">Genre</Label>
                 <Select
-                  value={formData.genre}
+                  value={formData.genre || undefined}
                   onValueChange={(value) => setFormData({ ...formData, genre: value })}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select genre" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
                     <SelectItem value="Afrobeat">Afrobeat</SelectItem>
                     <SelectItem value="R&B">R&B</SelectItem>
                     <SelectItem value="Hip-Hop">Hip-Hop</SelectItem>

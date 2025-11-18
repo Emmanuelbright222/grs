@@ -141,7 +141,7 @@ const Videos = () => {
                         <p className="text-sm text-muted-foreground mb-1 line-clamp-1">
                           {video.artist_name}
                         </p>
-                        <div className="flex items-center justify-between mt-3">
+                        <div className="flex items-center justify-between mt-3 mb-3">
                           {video.publish_date && (
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Calendar className="w-3 h-3" />
@@ -154,6 +154,22 @@ const Videos = () => {
                             </span>
                           )}
                         </div>
+                        {video.youtube_url && (
+                          <Button
+                            variant="hero"
+                            size="sm"
+                            asChild
+                            className="w-full"
+                          >
+                            <a
+                              href={video.youtube_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View Detail
+                            </a>
+                          </Button>
+                        )}
                       </div>
                     </Card>
                   );
