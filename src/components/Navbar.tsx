@@ -160,8 +160,8 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <Button variant="ghost" size="icon" className={`lg:hidden transition-smooth text-white hover:text-white/80`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X /> : <Menu />}
+          <Button variant="ghost" size="icon" className="lg:hidden transition-smooth text-white hover:text-white/80 [&>svg]:text-white [&>svg]:stroke-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X className="text-white" /> : <Menu className="text-white" />}
           </Button>
         </div>
 

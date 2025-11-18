@@ -34,7 +34,7 @@ const HeroSection = () => {
             Helps Gospel Artists Produce and Distribute Music Globally While Earning From Their Creative Work & Preaching Christ Through Sound.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-2 sm:px-4">
-            <Link to="/signup" className="w-full sm:w-auto">
+            <Link to="/login" className="w-full sm:w-auto">
               <Button variant="hero" size="lg" className="group w-full sm:w-auto h-12 sm:h-14 px-8 sm:px-10 text-base sm:text-lg">
                 Get Started
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-smooth" />

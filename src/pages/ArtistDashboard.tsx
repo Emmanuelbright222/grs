@@ -2064,7 +2064,12 @@ const ArtistDashboard = () => {
           {/* Admin: All Demo Submissions */}
           {isAdmin && !viewingAsArtist && (
             <Card className="p-6 border-0 shadow-soft mb-8">
-              <h2 className="text-2xl font-bold mb-6">All Demo Submissions</h2>
+              <h2 className="text-2xl font-bold mb-4">All Demo Submissions</h2>
+              <div className="mb-6 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
+                <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                  ⚠️ Please delete approved songs/demos once they're live on streaming platforms for better storage management.
+                </p>
+              </div>
               {allDemos.length === 0 ? (
                 <p className="text-muted-foreground text-center py-8">No demo submissions yet</p>
               ) : (
