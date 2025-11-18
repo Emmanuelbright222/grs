@@ -1716,6 +1716,9 @@ const ArtistDashboard = () => {
                   <Button onClick={() => navigate("/dashboard/releases")} variant="hero">
                     Releases
                   </Button>
+                  <Button onClick={() => navigate("/dashboard/videos")} variant="hero">
+                    Videos
+                  </Button>
                   <Button onClick={() => navigate("/dashboard/events")} variant="hero">
                     Events
                   </Button>
@@ -1847,6 +1850,9 @@ const ArtistDashboard = () => {
                   </Button>
                   <Button onClick={() => navigate("/dashboard/releases")} variant="hero" size="sm">
                     Releases
+                  </Button>
+                  <Button onClick={() => navigate("/dashboard/videos")} variant="hero" size="sm">
+                    Videos
                   </Button>
                   <Button onClick={() => navigate("/dashboard/events")} variant="hero" size="sm">
                     Events

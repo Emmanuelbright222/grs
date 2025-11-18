@@ -10,6 +10,7 @@ const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
 const Artists = lazy(() => import("./pages/Artists"));
 const Releases = lazy(() => import("./pages/Releases"));
+const Videos = lazy(() => import("./pages/Videos"));
 const Events = lazy(() => import("./pages/Events"));
 const News = lazy(() => import("./pages/News"));
 const Collaborate = lazy(() => import("./pages/Collaborate"));
@@ -22,6 +23,7 @@ const ArtistDashboard = lazy(() => import("./pages/ArtistDashboard"));
 const ArtistProfile = lazy(() => import("./pages/ArtistProfile"));
 const AdminArtists = lazy(() => import("./pages/AdminArtists"));
 const AdminReleases = lazy(() => import("./pages/AdminReleases"));
+const AdminVideos = lazy(() => import("./pages/AdminVideos"));
 const AdminEvents = lazy(() => import("./pages/AdminEvents"));
 const AdminNews = lazy(() => import("./pages/AdminNews"));
 const AdminManagement = lazy(() => import("./pages/AdminManagement"));
@@ -58,6 +60,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/artists" element={<Artists />} />
             <Route path="/releases" element={<Releases />} />
+            <Route path="/videos" element={<Videos />} />
             <Route path="/events" element={<Events />} />
             <Route path="/news" element={<News />} />
             <Route path="/collaborate" element={<Collaborate />} />
@@ -77,6 +80,7 @@ const App = () => (
             <Route path="/dashboard/profile" element={<ArtistProfile />} />
             <Route path="/dashboard/artists" element={<AdminArtists />} />
             <Route path="/dashboard/releases" element={<AdminReleases />} />
+            <Route path="/dashboard/videos" element={<AdminVideos />} />
             <Route path="/dashboard/events" element={<AdminEvents />} />
             <Route path="/dashboard/news" element={<AdminNews />} />
             <Route path="/dashboard/admin-management" element={<AdminManagement />} />

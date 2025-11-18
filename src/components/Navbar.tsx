@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Bell } from "lucide-react";
+import { Menu, X, Bell, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -9,12 +9,15 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [musicDropdownOpen, setMusicDropdownOpen] = useState(false);
+  const [updatesDropdownOpen, setUpdatesDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -84,18 +87,6 @@ const Navbar = () => {
     path: "/about",
     label: "About"
   }, {
-    path: "/artists",
-    label: "Artists"
-  }, {
-    path: "/releases",
-    label: "Releases"
-  }, {
-    path: "/events",
-    label: "Events"
-  }, {
-    path: "/news",
-    label: "News"
-  }, {
     path: "/collaborate",
     label: "Collaborate"
   }, {
@@ -122,27 +113,11 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-4">
-            {navLinks.map(link => {
+            {navLinks.filter(link => link.path !== "/dashboard").map(link => {
               const isActive = link.path === "/"
                 ? location.pathname === link.path
                 : location.pathname.startsWith(link.path);
-              if (link.path === "/dashboard") {
-                return (
-                  <Button
-                    key={link.path}
-                    asChild
-                    variant="hero"
-                    size="lg"
-                    className={`text-lg px-6 py-2 transition-smooth btn-navy-light ${
-                      isActive ? "bg-white/25 text-accent-foreground shadow-xl" : ""
-                    }`}
-                  >
-                    <Link to={link.path}>
-                      {link.label}
-                    </Link>
-                  </Button>
-                );
-              }
+              
               return (
                 <Link
                   key={link.path}
@@ -155,6 +130,122 @@ const Navbar = () => {
                 >
                   {link.label}
                 </Link>
+              );
+            })}
+            
+            {/* Music Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setMusicDropdownOpen(true)}
+              onMouseLeave={() => setMusicDropdownOpen(false)}
+            >
+              <DropdownMenu open={musicDropdownOpen} onOpenChange={setMusicDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className={`relative font-medium text-lg px-3 py-2 rounded-md transition-smooth flex items-center gap-1 whitespace-nowrap ${
+                      location.pathname === "/releases" || location.pathname === "/videos"
+                        ? "text-white font-semibold bg-white/25 shadow"
+                        : "text-white/80 hover:text-white"
+                    }`}
+                  >
+                    Music
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-[#042147]/95 backdrop-blur-xl border-[#07336b]/40" onMouseEnter={() => setMusicDropdownOpen(true)} onMouseLeave={() => setMusicDropdownOpen(false)}>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/releases"
+                      className={`w-full text-white ${location.pathname === "/releases" ? "bg-white/10" : ""}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Releases
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/videos"
+                      className={`w-full text-white ${location.pathname === "/videos" ? "bg-white/10" : ""}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Videos
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            
+            {/* Artists Link */}
+            <Link
+              to="/artists"
+              className={`relative font-medium text-lg px-3 py-2 rounded-md transition-smooth whitespace-nowrap ${
+                location.pathname === "/artists"
+                  ? "text-white font-semibold bg-white/25 shadow"
+                  : "text-white/80 hover:text-white"
+              }`}
+            >
+              Artists
+            </Link>
+            
+            {/* Updates Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => setUpdatesDropdownOpen(true)}
+              onMouseLeave={() => setUpdatesDropdownOpen(false)}
+            >
+              <DropdownMenu open={updatesDropdownOpen} onOpenChange={setUpdatesDropdownOpen}>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className={`relative font-medium text-lg px-3 py-2 rounded-md transition-smooth flex items-center gap-1 whitespace-nowrap ${
+                      location.pathname === "/events" || location.pathname === "/news"
+                        ? "text-white font-semibold bg-white/25 shadow"
+                        : "text-white/80 hover:text-white"
+                    }`}
+                  >
+                    Updates
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-[#042147]/95 backdrop-blur-xl border-[#07336b]/40" onMouseEnter={() => setUpdatesDropdownOpen(true)} onMouseLeave={() => setUpdatesDropdownOpen(false)}>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/events"
+                      className={`w-full text-white ${location.pathname === "/events" ? "bg-white/10" : ""}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Events
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/news"
+                      className={`w-full text-white ${location.pathname === "/news" ? "bg-white/10" : ""}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      News
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            
+            {/* Dashboard Button - Moved to end */}
+            {navLinks.filter(link => link.path === "/dashboard").map(link => {
+              const isActive = location.pathname.startsWith(link.path);
+              return (
+                <Button
+                  key={link.path}
+                  asChild
+                  variant="hero"
+                  size="lg"
+                  className={`text-lg px-6 py-2 transition-smooth btn-navy-light whitespace-nowrap ${
+                    isActive ? "bg-white/25 text-accent-foreground shadow-xl" : ""
+                  }`}
+                >
+                  <Link to={link.path}>
+                    {link.label}
+                  </Link>
+                </Button>
               );
             })}
           </div>
@@ -195,6 +286,9 @@ const Navbar = () => {
                       </Link>
                       <Link to="/dashboard/releases" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/releases" ? "text-white font-bold" : "text-white"}`}>
                         Releases
+                      </Link>
+                      <Link to="/dashboard/videos" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/videos" ? "text-white font-bold" : "text-white"}`}>
+                        Videos
                       </Link>
                       <Link to="/dashboard/events" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 transition-smooth hover:text-white/80 ${location.pathname === "/dashboard/events" ? "text-white font-bold" : "text-white"}`}>
                         Events
@@ -266,6 +360,27 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
+                  <div className="pt-2 border-t border-white/20 mt-2">
+                    <p className="text-sm text-white/60 mb-2 px-2">Music</p>
+                    <Link to="/releases" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/releases" ? "text-white font-bold" : "text-white"}`}>
+                      Releases
+                    </Link>
+                    <Link to="/videos" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/videos" ? "text-white font-bold" : "text-white"}`}>
+                      Videos
+                    </Link>
+                  </div>
+                  <Link to="/artists" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-xl py-2 transition-smooth hover:text-white/80 ${location.pathname === "/artists" ? "text-white font-bold" : "text-white"}`}>
+                    Artists
+                  </Link>
+                  <div className="pt-2 border-t border-white/20 mt-2">
+                    <p className="text-sm text-white/60 mb-2 px-2">Updates</p>
+                    <Link to="/events" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/events" ? "text-white font-bold" : "text-white"}`}>
+                      Events
+                    </Link>
+                    <Link to="/news" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/news" ? "text-white font-bold" : "text-white"}`}>
+                      News
+                    </Link>
+                  </div>
                 </>
               )}
             </div>
