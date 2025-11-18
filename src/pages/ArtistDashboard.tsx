@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { BarChart3, Music, TrendingUp, DollarSign, ExternalLink, Upload, User, Edit2, Save, X, Camera, AlertCircle, Calendar, MoreVertical, Trash2, CheckCircle2, XCircle, ArrowLeft, AlertTriangle, Download, ChevronDown, ChevronUp } from "lucide-react";
+import { BarChart3, Music, TrendingUp, DollarSign, ExternalLink, Upload, User, Edit2, Save, X, Camera, AlertCircle, Calendar, MoreVertical, Trash2, CheckCircle2, XCircle, ArrowLeft, AlertTriangle, Download, ChevronDown, ChevronUp, Bell } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
@@ -84,6 +84,9 @@ const ArtistDashboard = () => {
     audiomack: false,
     boomplay: false,
   });
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -93,11 +96,50 @@ const ArtistDashboard = () => {
   useEffect(() => {
     if (profile?.user_id && !viewingAsArtist) {
       loadPlatformConnections();
+      loadNotifications();
     } else if (profile?.user_id && viewingAsArtist && viewingArtistId) {
       // When admin is viewing artist, load connections for that artist
       loadPlatformConnectionsForArtist(profile.user_id);
     }
   }, [profile, viewingAsArtist, viewingArtistId]);
+
+  // Set up real-time subscription for notifications
+  useEffect(() => {
+    if (!profile?.user_id || viewingAsArtist) return;
+
+    const channel = supabase
+      .channel("notifications")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${profile.user_id}`,
+        },
+        () => {
+          loadNotifications();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: "user_id=is.null",
+        },
+        () => {
+          loadNotifications();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile?.user_id, viewingAsArtist]);
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -1282,6 +1324,100 @@ const ArtistDashboard = () => {
     }
   };
 
+  const loadNotifications = async () => {
+    if (!profile?.user_id || viewingAsArtist) return;
+    
+    setLoadingNotifications(true);
+    try {
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("*")
+        .or(`user_id.eq.${profile.user_id},user_id.is.null`)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error("Error loading notifications:", error);
+        return;
+      }
+
+      setNotifications(data || []);
+      const unread = (data || []).filter((n) => !n.is_read).length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error("Exception loading notifications:", error);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  const markNotificationAsRead = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from("notifications")
+        .update({
+          is_read: true,
+          read_at: new Date().toISOString(),
+        })
+        .eq("id", notificationId);
+
+      if (error) throw error;
+
+      // Update local state
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === notificationId
+            ? { ...n, is_read: true, read_at: new Date().toISOString() }
+            : n
+        )
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch (error: any) {
+      console.error("Error marking notification as read:", error);
+      toast({
+        title: "Error",
+        description: "Failed to mark notification as read",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const markAllAsRead = async () => {
+    if (!profile?.user_id) return;
+
+    try {
+      const unreadIds = notifications
+        .filter((n) => !n.is_read)
+        .map((n) => n.id);
+
+      if (unreadIds.length === 0) return;
+
+      const { error } = await supabase
+        .from("notifications")
+        .update({
+          is_read: true,
+          read_at: new Date().toISOString(),
+        })
+        .in("id", unreadIds)
+        .or(`user_id.eq.${profile.user_id},user_id.is.null`);
+
+      if (error) throw error;
+
+      // Update local state
+      setNotifications((prev) =>
+        prev.map((n) => ({ ...n, is_read: true, read_at: new Date().toISOString() }))
+      );
+      setUnreadCount(0);
+    } catch (error: any) {
+      console.error("Error marking all as read:", error);
+      toast({
+        title: "Error",
+        description: "Failed to mark all as read",
+        variant: "destructive",
+      });
+    }
+  };
+
   const getTotalStreams = () => {
     return streamingData.reduce((sum, item) => sum + item.streams, 0);
   };
@@ -1565,15 +1701,96 @@ const ArtistDashboard = () => {
                   <Button onClick={() => navigate("/dashboard/bank-details")} variant="hero">
                     Bank Details
                   </Button>
+                  <Button onClick={() => navigate("/dashboard/announcements")} variant="hero">
+                    Announcements
+                  </Button>
                   <Button onClick={() => navigate("/dashboard/admin-management")} variant="hero">
                     Admin Management
                   </Button>
                 </>
               )}
               {!isAdmin && !viewingAsArtist && (
-                <Button onClick={() => navigate("/dashboard/profile")} variant="hero">
-                  My Profile
-                </Button>
+                <>
+                  {/* Notifications Bell */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="hero" className="relative">
+                        <Bell className="w-5 h-5" />
+                        {unreadCount > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                            {unreadCount > 9 ? "9+" : unreadCount}
+                          </span>
+                        )}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-80 max-h-96 overflow-y-auto">
+                      <div className="p-2 border-b">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold">Notifications</h3>
+                          {unreadCount > 0 && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={markAllAsRead}
+                              className="text-xs h-7"
+                            >
+                              Mark all as read
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      {loadingNotifications ? (
+                        <div className="p-4 text-center text-muted-foreground">
+                          Loading...
+                        </div>
+                      ) : notifications.length === 0 ? (
+                        <div className="p-4 text-center text-muted-foreground">
+                          No notifications
+                        </div>
+                      ) : (
+                        <div className="divide-y">
+                          {notifications.map((notification) => (
+                            <div
+                              key={notification.id}
+                              className={`p-3 cursor-pointer hover:bg-muted/50 ${
+                                !notification.is_read ? "bg-accent/10" : ""
+                              }`}
+                              onClick={() => {
+                                if (!notification.is_read) {
+                                  markNotificationAsRead(notification.id);
+                                }
+                              }}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex-1">
+                                  <p className="font-semibold text-sm">
+                                    {notification.title}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {notification.message}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {new Date(notification.created_at).toLocaleDateString()}{" "}
+                                    {new Date(notification.created_at).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </p>
+                                </div>
+                                {!notification.is_read && (
+                                  <div className="w-2 h-2 bg-accent rounded-full mt-1 flex-shrink-0" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button onClick={() => navigate("/dashboard/profile")} variant="hero">
+                    My Profile
+                  </Button>
+                </>
               )}
               {viewingAsArtist && isAdmin && (
                 <Button 
