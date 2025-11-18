@@ -18,6 +18,8 @@ const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [musicDropdownOpen, setMusicDropdownOpen] = useState(false);
   const [updatesDropdownOpen, setUpdatesDropdownOpen] = useState(false);
+  const [mobileMusicOpen, setMobileMusicOpen] = useState(false);
+  const [mobileUpdatesOpen, setMobileUpdatesOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -133,9 +135,9 @@ const Navbar = () => {
               );
             })}
             
-            {/* Music Dropdown */}
+            {/* Music Dropdown - Desktop Only */}
             <div
-              className="relative"
+              className="relative hidden lg:block"
               onMouseEnter={() => setMusicDropdownOpen(true)}
               onMouseLeave={() => setMusicDropdownOpen(false)}
             >
@@ -178,7 +180,7 @@ const Navbar = () => {
             {/* Artists Link */}
             <Link
               to="/artists"
-              className={`relative font-medium text-lg px-3 py-2 rounded-md transition-smooth whitespace-nowrap ${
+              className={`relative font-medium text-lg px-3 py-2 rounded-md transition-smooth whitespace-nowrap hidden lg:block ${
                 location.pathname === "/artists"
                   ? "text-white font-semibold bg-white/25 shadow"
                   : "text-white/80 hover:text-white"
@@ -187,9 +189,9 @@ const Navbar = () => {
               Artists
             </Link>
             
-            {/* Updates Dropdown */}
+            {/* Updates Dropdown - Desktop Only */}
             <div
-              className="relative"
+              className="relative hidden lg:block"
               onMouseEnter={() => setUpdatesDropdownOpen(true)}
               onMouseLeave={() => setUpdatesDropdownOpen(false)}
             >
@@ -360,26 +362,76 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
-                  <div className="pt-2 border-t border-white/20 mt-2">
-                    <p className="text-sm text-white/60 mb-2 px-2">Music</p>
-                    <Link to="/releases" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/releases" ? "text-white font-bold" : "text-white"}`}>
-                      Releases
-                    </Link>
-                    <Link to="/videos" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/videos" ? "text-white font-bold" : "text-white"}`}>
-                      Videos
-                    </Link>
+                  {/* Music Dropdown - Mobile */}
+                  <div>
+                    <button
+                      onClick={() => setMobileMusicOpen(!mobileMusicOpen)}
+                      className={`w-full flex items-center justify-between font-medium text-xl py-2 transition-smooth hover:text-white/80 text-white`}
+                    >
+                      <span>Music</span>
+                      <ChevronDown className={`w-5 h-5 transition-transform ${mobileMusicOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {mobileMusicOpen && (
+                      <div className="pl-4 mt-2 space-y-2">
+                        <Link
+                          to="/releases"
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            setMobileMusicOpen(false);
+                          }}
+                          className={`font-medium text-lg py-2 block transition-smooth hover:text-white/80 ${location.pathname === "/releases" ? "text-white font-bold" : "text-white/80"}`}
+                        >
+                          Releases
+                        </Link>
+                        <Link
+                          to="/videos"
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            setMobileMusicOpen(false);
+                          }}
+                          className={`font-medium text-lg py-2 block transition-smooth hover:text-white/80 ${location.pathname === "/videos" ? "text-white font-bold" : "text-white/80"}`}
+                        >
+                          Videos
+                        </Link>
+                      </div>
+                    )}
                   </div>
                   <Link to="/artists" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-xl py-2 transition-smooth hover:text-white/80 ${location.pathname === "/artists" ? "text-white font-bold" : "text-white"}`}>
                     Artists
                   </Link>
-                  <div className="pt-2 border-t border-white/20 mt-2">
-                    <p className="text-sm text-white/60 mb-2 px-2">Updates</p>
-                    <Link to="/events" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/events" ? "text-white font-bold" : "text-white"}`}>
-                      Events
-                    </Link>
-                    <Link to="/news" onClick={() => setIsMobileMenuOpen(false)} className={`font-medium text-lg py-2 px-2 block transition-smooth hover:text-white/80 ${location.pathname === "/news" ? "text-white font-bold" : "text-white"}`}>
-                      News
-                    </Link>
+                  {/* Updates Dropdown - Mobile */}
+                  <div>
+                    <button
+                      onClick={() => setMobileUpdatesOpen(!mobileUpdatesOpen)}
+                      className={`w-full flex items-center justify-between font-medium text-xl py-2 transition-smooth hover:text-white/80 text-white`}
+                    >
+                      <span>Updates</span>
+                      <ChevronDown className={`w-5 h-5 transition-transform ${mobileUpdatesOpen ? "rotate-180" : ""}`} />
+                    </button>
+                    {mobileUpdatesOpen && (
+                      <div className="pl-4 mt-2 space-y-2">
+                        <Link
+                          to="/events"
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            setMobileUpdatesOpen(false);
+                          }}
+                          className={`font-medium text-lg py-2 block transition-smooth hover:text-white/80 ${location.pathname === "/events" ? "text-white font-bold" : "text-white/80"}`}
+                        >
+                          Events
+                        </Link>
+                        <Link
+                          to="/news"
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            setMobileUpdatesOpen(false);
+                          }}
+                          className={`font-medium text-lg py-2 block transition-smooth hover:text-white/80 ${location.pathname === "/news" ? "text-white font-bold" : "text-white/80"}`}
+                        >
+                          News
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
