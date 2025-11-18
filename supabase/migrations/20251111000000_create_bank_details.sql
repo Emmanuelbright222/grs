@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS public.bank_details (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  account_name TEXT NOT NULL,
   bank_name TEXT NOT NULL,
   account_number TEXT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),

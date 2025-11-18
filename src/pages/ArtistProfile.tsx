@@ -27,6 +27,7 @@ const ArtistProfile = () => {
     gender: "",
     avatarFile: null as File | null,
     artistImageFile: null as File | null,
+    account_name: "",
     bank_name: "",
     account_number: "",
   });
@@ -73,6 +74,7 @@ const ArtistProfile = () => {
             gender: data.gender || "",
             avatarFile: null,
             artistImageFile: null,
+            account_name: "",
             bank_name: "",
             account_number: "",
           });
@@ -105,6 +107,7 @@ const ArtistProfile = () => {
         if (data) {
           setProfileForm(prev => ({
             ...prev,
+            account_name: data.account_name || "",
             bank_name: data.bank_name || "",
             account_number: data.account_number || "",
           }));
@@ -285,12 +288,13 @@ const ArtistProfile = () => {
       if (updateError) throw updateError;
 
       // Save or update bank details
-      if (profileForm.bank_name && profileForm.account_number) {
+      if (profileForm.account_name && profileForm.bank_name && profileForm.account_number) {
         if (bankDetails) {
           // Update existing bank details
           const { error: bankError } = await supabase
             .from("bank_details")
             .update({
+              account_name: profileForm.account_name,
               bank_name: profileForm.bank_name,
               account_number: profileForm.account_number,
             })
@@ -303,6 +307,7 @@ const ArtistProfile = () => {
             .from("bank_details")
             .insert({
               user_id: user.id,
+              account_name: profileForm.account_name,
               bank_name: profileForm.bank_name,
               account_number: profileForm.account_number,
             });
@@ -344,7 +349,7 @@ const ArtistProfile = () => {
   const getProfileCompletion = () => {
     if (!profile) return 0;
     let completed = 0;
-    const total = 9; // full_name, artist_name, email, genre, bio, avatar_url, artist_image_url, phone_number, gender
+    const total = 12; // full_name, artist_name, email, genre, bio, avatar_url, artist_image_url, phone_number, gender, account_name, bank_name, account_number
     
     if (profile.full_name) completed++;
     if (profile.artist_name) completed++;
@@ -355,6 +360,9 @@ const ArtistProfile = () => {
     if (profile.artist_image_url) completed++;
     if (profile.phone_number) completed++;
     if (profile.gender) completed++;
+    if (bankDetails?.account_name) completed++;
+    if (bankDetails?.bank_name) completed++;
+    if (bankDetails?.account_number) completed++;
     
     return Math.round((completed / total) * 100);
   };
@@ -371,6 +379,9 @@ const ArtistProfile = () => {
     if (!profile.artist_image_url) missing.push("Artist Image");
     if (!profile.phone_number) missing.push("Phone Number");
     if (!profile.gender) missing.push("Gender");
+    if (!bankDetails?.account_name) missing.push("Account Name");
+    if (!bankDetails?.bank_name) missing.push("Bank Name");
+    if (!bankDetails?.account_number) missing.push("Account Number");
     return missing;
   };
 
@@ -432,6 +443,7 @@ const ArtistProfile = () => {
                             gender: profile.gender || "",
                             avatarFile: null,
                             artistImageFile: null,
+                            account_name: bankDetails?.account_name || "",
                             bank_name: bankDetails?.bank_name || "",
                             account_number: bankDetails?.account_number || "",
                           });
@@ -686,36 +698,53 @@ const ArtistProfile = () => {
                 <CreditCard className="w-6 h-6 text-accent" />
                 <h2 className="text-xl font-bold">Bank Details</h2>
               </div>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-4">
                 <div>
-                  <Label htmlFor="bank_name" className="text-sm text-muted-foreground">Bank Name</Label>
+                  <Label htmlFor="account_name" className="text-sm text-muted-foreground">Account Name</Label>
                   {isEditingProfile ? (
                     <Input
-                      id="bank_name"
-                      value={profileForm.bank_name}
-                      onChange={(e) => setProfileForm({ ...profileForm, bank_name: e.target.value })}
-                      placeholder="e.g., Access Bank, GTBank"
+                      id="account_name"
+                      value={profileForm.account_name}
+                      onChange={(e) => setProfileForm({ ...profileForm, account_name: e.target.value })}
+                      placeholder="Enter account holder name"
                       className="mt-1"
                       disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
                     />
                   ) : (
-                    <p className="font-medium mt-1">{bankDetails?.bank_name || "-"}</p>
+                    <p className="font-medium mt-1">{bankDetails?.account_name || "-"}</p>
                   )}
                 </div>
-                <div>
-                  <Label htmlFor="account_number" className="text-sm text-muted-foreground">Account Number</Label>
-                  {isEditingProfile ? (
-                    <Input
-                      id="account_number"
-                      value={profileForm.account_number}
-                      onChange={(e) => setProfileForm({ ...profileForm, account_number: e.target.value })}
-                      placeholder="Enter your account number"
-                      className="mt-1"
-                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
-                    />
-                  ) : (
-                    <p className="font-medium mt-1">{bankDetails?.account_number || "-"}</p>
-                  )}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="bank_name" className="text-sm text-muted-foreground">Bank Name</Label>
+                    {isEditingProfile ? (
+                      <Input
+                        id="bank_name"
+                        value={profileForm.bank_name}
+                        onChange={(e) => setProfileForm({ ...profileForm, bank_name: e.target.value })}
+                        placeholder="e.g., Access Bank, GTBank"
+                        className="mt-1"
+                        disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                      />
+                    ) : (
+                      <p className="font-medium mt-1">{bankDetails?.bank_name || "-"}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="account_number" className="text-sm text-muted-foreground">Account Number</Label>
+                    {isEditingProfile ? (
+                      <Input
+                        id="account_number"
+                        value={profileForm.account_number}
+                        onChange={(e) => setProfileForm({ ...profileForm, account_number: e.target.value })}
+                        placeholder="Enter your account number"
+                        className="mt-1"
+                        disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                      />
+                    ) : (
+                      <p className="font-medium mt-1">{bankDetails?.account_number || "-"}</p>
+                    )}
+                  </div>
                 </div>
               </div>
               {!isEditingProfile && !bankDetails && (

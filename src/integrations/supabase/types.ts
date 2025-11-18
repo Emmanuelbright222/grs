@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       bank_details: {
         Row: {
+          account_name: string
           account_number: string
           bank_name: string
           created_at: string | null
@@ -24,6 +25,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          account_name: string
           account_number: string
           bank_name: string
           created_at?: string | null
@@ -32,6 +34,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          account_name?: string
           account_number?: string
           bank_name?: string
           created_at?: string | null

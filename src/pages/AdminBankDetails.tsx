@@ -19,6 +19,7 @@ import {
 interface BankDetail {
   id: string;
   user_id: string;
+  account_name: string;
   bank_name: string;
   account_number: string;
   created_at: string;
@@ -198,6 +199,7 @@ const AdminBankDetails = () => {
                       <TableHead className="w-16">S/N</TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead>Artist Name</TableHead>
+                      <TableHead>Account Name</TableHead>
                       <TableHead>Bank Name</TableHead>
                       <TableHead>Account No</TableHead>
                     </TableRow>
@@ -210,6 +212,7 @@ const AdminBankDetails = () => {
                         <TableCell className="font-medium">
                           {getArtistName(bankDetail)}
                         </TableCell>
+                        <TableCell>{bankDetail.account_name}</TableCell>
                         <TableCell>{bankDetail.bank_name}</TableCell>
                         <TableCell className="font-mono">{bankDetail.account_number}</TableCell>
                       </TableRow>
