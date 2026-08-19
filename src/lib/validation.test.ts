@@ -1,7 +1,44 @@
 import { describe, it, expect } from "vitest";
-import { validateImageFile, validateEmail, validatePassword } from "./validation";
+import { 
+  validateImageFile, 
+  validateEmail, 
+  validatePassword,
+  ArtistFormSchema,
+  ReleaseFormSchema
+} from "./validation";
 
 describe("Validation Utility Suite", () => {
+  describe("ArtistFormSchema", () => {
+    it("validates valid artist payload", () => {
+      const result = ArtistFormSchema.safeParse({
+        full_name: "John Doe",
+        artist_name: "Johnny Rhythms",
+        email: "john@example.com",
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("rejects invalid artist payload with short name or bad email", () => {
+      const result = ArtistFormSchema.safeParse({
+        full_name: "J",
+        artist_name: "JR",
+        email: "not-an-email",
+      });
+      expect(result.success).toBe(false);
+    });
+  });
+
+  describe("ReleaseFormSchema", () => {
+    it("validates valid release payload", () => {
+      const result = ReleaseFormSchema.safeParse({
+        title: "Summer Vibes",
+        artist_name: "Johnny Rhythms",
+        release_date: "2026-09-01",
+        type: "Single",
+      });
+      expect(result.success).toBe(true);
+    });
+  });
   describe("validateImageFile", () => {
     it("returns null for valid jpeg image under size limit", () => {
       const file = new File(["test image content"], "avatar.jpg", { type: "image/jpeg" });

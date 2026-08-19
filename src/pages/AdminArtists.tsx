@@ -11,6 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { logger } from "@/lib/logger";
+import { validateImageFile } from "@/lib/validation";
+import { deleteArtistProfile } from "@/lib/adminHelpers";
 import { User, Mail, Music, Calendar, RefreshCw, Plus, X, Save, Phone, Upload, Trash2, MoreVertical } from "lucide-react";
 import {
   Dialog,

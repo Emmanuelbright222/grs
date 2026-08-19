@@ -45,3 +45,26 @@ export function validatePassword(password: string): { isValid: boolean; error?: 
   }
   return { isValid: true };
 }
+
+import { z } from "zod";
+
+export const ArtistFormSchema = z.object({
+  full_name: z.string().min(2, "Full name must be at least 2 characters."),
+  artist_name: z.string().min(2, "Artist stage name must be at least 2 characters."),
+  email: z.string().email("Please enter a valid email address."),
+  genre: z.string().optional(),
+  bio: z.string().optional(),
+  phone_number: z.string().optional(),
+  gender: z.string().optional(),
+});
+
+export const ReleaseFormSchema = z.object({
+  title: z.string().min(1, "Release title is required."),
+  artist_name: z.string().min(1, "Artist name is required."),
+  release_date: z.string().min(1, "Release date is required."),
+  genre: z.string().optional(),
+  type: z.enum(["Single", "EP", "Album"]).default("Single"),
+});
+
+export type ArtistFormValues = z.infer<typeof ArtistFormSchema>;
+export type ReleaseFormValues = z.infer<typeof ReleaseFormSchema>;
