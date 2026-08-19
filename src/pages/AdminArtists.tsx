@@ -533,7 +533,7 @@ const AdminArtists = () => {
                 </Card>
               ))}
             </div>
-        </div>
+          )}
 
       {/* Artist Detail Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -409,7 +409,7 @@ const AdminManagement = () => {
                 ))}
               </div>
             )}
-        </div>
+          </Card>
 
       {/* Confirmation Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

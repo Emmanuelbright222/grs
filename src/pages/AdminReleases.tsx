@@ -442,7 +442,7 @@ const AdminReleases = () => {
                 </Card>
               ))}
             </div>
-        </div>
+          )}
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

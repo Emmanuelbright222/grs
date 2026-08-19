@@ -391,7 +391,7 @@ const AdminVideos = () => {
                 );
               })}
             </div>
-        </div>
+          )}
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
