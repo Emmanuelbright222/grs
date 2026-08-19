@@ -262,12 +262,14 @@ This will install all dependencies listed in `package.json`. This may take a few
 
 ### Step 3: Set Up Environment Variables
 
-Create a file named `.env.local` in the project root directory:
+Copy the provided `.env.example` template to create your local environment file:
 
 ```bash
-# Create the file
-touch .env.local
+# Copy the template and fill in your credentials
+cp .env.example .env.local
 ```
+
+Open `.env.local` and replace the placeholder values with your actual keys (see [Environment Variables](#-environment-variables) below for details).
 
 **Important**: The `.env.local` file is automatically ignored by Git, so your secrets won't be committed.
 
@@ -309,6 +311,67 @@ The application will start on `http://localhost:8080` (or another port if 8080 i
 4. Find your user and edit the `user_metadata`
 5. Add: `{"role": "admin"}`
 6. Or manually insert into `user_roles` table (see Admin Setup section)
+
+---
+
+## 🧪 Testing
+
+The project uses [Vitest](https://vitest.dev/) with [React Testing Library](https://testing-library.com/react) for unit and component testing.
+
+```bash
+# Run all tests once
+npm run test
+
+# Run tests in watch mode during development
+npm run test:watch
+
+# Run tests with code coverage report
+npm run test:coverage
+```
+
+Test files live next to the modules they cover (e.g. `src/lib/validation.test.ts`).
+
+---
+
+## 🔍 Linting & Type-checking
+
+```bash
+# ESLint
+npm run lint
+
+# TypeScript strict type check (no output on success)
+npx tsc --noEmit
+```
+
+---
+
+## 🐳 Docker
+
+A multi-stage `Dockerfile` is provided for isolated builds:
+
+```bash
+# Build the image
+docker build -t grs-app .
+
+# Run the container
+docker run -p 8080:80 grs-app
+```
+
+The app will be available at `http://localhost:8080`.
+
+---
+
+## 🔄 Continuous Integration
+
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs automatically on every push and pull request to `main`. It performs:
+
+1. **Dependency install** (`npm ci`) with cached `node_modules`
+2. **Lint** (`npm run lint`)
+3. **Type-check** (`npx tsc --noEmit`)
+4. **Unit tests** (`npm run test`)
+5. **Production build** (`npm run build`)
+
+Dependabot (`.github/dependabot.yml`) is also configured to open weekly PRs for outdated npm packages.
 
 ---
 
