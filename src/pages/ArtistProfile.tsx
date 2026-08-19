@@ -1,0 +1,752 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import DashboardLayout from "@/components/DashboardLayout";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { User, Edit2, Save, X, Camera, AlertCircle, CreditCard } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+
+const ArtistProfile = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
+  const [bankDetails, setBankDetails] = useState<any>(null);
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    full_name: "",
+    artist_name: "",
+    genre: "",
+    bio: "",
+    gender: "",
+    avatarFile: null as File | null,
+    artistImageFile: null as File | null,
+    account_name: "",
+    bank_name: "",
+    account_number: "",
+  });
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingArtistImage, setUploadingArtistImage] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    await loadProfile(user.id);
+    setLoading(false);
+  };
+
+  const loadProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error loading profile:", error);
+        return null;
+      } else {
+        console.log("Profile loaded in ArtistProfile:", data);
+        setProfile(data || null);
+        if (data) {
+          setProfileForm({
+            full_name: data.full_name || "",
+            artist_name: data.artist_name || "",
+            genre: data.genre || "",
+            bio: data.bio || "",
+            gender: data.gender || "",
+            avatarFile: null,
+            artistImageFile: null,
+            account_name: "",
+            bank_name: "",
+            account_number: "",
+          });
+        }
+        
+        // Load bank details
+        await loadBankDetails(userId);
+        
+        return data;
+      }
+    } catch (err) {
+      console.error("Exception loading profile:", err);
+      return null;
+    }
+  };
+
+  const loadBankDetails = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("bank_details")
+        .select("*")
+        .eq("user_id", userId)
+        .maybeSingle();
+
+      if (error) {
+        console.error("Error loading bank details:", error);
+        return null;
+      } else {
+        setBankDetails(data || null);
+        if (data) {
+          setProfileForm(prev => ({
+            ...prev,
+            account_name: data.account_name || "",
+            bank_name: data.bank_name || "",
+            account_number: data.account_number || "",
+          }));
+        }
+        return data;
+      }
+    } catch (err) {
+      console.error("Exception loading bank details:", err);
+      return null;
+    }
+  };
+
+  const validateImageFile = (file: File): string | null => {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    const validExtensions = ['jpg', 'jpeg', 'png'];
+    const fileExt = file.name.split('.').pop()?.toLowerCase();
+    
+    if (!validTypes.includes(file.type) || !fileExt || !validExtensions.includes(fileExt)) {
+      return "Please upload a JPEG or PNG image file only.";
+    }
+    
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      return "Image size must be less than 5MB.";
+    }
+    
+    return null;
+  };
+
+  const handleAvatarUpload = async (file: File) => {
+    setUploadingAvatar(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      // Validate file
+      const validationError = validateImageFile(file);
+      if (validationError) {
+        throw new Error(validationError);
+      }
+
+      // Upload to storage - fix path (don't include 'avatars' prefix)
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+      
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: publicUrl })
+        .eq("user_id", user.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Avatar updated!",
+        description: "Your profile picture has been updated successfully.",
+      });
+
+      // Reload profile to get updated avatar_url
+      const updatedProfile = await loadProfile(user.id);
+      
+      // Update local state immediately for instant feedback
+      if (updatedProfile) {
+        setProfile(updatedProfile);
+        // Reset avatar file in form
+        setProfileForm({
+          ...profileForm,
+          avatarFile: null,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to upload avatar.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleArtistImageUpload = async (file: File) => {
+    setUploadingArtistImage(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const validationError = validateImageFile(file);
+      if (validationError) {
+        throw new Error(validationError);
+      }
+
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `${user.id}/artist-image-${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+      
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ artist_image_url: publicUrl })
+        .eq("user_id", user.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Artist image updated!",
+        description: "Your artist image has been updated successfully.",
+      });
+
+      // Reload profile to get updated artist_image_url
+      const updatedProfile = await loadProfile(user.id);
+      
+      // Update local state immediately
+      if (updatedProfile) {
+        setProfile(updatedProfile);
+        // Reset artist image file in form
+        setProfileForm({
+          ...profileForm,
+          artistImageFile: null,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to upload artist image.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingArtistImage(false);
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    setSavingProfile(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      // Upload avatar if selected
+      if (profileForm.avatarFile) {
+        await handleAvatarUpload(profileForm.avatarFile);
+      }
+
+      // Upload artist image if selected
+      if (profileForm.artistImageFile) {
+        await handleArtistImageUpload(profileForm.artistImageFile);
+      }
+
+      // Update profile
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          full_name: profileForm.full_name,
+          artist_name: profileForm.artist_name,
+          genre: profileForm.genre,
+          bio: profileForm.bio,
+          gender: profileForm.gender || null,
+        })
+        .eq("user_id", user.id);
+
+      if (updateError) throw updateError;
+
+      // Save or update bank details
+      if (profileForm.account_name && profileForm.bank_name && profileForm.account_number) {
+        if (bankDetails) {
+          // Update existing bank details
+          const { error: bankError } = await supabase
+            .from("bank_details")
+            .update({
+              account_name: profileForm.account_name,
+              bank_name: profileForm.bank_name,
+              account_number: profileForm.account_number,
+            })
+            .eq("user_id", user.id);
+
+          if (bankError) throw bankError;
+        } else {
+          // Insert new bank details
+          const { error: bankError } = await supabase
+            .from("bank_details")
+            .insert({
+              user_id: user.id,
+              account_name: profileForm.account_name,
+              bank_name: profileForm.bank_name,
+              account_number: profileForm.account_number,
+            });
+
+          if (bankError) throw bankError;
+        }
+      }
+
+      toast({
+        title: "Profile updated!",
+        description: "Your profile has been saved successfully.",
+      });
+
+      // Reset form files
+      setProfileForm({
+        ...profileForm,
+        avatarFile: null,
+        artistImageFile: null,
+      });
+      
+      setIsEditingProfile(false);
+      
+      // Reload and update profile
+      const updatedProfile = await loadProfile(user.id);
+      if (updatedProfile) {
+        setProfile(updatedProfile);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save profile.",
+        variant: "destructive",
+      });
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  const getProfileCompletion = () => {
+    if (!profile) return 0;
+    let completed = 0;
+    const total = 12; // full_name, artist_name, email, genre, bio, avatar_url, artist_image_url, phone_number, gender, account_name, bank_name, account_number
+    
+    if (profile.full_name) completed++;
+    if (profile.artist_name) completed++;
+    if (profile.email) completed++;
+    if (profile.genre) completed++;
+    if (profile.bio) completed++;
+    if (profile.avatar_url) completed++;
+    if (profile.artist_image_url) completed++;
+    if (profile.phone_number) completed++;
+    if (profile.gender) completed++;
+    if (bankDetails?.account_name) completed++;
+    if (bankDetails?.bank_name) completed++;
+    if (bankDetails?.account_number) completed++;
+    
+    return Math.round((completed / total) * 100);
+  };
+
+  const getMissingFields = () => {
+    if (!profile) return [];
+    const missing: string[] = [];
+    if (!profile.full_name) missing.push("Full Name");
+    if (!profile.artist_name) missing.push("Artist Name");
+    if (!profile.email) missing.push("Email");
+    if (!profile.genre) missing.push("Genre");
+    if (!profile.bio) missing.push("Bio");
+    if (!profile.avatar_url) missing.push("Profile Picture");
+    if (!profile.artist_image_url) missing.push("Artist Image");
+    if (!profile.phone_number) missing.push("Phone Number");
+    if (!profile.gender) missing.push("Gender");
+    if (!bankDetails?.account_name) missing.push("Account Name");
+    if (!bankDetails?.bank_name) missing.push("Bank Name");
+    if (!bankDetails?.account_number) missing.push("Account Number");
+    return missing;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent"></div>
+      </div>
+    );
+  }
+
+  return (
+    <DashboardLayout
+      title="My Profile"
+      subtitle="Manage your profile information, music links, and payout bank details"
+    >
+
+          <Card className="p-8 border-0 shadow-soft mb-8">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6 gap-4">
+              <div className="text-center md:text-left">
+                <div className="flex items-center gap-4 justify-center md:justify-start mb-2">
+                  <User className="w-8 h-8 text-accent" />
+                  <h2 className="text-1xl font-bold">Profile Information</h2>
+                </div>
+                <p className="text-muted-foreground">Edit and update your details</p>
+              </div>
+              <div className="flex justify-center md:justify-end">
+                {!isEditingProfile ? (
+                  <Button onClick={() => setIsEditingProfile(true)} variant="hero" size="sm">
+                    <Edit2 className="w-4 h-4 mr-2" />
+                    Edit Profile
+                  </Button>
+                ) : (
+                  <div className="flex gap-2">
+                    <Button onClick={handleSaveProfile} disabled={savingProfile || uploadingAvatar || uploadingArtistImage} size="sm">
+                      <Save className="w-4 h-4 mr-2" />
+                      {savingProfile || uploadingAvatar || uploadingArtistImage ? "Saving..." : "Save"}
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setIsEditingProfile(false);
+                        if (profile) {
+                          setProfileForm({
+                            full_name: profile.full_name || "",
+                            artist_name: profile.artist_name || "",
+                            genre: profile.genre || "",
+                            bio: profile.bio || "",
+                            gender: profile.gender || "",
+                            avatarFile: null,
+                            artistImageFile: null,
+                            account_name: bankDetails?.account_name || "",
+                            bank_name: bankDetails?.bank_name || "",
+                            account_number: bankDetails?.account_number || "",
+                          });
+                        }
+                      }} 
+                      variant="hero" 
+                      size="sm"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Cancel
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Profile Completion Indicator */}
+            {getProfileCompletion() < 100 && (
+              <div className="mb-6 p-4 bg-accent/10 border border-accent/20 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertCircle className="w-5 h-5 text-accent" />
+                  <h3 className="font-semibold">Complete Your Profile</h3>
+                  <span className="ml-auto text-sm font-medium">{getProfileCompletion()}% Complete</span>
+                </div>
+                <Progress value={getProfileCompletion()} className="mb-2" />
+                <p className="text-sm text-muted-foreground">
+                  Missing: {getMissingFields().join(", ")}
+                </p>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {/* Profile Picture */}
+              <div className="flex flex-col items-center">
+                <div className="relative">
+                  {profile?.avatar_url && profile.avatar_url.trim() ? (
+                    <img
+                      key={`profile-avatar-${profile.avatar_url}`}
+                      src={`${profile.avatar_url}?t=${Date.now()}`}
+                      alt={profile?.artist_name || profile?.full_name || "Profile"}
+                      className="w-32 h-32 rounded-full object-cover border-4 border-accent/20"
+                      onError={(e) => {
+                        console.error("Profile avatar failed to load:", profile.avatar_url);
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget.nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
+                      }}
+                    />
+                  ) : null}
+                  <div 
+                    className={`w-32 h-32 rounded-full bg-muted flex items-center justify-center border-4 border-accent/20 ${profile?.avatar_url && profile.avatar_url.trim() ? 'hidden' : ''}`}
+                  >
+                    <User className="w-16 h-16 text-muted-foreground" />
+                  </div>
+                  {isEditingProfile && (
+                    <label className="absolute bottom-0 right-0 w-10 h-10 bg-accent rounded-full flex items-center justify-center cursor-pointer hover:bg-accent/80 transition-colors">
+                      <Camera className="w-5 h-5 text-white" />
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/jpg,image/png"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const validationError = validateImageFile(file);
+                            if (validationError) {
+                              toast({
+                                title: "Invalid file",
+                                description: validationError,
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            setProfileForm({ ...profileForm, avatarFile: file });
+                          }
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+                {isEditingProfile && profileForm.avatarFile && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {profileForm.avatarFile.name}
+                  </p>
+                )}
+
+                {/* Artist Image Upload (Separate from Avatar) */}
+                {isEditingProfile && (
+                  <div className="mt-6 w-full">
+                    <Label className="text-sm text-muted-foreground mb-2 block">Artist Image (Optional)</Label>
+                    <div className="border-2 border-dashed border-border rounded-lg p-4 text-center">
+                      {profile?.artist_image_url ? (
+                        <img
+                          src={profile.artist_image_url}
+                          alt="Artist Image"
+                          className="w-full h-48 object-cover rounded-lg mb-2"
+                        />
+                      ) : (
+                        <p className="text-sm text-muted-foreground mb-2">No artist image uploaded</p>
+                      )}
+                      <div className="flex flex-col items-center gap-2">
+                        <input
+                          type="file"
+                          id="artist-image-upload"
+                          accept="image/jpeg,image/jpg,image/png"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const validationError = validateImageFile(file);
+                              if (validationError) {
+                                toast({
+                                  title: "Invalid file",
+                                  description: validationError,
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              setProfileForm({ ...profileForm, artistImageFile: file });
+                              // Auto-upload immediately when file is selected
+                              handleArtistImageUpload(file);
+                            }
+                          }}
+                        />
+                        <label htmlFor="artist-image-upload" className="cursor-pointer inline-block">
+                          <Button type="button" variant="hero" size="sm" disabled={uploadingArtistImage} className="text-white" onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById("artist-image-upload")?.click();
+                          }}>
+                            {uploadingArtistImage ? "Uploading..." : profileForm.artistImageFile ? "Change Image" : "Upload Artist Image"}
+                          </Button>
+                        </label>
+                      </div>
+                      {profileForm.artistImageFile && (
+                        <p className="text-xs text-muted-foreground mt-2">{profileForm.artistImageFile.name}</p>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Upload a larger image for artist pages (JPEG or PNG, max 5MB)
+                    </p>
+                  </div>
+                )}
+                {!isEditingProfile && profile?.artist_image_url && (
+                  <div className="mt-6 w-full">
+                    <Label className="text-sm text-muted-foreground mb-2 block">Artist Image</Label>
+                    <img
+                      src={profile.artist_image_url}
+                      alt="Artist Image"
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Profile Details */}
+              <div className="md:col-span-2 space-y-4">
+                <div>
+                  <Label htmlFor="full_name" className="text-sm text-muted-foreground">Full Name</Label>
+                  {isEditingProfile ? (
+                    <Input
+                      id="full_name"
+                      value={profileForm.full_name}
+                      onChange={(e) => setProfileForm({ ...profileForm, full_name: e.target.value })}
+                      className="mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    />
+                  ) : (
+                    <p className="font-medium mt-1">{profile?.full_name || "-"}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="artist_name" className="text-sm text-muted-foreground">Artist Name</Label>
+                  {isEditingProfile ? (
+                    <Input
+                      id="artist_name"
+                      value={profileForm.artist_name}
+                      onChange={(e) => setProfileForm({ ...profileForm, artist_name: e.target.value })}
+                      className="mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    />
+                  ) : (
+                    <p className="font-medium mt-1">{profile?.artist_name || "-"}</p>
+                  )}
+                </div>
+                <div>
+                  <Label className="text-sm text-muted-foreground">Email</Label>
+                  <p className="font-medium mt-1">{profile?.email || "-"}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Email cannot be changed</p>
+                </div>
+                <div>
+                  <Label className="text-sm text-muted-foreground">Phone Number</Label>
+                  <p className="font-medium mt-1">{profile?.phone_number || "-"}</p>
+                </div>
+                <div>
+                  <Label htmlFor="gender" className="text-sm text-muted-foreground">Gender</Label>
+                  {isEditingProfile ? (
+                    <select
+                      id="gender"
+                      value={profileForm.gender}
+                      onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    >
+                      <option value="">Select gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  ) : (
+                    <p className="font-medium mt-1">{profile?.gender || "-"}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="genre" className="text-sm text-muted-foreground">Genre</Label>
+                  {isEditingProfile ? (
+                    <Input
+                      id="genre"
+                      value={profileForm.genre}
+                      onChange={(e) => setProfileForm({ ...profileForm, genre: e.target.value })}
+                      placeholder="e.g., Afrobeat, R&B, Hip-Hop"
+                      className="mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    />
+                  ) : (
+                    <p className="font-medium mt-1">{profile?.genre || "-"}</p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="bio" className="text-sm text-muted-foreground">Bio</Label>
+                  {isEditingProfile ? (
+                    <Textarea
+                      id="bio"
+                      value={profileForm.bio || ""}
+                      onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                      placeholder="Tell us about yourself..."
+                      rows={4}
+                      className="mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    />
+                  ) : (
+                    <p className="font-medium mt-1 whitespace-pre-wrap">
+                      {profile?.bio || "No bio added yet. Click 'Edit Profile' to add one."}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Bank Details Section */}
+            <div className="mt-8 pt-8 border-t border-border">
+              <div className="flex items-center gap-4 mb-6">
+                <CreditCard className="w-6 h-6 text-accent" />
+                <h2 className="text-xl font-bold">Bank Details</h2>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="account_name" className="text-sm text-muted-foreground">Account Name</Label>
+                  {isEditingProfile ? (
+                    <Input
+                      id="account_name"
+                      value={profileForm.account_name}
+                      onChange={(e) => setProfileForm({ ...profileForm, account_name: e.target.value })}
+                      placeholder="Enter account holder name"
+                      className="mt-1"
+                      disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                    />
+                  ) : (
+                    <p className="font-medium mt-1">{bankDetails?.account_name || "-"}</p>
+                  )}
+                </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="bank_name" className="text-sm text-muted-foreground">Bank Name</Label>
+                    {isEditingProfile ? (
+                      <Input
+                        id="bank_name"
+                        value={profileForm.bank_name}
+                        onChange={(e) => setProfileForm({ ...profileForm, bank_name: e.target.value })}
+                        placeholder="e.g., Access Bank, GTBank"
+                        className="mt-1"
+                        disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                      />
+                    ) : (
+                      <p className="font-medium mt-1">{bankDetails?.bank_name || "-"}</p>
+                    )}
+                  </div>
+                  <div>
+                    <Label htmlFor="account_number" className="text-sm text-muted-foreground">Account Number</Label>
+                    {isEditingProfile ? (
+                      <Input
+                        id="account_number"
+                        value={profileForm.account_number}
+                        onChange={(e) => setProfileForm({ ...profileForm, account_number: e.target.value })}
+                        placeholder="Enter your account number"
+                        className="mt-1"
+                        disabled={savingProfile || uploadingAvatar || uploadingArtistImage}
+                      />
+                    ) : (
+                      <p className="font-medium mt-1">{bankDetails?.account_number || "-"}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              {!isEditingProfile && !bankDetails && (
+                <p className="text-sm text-muted-foreground mt-4">
+                  No bank details added yet. Click 'Edit Profile' to add your bank details.
+                </p>
+              )}
+            </div>
+          </Card>
+    </DashboardLayout>
+  );
+};
+
+export default ArtistProfile;
+

@@ -1,0 +1,92 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import MusicBackground from "@/components/MusicBackground";
+import AnimatedSection from "@/components/AnimatedSection";
+import FounderSection from "@/components/FounderSection";
+import studioImage from "@/assets/grace-rhythm-sounds-studio.jpg";
+
+const About = () => {
+  return (
+    <div className="min-h-screen relative">
+      <MusicBackground />
+      <Navbar />
+      <main className="pt-20 relative z-10">
+        {/* Hero Section */}
+        <section className="relative py-20 bg-navy-black text-white">
+          <div className="container mx-auto px-4">
+            <AnimatedSection animationType="zoom">
+              <div className="max-w-4xl mx-auto text-center">
+                <h1 className="text-3xl md:text-6xl font-bold mb-6">About Us</h1>
+                <p className="text-xl opacity-90">
+                  Discovering, mentoring, producing, and distributing faith-driven sound globally.
+                </p>
+              </div>
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* Mission Section */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+              <AnimatedSection animationType="slideLeft">
+                <img
+                  src={studioImage}
+                  alt="Grace Rhythm Sounds Studio"
+                  className="rounded-[10px] shadow-strong w-full"
+                  loading="lazy"
+                />
+              </AnimatedSection>
+              <AnimatedSection animationType="slideRight" delay={200}>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Mission</h2>
+                <p className="text-lg text-muted-foreground mb-4">
+                  Grace Rhythm Sounds was founded with a vision to empower artists from diverse backgrounds and genres, creating a platform where talent meets opportunity.
+                </p>
+                <p className="text-lg text-muted-foreground mb-4">
+                  We believe in the transformative power of music to connect cultures, inspire change, and create lasting impact. Our commitment is to nurture creativity while maintaining the highest standards of artistic excellence.
+                </p>
+                <p className="text-lg text-muted-foreground">
+                  From Afrobeat to Hip-Hop, R&B to Gospel, we celebrate all genres and provide our artists with the resources, support, and global reach they need to succeed.
+                </p>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+
+        {/* Vision Statement Section */}
+        <section className="relative py-20 bg-primary text-primary-foreground">
+          <div className="container mx-auto px-4">
+            <AnimatedSection animationType="zoom">
+              <div className="max-w-4xl mx-auto text-center">
+                <h2 className="text-3xl md:text-6xl font-bold mb-8">🌍 Vision Statement</h2>
+                <p className="text-xl md:text-2xl opacity-90 leading-relaxed">
+                  To be the world's leading platform for gospel artistry — amplifying voices of faith, transforming lives through music, and connecting heaven's message to every corner of the earth.
+                </p>
+              </div>
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* Mission Statement Section */}
+        <section className="py-20 bg-background">
+          <div className="container mx-auto px-4">
+            <AnimatedSection animationType="fadeUp">
+              <div className="max-w-4xl mx-auto text-center">
+                <h2 className="text-3xl md:text-5xl font-bold mb-8">🎯 Mission Statement</h2>
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                  We empower gospel artists by producing, promoting, and distributing their music with excellence — ensuring they earn sustainably, reach global audiences, and carry the sound of grace across generations.
+                </p>
+              </div>
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* Founder Section */}
+        <FounderSection />
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default About;
