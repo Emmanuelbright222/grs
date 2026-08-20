@@ -345,19 +345,20 @@ npx tsc --noEmit
 
 ---
 
-## 🐳 Docker
+## 🐳 Docker Containerization
 
-A multi-stage `Dockerfile` is provided for isolated builds:
+A multi-stage `Dockerfile` and `docker-compose.yml` are provided for isolated builds and one-command local orchestration:
 
 ```bash
-# Build the image
-docker build -t grs-app .
+# Start the full application environment with Docker Compose
+docker compose up --build
 
-# Run the container
+# Alternatively, build and run directly with Docker CLI
+docker build -t grs-app .
 docker run -p 8080:80 grs-app
 ```
 
-The app will be available at `http://localhost:8080`.
+The application will be accessible at `http://localhost:8080`.
 
 ---
 
