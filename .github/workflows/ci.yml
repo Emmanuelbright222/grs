@@ -31,14 +31,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Security Dependency Audit
+        run: npm audit --audit-level=high || true
+
       - name: Lint codebase
         run: npm run lint
 
       - name: Strict Type Check
         run: npx tsc --noEmit
 
-      - name: Run Unit Test Suite
-        run: npm run test
+      - name: Run Unit Test Suite with Coverage
+        run: npm run test:coverage
 
       - name: Build Project Bundle
         run: npm run build
